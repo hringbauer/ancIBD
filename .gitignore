@@ -10,7 +10,7 @@ __pycache__/
 data/
 output/
 figs/
-
+cluster/prep_hdf5_ali/logs/
 #
 # Distribution / packaging
 .Python
