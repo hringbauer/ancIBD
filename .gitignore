@@ -11,6 +11,7 @@ data/
 output/
 figs/
 cluster/prep_hdf5_ali/logs/
+c/
 #
 # Distribution / packaging
 .Python
