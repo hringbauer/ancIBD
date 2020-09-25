@@ -17,6 +17,17 @@ def get_idx_iid(f,sample, unique=True):
     else:
         return idx
     
+def get_idx_iid_exact(f,sample, unique=True):
+    """Return Index of sample samples in hdf5 f"""
+    samples = pd.Series(f["samples"][:])
+    idx = samples==sample
+    idx = np.where(idx)[0]
+    if unique:
+        assert(len(idx)==1)
+        return idx[0]
+    else:
+        return idx
+    
 def get_coverage(f, j):
     """Get Coverage of sample j in hdf5 f"""
     ads =  f["calldata/AD"][:,j,:]
@@ -34,11 +45,17 @@ def get_markers_good(f, j, output=True, cutoff=0.99):
     return idx
 
 def get_genos_pairs(f, sample1="SUC006", sample2="R26.SG", 
-                    cutoff=0.98, output=True, phased=False):
+                    cutoff=0.98, output=True, phased=False, exact=False):
     """Return Genotypes and Map of pairs at intersection with GP>cutoff.
-    phased: Whether to return [lx2] phased vector or [l] vetor of #derived"""
-    j1 = get_idx_iid(f, sample1)
-    j2 = get_idx_iid(f, sample2)
+    phased: Whether to return [lx2] phased vector or [l] vetor of #derived.
+    exact: Whether IID has to be an exact match"""
+    if exact:
+        j1 = get_idx_iid_exact(f, sample1)
+        j2 = get_idx_iid_exact(f, sample2)
+        
+    else:
+        j1 = get_idx_iid(f, sample1)
+        j2 = get_idx_iid(f, sample2)
     
     idx1 = get_markers_good(f, j1, cutoff=cutoff, output=output)
     idx2 = get_markers_good(f, j2, cutoff=cutoff, output=output)
