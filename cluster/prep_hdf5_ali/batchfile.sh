@@ -8,7 +8,7 @@
 #SBATCH --export=NONE
 #SBATCH --output=./logs/%A_%a.out
 #SBATCH --error=./logs/%A_%a.err
-#SBATCH --array=5-22 #%0-12658%200
+#SBATCH --array=1-6 #%0-12658%200
 #unset SLURM_EXPORT_ENV
 #export OMP_NUM_THREADS=1
 
