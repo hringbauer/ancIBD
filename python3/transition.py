@@ -68,20 +68,21 @@ class FiveStateTransitions(Transitions):
         self.trans_mat = t_mat
         return t_mat
     
-    def full_transition_matrix(self, r_vec, t=[], n=4):
+    def full_transition_matrix(self, r_vec, t=[], n=4, submat33=True):
         """Compute and return the full transition Matrix.
         Calculates the first 3 states (not more needed by symmetry)
         t full Transition Matrix [k,k]. NO LOG STATE. If not given caluclate
         r_vec Map Length of Jumps [l] in Morgan
         n: Number of symmetric, non-background states"""
         if len(t)==0:
-            t = self.calc_transition_rate(submat33=True, n=n)
-            
-        t_simple = self.prep_3x3matrix(t, n)
-        t_mat = self.exponentiate_r(t_simple, r_vec)
+            t = self.calc_transition_rate(submat33=submat33, n=n)
+        if submat33:
+            t = self.prep_3x3matrix(t, n)
+        t_mat = self.exponentiate_r(t, r_vec)
 
         # Normalize to transition rate into non-collapsed state
-        t_mat[:, :2, 2] = t_mat[:, :2, 2] / (n - 1)
+        if submat33:
+            t_mat[:, :2, 2] = t_mat[:, :2, 2] / (n - 1)
         return t_mat
     
     def prep_3x3matrix(self, t, n):

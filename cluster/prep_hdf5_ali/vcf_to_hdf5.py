@@ -45,7 +45,7 @@ if __name__ == "__main__":
     in_vcf_path = f"/n/groups/reich/ali/WholeGenomeImputation/imputed/v43.4/chr{ch}.bcf"
     path_vcf = f"/n/groups/reich/hringbauer/git/hapBLOCK/data/vcf/1240k_v43/ch{ch}.vcf.gz"
     path_h5 = f"/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_v43/ch{ch}.h5"
-    marker_path = f"/n/groups/reich/hringbauer/git/hapBLOCK/data/filters/1240K_snps_bcftools_ch{ch}.csv"
+    marker_path = f"/n/groups/reich/hringbauer/git/hapBLOCK/data/filters/1240K_1000G/snps_bcftools_ch{ch}.csv"
     
     vcf_to_1240K_hdf(in_vcf_path=in_vcf_path, path_vcf=path_vcf,
                      marker_path=marker_path, path_h5=path_h5, ch=ch)
