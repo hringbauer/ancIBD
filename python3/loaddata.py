@@ -52,32 +52,6 @@ class LoadData(object):
         assert(np.shape(htsl)[1]==len(p))
         assert(len(p)==len(m))
         pass 
-    
-    def rmap_to_gaps(self, r_map=[], cm=False, min_gap=1e-10, max_gap=0.05):
-        """Return the recombination map gaps [in Morgan]
-        Input: Map Positions [l] units see cm below
-        Return: Rec. Distance Array [l]
-        cm: Whether input is in centimorgan or morgan
-        min_cap: Minimum Map Gap between Loci to cap
-        max_cap: Maximum Mapg Gap between Loci to cap"""
-        gaps = np.zeros(len(r_map))  # Make new array
-        gaps[1:] = r_map[1:] - r_map[:-1]  # Calculate Differences
-        assert(np.min(gaps) >= 0)
-        if cm == True:
-            gaps = gaps / 100     # Normalize to Morgan if map in cM
-         
-        ### Extend the minimum gap where needed
-        gaps = np.maximum(gaps, min_gap)
-        gaps = np.minimum(gaps, max_gap)
-
-        if self.output == True:
-            max_g = np.max(gaps)
-            print(f"Minimum Genetic Map: {np.min(r_map):.4f} Morgan")
-            print(f"Maximum Genetic Map: {np.max(r_map):.4f} Morgan")
-            print(f"Gaps bigger than 0.1 cM: {np.sum(gaps > 0.001)}")
-            print(f"Maximum Gap: {max_g * 100:.4f} cM")
-            print(f"Upper Gap Cutoff: {max_gap * 100:.4f} cM")
-        return gaps
         
     def set_params(self, **kwargs):
         """Set the Parameters.
@@ -116,14 +90,11 @@ class LoadHDF5(LoadData):
     path_h5=""
     iids = []
     ch = 3   # Which chromosome to load
-    min_gap=1e-10 # Minimum Map Gap between two loci
-    max_gap=0.05  # Maximum Map Gap between two loci
-    min_error=1e-5 # Minimum Probability of genotyping erorr
+    min_error=1e-5 # Minimum Probability of genotyping erro
     
     def return_map(self, f):
         """Return the recombination map"""
-        r_map = f["variants/MAP"][:]
-        m = self.rmap_to_gaps(r_map=r_map, cm=False)
+        m = f["variants/MAP"][:]
         return m
     
     def return_p(self, f):

@@ -12,6 +12,7 @@ class Transitions(object):
     Has methods to return them"""
     trans_mat = []    # The full transition Matrix
     r_map = []        # Legacy Variable
+    output=True
 
     def __init__(self):
         """Initialize Class"""
@@ -37,6 +38,9 @@ class FiveStateTransitions(Transitions):
     ibd_in = 0.0005     # The rate of jumping into IBD copying state
     ibd_out = 0.001     # The rate of jumping out of IBD state
     ibd_jump = 0.05     # The rate of jumping within IBD to other haplotype pair
+    
+    min_gap=1e-10 # Minimum Map Gap between two loci
+    max_gap=0.05  # Maximum Map Gap between two locir
 
     def calc_transition_rate(self, submat33=True, n=4):
         """Return Transition Rate Matrix [k,k] to exponate.
@@ -74,8 +78,12 @@ class FiveStateTransitions(Transitions):
         t full Transition Matrix [k,k]. NO LOG STATE. If not given caluclate
         r_vec Map Length of Jumps [l] in Morgan
         n: Number of symmetric, non-background states"""
+        ### infinitesimal rate
         if len(t)==0:
             t = self.calc_transition_rate(submat33=submat33, n=n)
+            
+        ### Full matrix
+        r_vec = self.rmap_to_gaps(r_map=r_vec)
         if submat33:
             t = self.prep_3x3matrix(t, n)
         t_mat = self.exponentiate_r(t, r_vec)
@@ -117,7 +125,32 @@ class FiveStateTransitions(Transitions):
         # Make sure that all transition rates are valuable
         assert(0 <= np.min(res))
         return res
+    
+    def rmap_to_gaps(self, r_map=[], cm=False):
+        """Return the recombination map gaps [in Morgan]
+        Input: Map Positions [l] units see cm below
+        Return: Rec. Distance Array [l]
+        cm: Whether input is in centimorgan or morgan
+        min_cap: Minimum Map Gap between Loci to cap
+        max_cap: Maximum Mapg Gap between Loci to cap"""
+        gaps = np.zeros(len(r_map))  # Make new array
+        gaps[1:] = r_map[1:] - r_map[:-1]  # Calculate Differences
+        assert(np.min(gaps) >= 0)
+        if cm == True:
+            gaps = gaps / 100     # Normalize to Morgan if map in cM
+         
+        ### Extend the minimum gap where needed
+        gaps = np.maximum(gaps, self.min_gap)
+        gaps = np.minimum(gaps, self.max_gap)
 
+        if self.output == True:
+            max_g = np.max(gaps)
+            print(f"Minimum Genetic Map: {np.min(r_map):.4f} Morgan")
+            print(f"Maximum Genetic Map: {np.max(r_map):.4f} Morgan")
+            print(f"Gaps bigger than 0.1 cM: {np.sum(gaps > 0.001)}")
+            print(f"Maximum Gap: {max_g * 100:.4f} cM")
+            print(f"Upper Gap Cutoff: {self.max_gap * 100:.4f} cM")
+        return gaps
 
 ############################################
 # Factory method to return Transition Object
