@@ -40,43 +40,42 @@ class HaplotypeSharingEmissions(Emissions):
     
     def hw_prob_haplo_pp(self, ht_p, p):
         """Calculate HW Probabilitiy of haplotype gt
-        ht_p: [l,2] Array of haplotype likelihood, l locis, 2: Nr of genotypes.
-        First one is ancestral. Second one is derived prob.
+        ht_p: [l] Array of haplotype prob for ancestral, l locis,
         p: [l] Array of (derived) allele frequencies
         returns [l] vector of HW prob of gt"""
-        prob = ht_p[:,1] * p +  ht_p[:,0] * (1-p)
+        prob = (1 - ht_p[:]) * p +  ht_p[:] * (1-p)
         return prob
 
     def hw_prob_haplo_share_pp(self, ht_p1, ht_p2, p):
         """Calculate probability of sharing haplotypes
-        ht_p1, ht_p2: Array of haplotype likelihood, l locis, 2: Nr of genotypes.
+        ht_p1, ht_p2: Array of haplotype likelihood for ancestral, l locis
         p: [l] Array of (derived) allele frequencies
         returns [l] vector of prob that shared haplotype"""
-        p_hw = np.stack((1-p,p), axis=1)
-        prob = np.sum(ht_p1 * ht_p2 * p_hw, axis=1)
+        s1 = ht_p1 * ht_p2 * (1-p)
+        s2 = (1-ht_p1) * (1 -ht_p2) * p
+        prob = s1 + s2
         return prob
 
     def hw_prob_haplos_pp(self, hts_p, p):
         """Calculate HW Probabilitiy of haplotype gt
-        gt: [k,l,2] Array of haplotype likelihood, k: Nr of haplotypesl locis, 2: Nr of genotypes.
-        First one is ancestral. Second one is derived prob.
+        gt: [k,l] Array of haplotype probability for derived
         p: [l] Array of (derived) allele frequencies
         returns [l] vector of HW prob of gt"""
-        prob = hts_p[:,:,1] * p +  hts_p[:,:,0] * (1-p)
+        prob = (1-hts_p[:,:]) * p +  hts_p[:,:] * (1-p)
         prob_tot = np.prod(prob, axis=0)
         return prob_tot
 
     def hw_probs_shared(self, hts_p, p, shared=(0,2), dtype="float"):
         """Give emission probabilities for shared state.
         Assume 0/1 2/3 are diploid haplotypes, and 0/2 are shared
-        hts_p: [4,l,2] Array of four haplotype probabilities
+        hts_p: [4,l] Array of four ancestral haplotype probabilities
         p: [l] array of derived genotype probability.
         shared: tuple of length 2 giving the indices of the shared haplotypes"""
         not_shared = [i for i in range(0,4) if i not in shared]
         assert(len(not_shared)==2 & len(shared)==2)
-        p_hw1 = self.hw_prob_haplo_pp(hts_p[not_shared[0],:,:], p=p)
-        p_hw2 = self.hw_prob_haplo_pp(hts_p[not_shared[1],:,:], p=p)
-        p_shared = self.hw_prob_haplo_share_pp(hts_p[shared[0],:,:],hts_p[shared[1],:,:], p=p)
+        p_hw1 = self.hw_prob_haplo_pp(hts_p[not_shared[0],:], p=p)
+        p_hw2 = self.hw_prob_haplo_pp(hts_p[not_shared[1],:], p=p)
+        p_shared = self.hw_prob_haplo_share_pp(hts_p[shared[0],:],hts_p[shared[1],:], p=p)
         p = p_hw1*p_hw2*p_shared
         return p
 
@@ -84,7 +83,7 @@ class HaplotypeSharingEmissions(Emissions):
         """Give emission Matrix for 5-state HMM.
         0th state: HW 1st-4th State: Haplotype Copying
         Input: p: [l] Array of (derived) allele frequencies
-        hts_p: [4,l,2] Array of four haplotype probabilities.
+        hts_p: [4,l] Array of four ancestral haplotype probabilities.
         Return: emission matrix [5,l]."""
         l = np.shape(hts_p)[1]
         e_mat = np.zeros((5,l), dtype=dtype)
