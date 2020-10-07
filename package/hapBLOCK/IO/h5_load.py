@@ -30,7 +30,7 @@ def get_idx_iid_exact(f,sample, unique=True):
     
 def get_coverage(f, j):
     """Get Coverage of sample j in hdf5 f"""
-    ads =  f["calldata/AD"][:,j,:]
+    ads =  f["calldata/AD"][:,j,:2]
     ads[ads<0]=0
     cov = np.mean(ads)*2
     return cov
