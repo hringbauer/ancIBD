@@ -42,11 +42,13 @@ def print_memory_usage():
 
 
 def fwd_bkwd(double[:, :] e_prob0, double[:, :] t_mat,
-    double[:, :] fwd, double[:, :] bwd, double[:,:,:] t, full=False):
+             double[:, :] fwd, double[:, :] bwd, double[:,:,:] t, 
+             full=False, output=True):
     """Takes emission and transition probabilities, and calculates posteriors.
     Input: kxl matrices of emission, transition
     and initialized fwd and bwd probabilities. Given in log Space
-    full: Boolean whether to return everything"""
+    full: Boolean whether to return everything.
+    output: Whether to print output useful for monitoring"""
     cdef int n_states = e_prob0.shape[0]
     cdef int n_loci = e_prob0.shape[1]
     cdef Py_ssize_t i, j, k # The Array Indices
@@ -77,8 +79,8 @@ def fwd_bkwd(double[:, :] e_prob0, double[:, :] t_mat,
     for k in range(n_states):  # Simply sum the two 1D arrays
       trans_ll_view[k] = fwd[k, n_loci-1] + bwd[k, n_loci-1]
     tot_ll = logsumexp(trans_ll_view)
-
-    print(f"Total Log likelihood: {tot_ll: .3f}")
+    if output:
+        print(f"Total Log likelihood: {tot_ll: .3f}")
 
     # Combine the forward and backward calculations
     fwd1 = np.asarray(fwd)  # Transform
@@ -92,7 +94,8 @@ def fwd_bkwd(double[:, :] e_prob0, double[:, :] t_mat,
       return post, fwd1, bwd1, tot_ll
 
 
-def fwd_bkwd_fast(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e-4, full=False):
+def fwd_bkwd_fast(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e-4, 
+                  full=False, output=True):
     """Takes emission and transition probabilities, and calculates posteriors.
     Uses speed-up specific for Genotype data (pooling same transition rates)
     Input:
@@ -100,7 +103,9 @@ def fwd_bkwd_fast(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e
     t_mat: Transition Matrix: [l x 3 x 3]  (normal space)
     in_val: Intitial probability of single symmetric state (normal space)
     full: Boolean whether to return everything (post, fwd1, bwd1, tot_ll)
-    Otherwise only posterior mat [kxl] of post is returned"""
+    output: Whether to print output useful for monitoring
+    Otherwise only posterior mat [kxl] of post is returned
+    """
     cdef int n_states = e_mat0.shape[0]
     cdef int n_loci = e_mat0.shape[1]
     cdef Py_ssize_t i, j, k    # The Array Indices
@@ -190,10 +195,10 @@ def fwd_bkwd_fast(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e
     fwd1 = np.asarray(fwd, dtype=np.float)  # Transform
     bwd1 = np.asarray(bwd, dtype=np.float)
     post = fwd1 + bwd1 - np.float(tot_ll)
-
-    print("Memory Usage Full:")
-    print_memory_usage()   ## For MEMORY_BENCH
-    print(f"Total Log likelihood: {tot_ll: .3f}")
+    if output:
+        print("Memory Usage Full:")
+        print_memory_usage()   ## For MEMORY_BENCH
+        print(f"Total Log likelihood: {tot_ll: .3f}")
 
     if full==False:
       return post
@@ -202,7 +207,8 @@ def fwd_bkwd_fast(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e
       return post, fwd1, bwd1, tot_ll
 
 
-def fwd_bkwd_lowmem(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e-4, full=False):
+def fwd_bkwd_lowmem(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e-4, 
+                    full=False, output=True):
     """Takes emission and transition probabilities, and calculates posteriors.
     Uses speed-up specific for Genotype data (pooling same transition rates)
     Low-Mem: Do no save the full FWD BWD and Posterior. Use temporary
@@ -319,9 +325,10 @@ def fwd_bkwd_lowmem(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 
 
       ### Finalize the 0 Posterior
       post_view[i-1] = post_view[i-1] + bwd[0] - tot_ll
-
-    print(f"Total Log likelihood: {tot_ll: .3f}")
-    print_memory_usage()   ## For MEMORY_BENCH
+    
+    if output:
+        print(f"Total Log likelihood: {tot_ll: .3f}")
+        print_memory_usage()   ## For MEMORY_BENCH
 
     if full==False:
       return post[None,:]  # For "fake" axis

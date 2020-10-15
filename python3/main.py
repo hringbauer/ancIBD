@@ -52,18 +52,20 @@ class HMM_Full(object):
         for o in [self.l_obj, self.t_obj, self.e_obj, self.p_obj]:
             o.set_params(output=self.output)
         
-    def run_fwd_bwd(self, output=True, full=True):
+    def run_fwd_bwd(self, full=True):
         """Run Forward Backward algorithm."""
         htsl, p, r_vec =  self.l_obj.load_all_data()
         e_mat = self.e_obj.give_emission_matrix(htsl, p)
         t_mat = self.t_obj.full_transition_matrix(r_vec, n=4, submat33=self.submat33)
         
         if full:
-            post, fwd, bwd, tot_ll = self.fwd_bwd(np.log(e_mat), t_mat, in_val = self.in_val, full=full)
+            post, fwd, bwd, tot_ll = self.fwd_bwd(np.log(e_mat), t_mat, in_val = self.in_val, 
+                                                  full=full, output=self.output)
             self.p_obj.call_roh(r_vec, post)
             return post, r_vec, fwd, bwd, tot_ll
         else:
-            post = self.fwd_bwd(np.log(e_mat), t_mat, in_val = self.in_val, full=full)
+            post = self.fwd_bwd(np.log(e_mat), t_mat, in_val = self.in_val, 
+                                full=full, output=self.output)
             self.p_obj.call_roh(r_vec, post)
             return post, r_vec                                                                    
                  

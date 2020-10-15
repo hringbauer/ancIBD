@@ -6,8 +6,9 @@ module load gcc/6.2.0
 module load python/3.7.4
 
 ### Produce C extension
+On cluster: Do this from my Python Environment (loaded with envpython37)
+
 module load gcc/6.2.0
 module load python/3.7.4
 cythonize -a -i cfunc.pyx
 
-On cluster: Do this from my Python Environment (loaded with envpython37)

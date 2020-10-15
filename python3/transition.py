@@ -34,13 +34,13 @@ class Transitions(object):
 
 
 class FiveStateTransitions(Transitions):
-    """Implements the Model Transitions"""
+    """Implements the Model Transitions [units generally in Morgan]"""
     ibd_in = 0.0005     # The rate of jumping into IBD copying state
     ibd_out = 0.001     # The rate of jumping out of IBD state
     ibd_jump = 0.05     # The rate of jumping within IBD to other haplotype pair
     
-    min_gap=1e-10 # Minimum Map Gap between two loci
-    max_gap=0.05  # Maximum Map Gap between two locir
+    min_gap=1e-10 # Minimum Map Gap between two loci [Morgan]
+    max_gap=0.05  # Maximum Map Gap between two loci [Morgan]
 
     def calc_transition_rate(self, submat33=True, n=4):
         """Return Transition Rate Matrix [k,k] to exponate.
@@ -99,7 +99,8 @@ class FiveStateTransitions(Transitions):
         t: Origianl transition matrix (only first three entry important)
         n: Number of symmetric states
         """
-        print(f"Reference Number: {n}")
+        if self.output:
+            print(f"HMM State Number: {n}")
         # Initiate to -1 (for later Sanity Check if everything is filled)
         t_simple = -np.ones((3, 3), dtype="float")
         t_simple[:2, :2] = t[:2, :2]
@@ -128,7 +129,7 @@ class FiveStateTransitions(Transitions):
     
     def rmap_to_gaps(self, r_map=[], cm=False):
         """Return the recombination map gaps [in Morgan]
-        Input: Map Positions [l] units see cm below
+        Input: Map Positions [l] (units see cm parameter below)
         Return: Rec. Distance Array [l]
         cm: Whether input is in centimorgan or morgan
         min_cap: Minimum Map Gap between Loci to cap

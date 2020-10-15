@@ -77,7 +77,8 @@ class LoadSimulated(LoadData):
         htsl = np.loadtxt(haplo_path, delimiter="\t", dtype="float")
         p = np.loadtxt(p_path, delimiter="\t", dtype="float")
         if len(self.r_path)==0:
-            m = np.ones(len(p), dtype="float") * self.r_gap
+            #m = np.ones(len(p), dtype="float") * self.r_gap
+            m = np.arange(len(p), dtype="float") * self.r_gap # Load absolute Positions
         
         self.check_valid_data(htsl, p, m)
         return htsl, p, m

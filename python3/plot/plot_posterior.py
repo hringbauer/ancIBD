@@ -7,17 +7,19 @@ from matplotlib import rcParams
 rcParams['font.family'] = 'sans-serif'   # Set the default
 rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
 
-def plot_posterior(ax=0, morgan=[], post=[], state=0, figsize=(12,3), c="maroon", 
+def plot_posterior(ax=0, df_ibd=[], morgan=[], post=[], state=0, figsize=(12,3), c="maroon", 
                    xlim=[], ylim=[], ylabel="Posterior", xlabel="Position",
-                   lw=3, fs_l=12, show=True, title="", savepath=""):
-    """Plot Posterior [k,l] array"""
+                   lw=3, lw_ibd=10, c_ibd="slateblue", y_ibd=1.2, dpi=400, 
+                   fs_l=12, show=True, min_cm=4, title="", savepath=""):
+    """Plot Posterior [k,l] array. If morgan given, plot in centimorgan.
+    Can then also plot hapROH formatted IBD blocks (df_ibd)"""
     if ax==0:
         plt.figure(figsize=figsize)
         ax=plt.gca()
     if len(morgan)==0:
         morgan =np.arange(np.shape(post)[1])
-    ax.plot(morgan, np.exp(post[state,:]), color=c, lw=lw)
-    
+    ax.plot(morgan*100, np.exp(post[state,:]), color=c, lw=lw)
+    ax.set_yticks([0., 0.2, 0.4, 0.6, 0.8, 1.0])
     ### Do optional plotting
     if len(xlabel)>0:
         ax.set_xlabel(xlabel, fontsize=fs_l)
@@ -29,8 +31,12 @@ def plot_posterior(ax=0, morgan=[], post=[], state=0, figsize=(12,3), c="maroon"
         ax.set_ylim(ylim)
     if len(title)>0:
         ax.set_title(title, fontsize=fs_l)
+    if len(df_ibd)>0:
+        df_ibd = df_ibd[df_ibd["lengthM"] > min_cm/100]  # Filter out long enough calls
+        ax.hlines(y=[y_ibd]*len(df_ibd), xmin=100 * df_ibd["StartM"], xmax= 100 * df_ibd["EndM"], 
+                        colors=c_ibd, linewidth=lw_ibd)
     if len(savepath)>0:
-        plt.savefig(savepath, bbox_inches ='tight', pad_inches = 0, dpi=400)
+        plt.savefig(savepath, bbox_inches ='tight', pad_inches = 0, dpi=dpi)
         print(f"Saved to {savepath}")
     if show:
         plt.show()
@@ -56,7 +62,7 @@ def plot_posterior_panel(post=[], figsize=(12,9), c="maroon", c_hw="g",
 
     pos = [[1,0], [1,1], [2,0], [2,1]]
     axs= [fig.add_subplot(gs[i[0], i[1]]) for i in pos]
-    labels = ["0-0", "1-0", "1-0", "1-1"]
+    labels = ["0-0", "1-0", "0-1", "1-1"]
     labels = ["Posterior:" + l + " IBD" for l in labels]
     
     plot_posterior(ax, morgan=m, post=post, state=0, c=c_hw, 

@@ -117,8 +117,8 @@ class PostProcessing(object):
         
     def call_roh(self, r_map, post0):
         """Call ROH of Homozygosity from Posterior Data
-        bigger than cutoff
-        log: Whether Posterior is given in log space"""
+        bigger than cutoff.
+        post0: posterior in format [5,l], log space"""
         ibd_post = self.roh_posterior(post0[0,:])
         ibd = ibd_post > self.cutoff_post
 
