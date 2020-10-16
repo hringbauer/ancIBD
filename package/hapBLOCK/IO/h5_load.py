@@ -3,7 +3,7 @@ import pandas as pd
 import socket as socket
 import os as os
 import sys as sys
-
+import h5py
 
 
 def get_idx_iid(f,sample, unique=True):
@@ -71,3 +71,21 @@ def get_genos_pairs(f, sample1="SUC006", sample2="R26.SG",
     if not phased:
         gt1, gt2 = np.sum(gt1, axis=1), np.sum(gt2, axis=1)
     return gt1, gt2, m
+
+def opp_homos(g1, g2):
+    """Return opposing homozygotes"""
+    o1 = (g1 == 0) & (g2 == 2)
+    o2 = (g1 == 2) & (g2 == 0)
+    return (o1 | o2)
+
+def get_opp_homos_f(f_path="/n/groups/reich/hringbauer/git/hapBLOCK/data//hdf5/1240k_v43/ch",
+                    iid1="SUC006", iid2="R26.SG", ch=3,
+                    cutoff=0.99, output=True, exact=False):
+    """Return opposing homozygotes boolean array and map array at intersection with
+    GP>cutoff."""
+    load_path = f_path + str(ch) + ".h5"
+    with h5py.File(load_path, "r") as f:
+        g1, g2, m = get_genos_pairs(f, sample1=iid1, sample2=iid2, 
+                                cutoff=cutoff, output=output, exact=exact)
+        o_homos = opp_homos(g1, g2)
+    return o_homos, m
