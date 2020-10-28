@@ -13,7 +13,7 @@ import os as os
 class PostProcessing(object):
     """Class that can do PostProcessing of HAPSBURG output.
     (for one individual). Sometimes post-processing is done outside that,
-    Has Methods to save the output. Saves in standard hapROH format"""
+    Has Methods to save the output. Saves using standard hapROH format"""
     folder = ""          # The Folder to operate in.
     cutoff_post = 0.9  # Cutoff Probability for ROH State
     ibd_min_l = 0.04  # Cutoff [in Morgan]

@@ -1,4 +1,11 @@
+"""IBD X Caller, main function.
+Pulls together other modules and directs loading/running them.
+@author: Harald Ringbauer, 2020
+"""
+
+
 import os as os
+import sys as sys   # For piping the output
 import numpy as np
 
 from emission import load_emission_model
@@ -15,17 +22,21 @@ class HMM_Full(object):
     Contains most Parameters (but some of them like the output folders are decided
     by pre-processing subclass)"""
     folder_in = ""
+    folder_out = "" # For book keeping of the output path
+    
     l_model = "" # simulated
     e_model = "" # haploid_gl
     t_model = "" # standard
     p_model = ""
     h_model = "" # FiveState FiveStateFast
     post_model = ""
+    
     l_obj, t_obj, e_obj = 0, 0, 0 # Placeholder for the objects
     fwd_bwd = 0 # Placeholder Forward Backward Function
     submat33 = True
     in_val = 1e-4 # The initial prob. in each first/last IBD state
     output = True
+    
 
     def __init__(self, folder_in="", l_model="simulated", t_model="standard", 
                  e_model="haploid_gl", h_model = "FiveStateFast", p_model="hapROH",
@@ -74,3 +85,31 @@ class HMM_Full(object):
         Takes keyworded arguments"""
         for key, value in kwargs.items():
             setattr(self, key, value)
+            
+    ##################################################
+    ### Prepping output folder and piping output there
+    
+    def prepare_path(self, base_path, iid, ch, prefix_out="", logfile=False):
+        """Prepare the output path and pipe printing for one Individual.
+        Create Path if not already existing.
+        prefix_out: Optional additonal folder.
+        logfile: Whether to pipe output to log-file [Warning: it is a hack]"""  
+        if isinstance(iid, (list, np.ndarray)):
+            iid = "_".join(iid) # If multiple individual names given (for X IBD)
+        path_out = os.path.join(base_path, iid, "chr" + str(ch), prefix_out, "")
+        if not os.path.exists(path_out):
+                os.makedirs(path_out)
+        self.folder_out = path_out
+        
+        ### Activate LOG FILE output if given
+        if logfile == True:
+            path_log = os.path.join(path_out, "hmm_run_log.txt")
+            print(f"Set Output Log to path: {path_log}")
+            sys.stdout = open(path_log, 'w') 
+        return path_out
+    
+    def reset_print(self):
+        """Resets output to console."""
+        sys.stdout = sys.__stdout
+        if self.output:
+            print("Output was reset to standard console.")
