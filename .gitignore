@@ -12,6 +12,7 @@ output/
 figs/
 cluster/prep_hdf5_ali/logs/
 c/
+notebooks/simulate/logs/
 #
 # Distribution / packaging
 .Python
