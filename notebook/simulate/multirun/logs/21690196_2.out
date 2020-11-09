@@ -1,0 +1,1513 @@
+/n/groups/reich/hringbauer/git/hapBLOCK/output/simulated/TSI/ch3_12cm/
+
+Started Mosaic Object. Working Directory:
+/n/groups/reich/hringbauer/git/hapBLOCK/notebook/simulate/multirun
+
+Loaded 77652 variants
+Loaded 2504 individuals
+HDF5 loaded from /n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_1000G/chr3.hdf5
+(77652, 2504, 2)
+Loaded 2504 individual meta file.
+
+Doing Individual iid0A and iid0B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2703-0.3901 M
+Copying in Block: 0.2703-0.3901 M
+Copying in Block: 0.7973-0.9174 M
+Copying in Block: 0.7973-0.9174 M
+Copying in Block: 1.1607-1.2809 M
+Copying in Block: 1.1607-1.2809 M
+Copying in Block: 1.9372-2.0570 M
+Copying in Block: 1.9372-2.0570 M
+
+Doing Individual iid1A and iid1B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0623-0.1829 M
+Copying in Block: 0.0623-0.1829 M
+Copying in Block: 0.7458-0.8660 M
+Copying in Block: 0.7458-0.8660 M
+Copying in Block: 1.2111-1.3313 M
+Copying in Block: 1.2111-1.3313 M
+Copying in Block: 1.8865-2.0065 M
+Copying in Block: 1.8865-2.0065 M
+
+Doing Individual iid2A and iid2B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1987-0.3193 M
+Copying in Block: 0.1987-0.3193 M
+Copying in Block: 0.5709-0.6908 M
+Copying in Block: 0.5709-0.6908 M
+Copying in Block: 1.4121-1.5323 M
+Copying in Block: 1.4121-1.5323 M
+Copying in Block: 1.8008-1.9209 M
+Copying in Block: 1.8008-1.9209 M
+
+Doing Individual iid3A and iid3B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2376-0.3574 M
+Copying in Block: 0.2376-0.3574 M
+Copying in Block: 0.6806-0.8009 M
+Copying in Block: 0.6806-0.8009 M
+Copying in Block: 1.3202-1.4402 M
+Copying in Block: 1.3202-1.4402 M
+Copying in Block: 1.6895-1.8096 M
+Copying in Block: 1.6895-1.8096 M
+
+Doing Individual iid4A and iid4B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1299-0.2495 M
+Copying in Block: 0.1299-0.2495 M
+Copying in Block: 0.8140-0.9342 M
+Copying in Block: 0.8140-0.9342 M
+Copying in Block: 1.2615-1.3818 M
+Copying in Block: 1.2615-1.3818 M
+Copying in Block: 1.9061-2.0260 M
+Copying in Block: 1.9061-2.0260 M
+
+Doing Individual iid5A and iid5B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0525-0.1733 M
+Copying in Block: 0.0525-0.1733 M
+Copying in Block: 0.7963-0.9162 M
+Copying in Block: 0.7963-0.9162 M
+Copying in Block: 1.4046-1.5246 M
+Copying in Block: 1.4046-1.5246 M
+Copying in Block: 1.6803-1.8004 M
+Copying in Block: 1.6803-1.8004 M
+
+Doing Individual iid6A and iid6B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2750-0.3945 M
+Copying in Block: 0.2750-0.3945 M
+Copying in Block: 0.6743-0.7947 M
+Copying in Block: 0.6743-0.7947 M
+Copying in Block: 1.2010-1.3205 M
+Copying in Block: 1.2010-1.3205 M
+Copying in Block: 1.7505-1.8708 M
+Copying in Block: 1.7505-1.8708 M
+
+Doing Individual iid7A and iid7B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2490-0.3689 M
+Copying in Block: 0.2490-0.3689 M
+Copying in Block: 0.6195-0.7401 M
+Copying in Block: 0.6195-0.7401 M
+Copying in Block: 1.3043-1.4250 M
+Copying in Block: 1.3043-1.4250 M
+Copying in Block: 1.7926-1.9129 M
+Copying in Block: 1.7926-1.9129 M
+
+Doing Individual iid8A and iid8B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0574-0.1777 M
+Copying in Block: 0.0574-0.1777 M
+Copying in Block: 0.8238-0.9438 M
+Copying in Block: 0.8238-0.9438 M
+Copying in Block: 1.2124-1.3327 M
+Copying in Block: 1.2124-1.3327 M
+Copying in Block: 1.8065-1.9264 M
+Copying in Block: 1.8065-1.9264 M
+
+Doing Individual iid9A and iid9B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1444-0.2640 M
+Copying in Block: 0.1444-0.2640 M
+Copying in Block: 0.7218-0.8417 M
+Copying in Block: 0.7218-0.8417 M
+Copying in Block: 1.1679-1.2877 M
+Copying in Block: 1.1679-1.2877 M
+Copying in Block: 1.9547-2.0747 M
+Copying in Block: 1.9547-2.0747 M
+
+Doing Individual iid10A and iid10B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1245-0.2443 M
+Copying in Block: 0.1245-0.2443 M
+Copying in Block: 0.7200-0.8400 M
+Copying in Block: 0.7200-0.8400 M
+Copying in Block: 1.2651-1.3860 M
+Copying in Block: 1.2651-1.3860 M
+Copying in Block: 1.6761-1.7962 M
+Copying in Block: 1.6761-1.7962 M
+
+Doing Individual iid11A and iid11B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2412-0.3610 M
+Copying in Block: 0.2412-0.3610 M
+Copying in Block: 0.7370-0.8569 M
+Copying in Block: 0.7370-0.8569 M
+Copying in Block: 1.4195-1.5394 M
+Copying in Block: 1.4195-1.5394 M
+Copying in Block: 1.8401-1.9598 M
+Copying in Block: 1.8401-1.9598 M
+
+Doing Individual iid12A and iid12B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0557-0.1754 M
+Copying in Block: 0.0557-0.1754 M
+Copying in Block: 0.8359-0.9564 M
+Copying in Block: 0.8359-0.9564 M
+Copying in Block: 1.3565-1.4763 M
+Copying in Block: 1.3565-1.4763 M
+Copying in Block: 1.8168-1.9365 M
+Copying in Block: 1.8168-1.9365 M
+
+Doing Individual iid13A and iid13B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1159-0.2361 M
+Copying in Block: 0.1159-0.2361 M
+Copying in Block: 0.7208-0.8414 M
+Copying in Block: 0.7208-0.8414 M
+Copying in Block: 1.3245-1.4442 M
+Copying in Block: 1.3245-1.4442 M
+Copying in Block: 1.8833-2.0039 M
+Copying in Block: 1.8833-2.0039 M
+
+Doing Individual iid14A and iid14B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0388-0.1590 M
+Copying in Block: 0.0388-0.1590 M
+Copying in Block: 0.8546-0.9737 M
+Copying in Block: 0.8546-0.9737 M
+Copying in Block: 1.1560-1.2752 M
+Copying in Block: 1.1560-1.2752 M
+Copying in Block: 1.7295-1.8495 M
+Copying in Block: 1.7295-1.8495 M
+
+Doing Individual iid15A and iid15B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2623-0.3824 M
+Copying in Block: 0.2623-0.3824 M
+Copying in Block: 0.7062-0.8258 M
+Copying in Block: 0.7062-0.8258 M
+Copying in Block: 1.2560-1.3754 M
+Copying in Block: 1.2560-1.3754 M
+Copying in Block: 1.8780-1.9979 M
+Copying in Block: 1.8780-1.9979 M
+
+Doing Individual iid16A and iid16B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2263-0.3464 M
+Copying in Block: 0.2263-0.3464 M
+Copying in Block: 0.6026-0.7229 M
+Copying in Block: 0.6026-0.7229 M
+Copying in Block: 1.4237-1.5435 M
+Copying in Block: 1.4237-1.5435 M
+Copying in Block: 1.9630-2.0840 M
+Copying in Block: 1.9630-2.0840 M
+
+Doing Individual iid17A and iid17B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1015-0.2215 M
+Copying in Block: 0.1015-0.2215 M
+Copying in Block: 0.7863-0.9063 M
+Copying in Block: 0.7863-0.9063 M
+Copying in Block: 1.2801-1.4001 M
+Copying in Block: 1.2801-1.4001 M
+Copying in Block: 1.6808-1.8008 M
+Copying in Block: 1.6808-1.8008 M
+
+Doing Individual iid18A and iid18B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1025-0.2228 M
+Copying in Block: 0.1025-0.2228 M
+Copying in Block: 0.8306-0.9514 M
+Copying in Block: 0.8306-0.9514 M
+Copying in Block: 1.4237-1.5434 M
+Copying in Block: 1.4237-1.5434 M
+Copying in Block: 1.8699-1.9896 M
+Copying in Block: 1.8699-1.9896 M
+
+Doing Individual iid19A and iid19B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2827-0.4027 M
+Copying in Block: 0.2827-0.4027 M
+Copying in Block: 0.7401-0.8604 M
+Copying in Block: 0.7401-0.8604 M
+Copying in Block: 1.2842-1.4042 M
+Copying in Block: 1.2842-1.4042 M
+Copying in Block: 1.6879-1.8082 M
+Copying in Block: 1.6879-1.8082 M
+
+Doing Individual iid20A and iid20B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0743-0.1943 M
+Copying in Block: 0.0743-0.1943 M
+Copying in Block: 0.5603-0.6803 M
+Copying in Block: 0.5603-0.6803 M
+Copying in Block: 1.1499-1.2697 M
+Copying in Block: 1.1499-1.2697 M
+Copying in Block: 1.9497-2.0699 M
+Copying in Block: 1.9497-2.0699 M
+
+Doing Individual iid21A and iid21B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0095-0.1299 M
+Copying in Block: 0.0095-0.1299 M
+Copying in Block: 0.7576-0.8774 M
+Copying in Block: 0.7576-0.8774 M
+Copying in Block: 1.1449-1.2649 M
+Copying in Block: 1.1449-1.2649 M
+Copying in Block: 1.8286-1.9488 M
+Copying in Block: 1.8286-1.9488 M
+
+Doing Individual iid22A and iid22B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2368-0.3569 M
+Copying in Block: 0.2368-0.3569 M
+Copying in Block: 0.8397-0.9594 M
+Copying in Block: 0.8397-0.9594 M
+Copying in Block: 1.1188-1.2385 M
+Copying in Block: 1.1188-1.2385 M
+Copying in Block: 1.7760-1.8960 M
+Copying in Block: 1.7760-1.8960 M
+
+Doing Individual iid23A and iid23B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.3056-0.4255 M
+Copying in Block: 0.3056-0.4255 M
+Copying in Block: 0.8510-0.9717 M
+Copying in Block: 0.8510-0.9717 M
+Copying in Block: 1.2585-1.3785 M
+Copying in Block: 1.2585-1.3785 M
+Copying in Block: 1.9028-2.0232 M
+Copying in Block: 1.9028-2.0232 M
+
+Doing Individual iid24A and iid24B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2807-0.4007 M
+Copying in Block: 0.2807-0.4007 M
+Copying in Block: 0.5861-0.7062 M
+Copying in Block: 0.5861-0.7062 M
+Copying in Block: 1.2617-1.3818 M
+Copying in Block: 1.2617-1.3818 M
+Copying in Block: 1.7134-1.8335 M
+Copying in Block: 1.7134-1.8335 M
+
+Doing Individual iid25A and iid25B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2232-0.3432 M
+Copying in Block: 0.2232-0.3432 M
+Copying in Block: 0.8156-0.9355 M
+Copying in Block: 0.8156-0.9355 M
+Copying in Block: 1.2049-1.3253 M
+Copying in Block: 1.2049-1.3253 M
+Copying in Block: 1.9258-2.0456 M
+Copying in Block: 1.9258-2.0456 M
+
+Doing Individual iid26A and iid26B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0095-0.1299 M
+Copying in Block: 0.0095-0.1299 M
+Copying in Block: 0.6165-0.7364 M
+Copying in Block: 0.6165-0.7364 M
+Copying in Block: 1.2683-1.3882 M
+Copying in Block: 1.2683-1.3882 M
+Copying in Block: 1.8941-2.0141 M
+Copying in Block: 1.8941-2.0141 M
+
+Doing Individual iid27A and iid27B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1210-0.2410 M
+Copying in Block: 0.1210-0.2410 M
+Copying in Block: 0.7525-0.8720 M
+Copying in Block: 0.7525-0.8720 M
+Copying in Block: 1.1931-1.3130 M
+Copying in Block: 1.1931-1.3130 M
+Copying in Block: 1.6840-1.8040 M
+Copying in Block: 1.6840-1.8040 M
+
+Doing Individual iid28A and iid28B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0728-0.1929 M
+Copying in Block: 0.0728-0.1929 M
+Copying in Block: 0.8444-0.9636 M
+Copying in Block: 0.8444-0.9636 M
+Copying in Block: 1.3425-1.4625 M
+Copying in Block: 1.3425-1.4625 M
+Copying in Block: 1.8595-1.9796 M
+Copying in Block: 1.8595-1.9796 M
+
+Doing Individual iid29A and iid29B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.3018-0.4218 M
+Copying in Block: 0.3018-0.4218 M
+Copying in Block: 0.6922-0.8121 M
+Copying in Block: 0.6922-0.8121 M
+Copying in Block: 1.2707-1.3907 M
+Copying in Block: 1.2707-1.3907 M
+Copying in Block: 1.8816-2.0017 M
+Copying in Block: 1.8816-2.0017 M
+
+Doing Individual iid30A and iid30B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2521-0.3721 M
+Copying in Block: 0.2521-0.3721 M
+Copying in Block: 0.8737-0.9937 M
+Copying in Block: 0.8737-0.9937 M
+Copying in Block: 1.1420-1.2621 M
+Copying in Block: 1.1420-1.2621 M
+Copying in Block: 1.7084-1.8283 M
+Copying in Block: 1.7084-1.8283 M
+
+Doing Individual iid31A and iid31B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1580-0.2778 M
+Copying in Block: 0.1580-0.2778 M
+Copying in Block: 0.7525-0.8718 M
+Copying in Block: 0.7525-0.8718 M
+Copying in Block: 1.1317-1.2513 M
+Copying in Block: 1.1317-1.2513 M
+Copying in Block: 1.7258-1.8457 M
+Copying in Block: 1.7258-1.8457 M
+
+Doing Individual iid32A and iid32B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0289-0.1489 M
+Copying in Block: 0.0289-0.1489 M
+Copying in Block: 0.7611-0.8806 M
+Copying in Block: 0.7611-0.8806 M
+Copying in Block: 1.3432-1.4632 M
+Copying in Block: 1.3432-1.4632 M
+Copying in Block: 1.7126-1.8326 M
+Copying in Block: 1.7126-1.8326 M
+
+Doing Individual iid33A and iid33B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1887-0.3087 M
+Copying in Block: 0.1887-0.3087 M
+Copying in Block: 0.5891-0.7090 M
+Copying in Block: 0.5891-0.7090 M
+Copying in Block: 1.2456-1.3656 M
+Copying in Block: 1.2456-1.3656 M
+Copying in Block: 1.8641-1.9842 M
+Copying in Block: 1.8641-1.9842 M
+
+Doing Individual iid34A and iid34B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0730-0.1929 M
+Copying in Block: 0.0730-0.1929 M
+Copying in Block: 0.7623-0.8823 M
+Copying in Block: 0.7623-0.8823 M
+Copying in Block: 1.2208-1.3410 M
+Copying in Block: 1.2208-1.3410 M
+Copying in Block: 1.8142-1.9342 M
+Copying in Block: 1.8142-1.9342 M
+
+Doing Individual iid35A and iid35B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1305-0.2503 M
+Copying in Block: 0.1305-0.2503 M
+Copying in Block: 0.6229-0.7429 M
+Copying in Block: 0.6229-0.7429 M
+Copying in Block: 1.3690-1.4890 M
+Copying in Block: 1.3690-1.4890 M
+Copying in Block: 1.6794-1.7994 M
+Copying in Block: 1.6794-1.7994 M
+
+Doing Individual iid36A and iid36B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0337-0.1537 M
+Copying in Block: 0.0337-0.1537 M
+Copying in Block: 0.6349-0.7551 M
+Copying in Block: 0.6349-0.7551 M
+Copying in Block: 1.1481-1.2683 M
+Copying in Block: 1.1481-1.2683 M
+Copying in Block: 1.7785-1.8987 M
+Copying in Block: 1.7785-1.8987 M
+
+Doing Individual iid37A and iid37B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1336-0.2536 M
+Copying in Block: 0.1336-0.2536 M
+Copying in Block: 0.6671-0.7867 M
+Copying in Block: 0.6671-0.7867 M
+Copying in Block: 1.1337-1.2541 M
+Copying in Block: 1.1337-1.2541 M
+Copying in Block: 1.8386-1.9585 M
+Copying in Block: 1.8386-1.9585 M
+
+Doing Individual iid38A and iid38B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0331-0.1537 M
+Copying in Block: 0.0331-0.1537 M
+Copying in Block: 0.8305-0.9514 M
+Copying in Block: 0.8305-0.9514 M
+Copying in Block: 1.1849-1.3048 M
+Copying in Block: 1.1849-1.3048 M
+Copying in Block: 1.7418-1.8618 M
+Copying in Block: 1.7418-1.8618 M
+
+Doing Individual iid39A and iid39B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1058-0.2258 M
+Copying in Block: 0.1058-0.2258 M
+Copying in Block: 0.6070-0.7270 M
+Copying in Block: 0.6070-0.7270 M
+Copying in Block: 1.2477-1.3677 M
+Copying in Block: 1.2477-1.3677 M
+Copying in Block: 1.7366-1.8580 M
+Copying in Block: 1.7366-1.8580 M
+
+Doing Individual iid40A and iid40B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2223-0.3422 M
+Copying in Block: 0.2223-0.3422 M
+Copying in Block: 0.7551-0.8746 M
+Copying in Block: 0.7551-0.8746 M
+Copying in Block: 1.2089-1.3289 M
+Copying in Block: 1.2089-1.3289 M
+Copying in Block: 1.9636-2.0840 M
+Copying in Block: 1.9636-2.0840 M
+
+Doing Individual iid41A and iid41B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2424-0.3630 M
+Copying in Block: 0.2424-0.3630 M
+Copying in Block: 0.5806-0.7005 M
+Copying in Block: 0.5806-0.7005 M
+Copying in Block: 1.2817-1.4014 M
+Copying in Block: 1.2817-1.4014 M
+Copying in Block: 1.8654-1.9852 M
+Copying in Block: 1.8654-1.9852 M
+
+Doing Individual iid42A and iid42B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1754-0.2961 M
+Copying in Block: 0.1754-0.2961 M
+Copying in Block: 0.6423-0.7619 M
+Copying in Block: 0.6423-0.7619 M
+Copying in Block: 1.1295-1.2494 M
+Copying in Block: 1.1295-1.2494 M
+Copying in Block: 1.9021-2.0216 M
+Copying in Block: 1.9021-2.0216 M
+
+Doing Individual iid43A and iid43B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0447-0.1647 M
+Copying in Block: 0.0447-0.1647 M
+Copying in Block: 0.8238-0.9436 M
+Copying in Block: 0.8238-0.9436 M
+Copying in Block: 1.2804-1.4004 M
+Copying in Block: 1.2804-1.4004 M
+Copying in Block: 1.9304-2.0504 M
+Copying in Block: 1.9304-2.0504 M
+
+Doing Individual iid44A and iid44B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0287-0.1488 M
+Copying in Block: 0.0287-0.1488 M
+Copying in Block: 0.7967-0.9167 M
+Copying in Block: 0.7967-0.9167 M
+Copying in Block: 1.3170-1.4363 M
+Copying in Block: 1.3170-1.4363 M
+Copying in Block: 1.6977-1.8185 M
+Copying in Block: 1.6977-1.8185 M
+
+Doing Individual iid45A and iid45B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2109-0.3309 M
+Copying in Block: 0.2109-0.3309 M
+Copying in Block: 0.8027-0.9227 M
+Copying in Block: 0.8027-0.9227 M
+Copying in Block: 1.2513-1.3713 M
+Copying in Block: 1.2513-1.3713 M
+Copying in Block: 1.6886-1.8083 M
+Copying in Block: 1.6886-1.8083 M
+
+Doing Individual iid46A and iid46B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0379-0.1572 M
+Copying in Block: 0.0379-0.1572 M
+Copying in Block: 0.5624-0.6820 M
+Copying in Block: 0.5624-0.6820 M
+Copying in Block: 1.4103-1.5304 M
+Copying in Block: 1.4103-1.5304 M
+Copying in Block: 1.7395-1.8593 M
+Copying in Block: 1.7395-1.8593 M
+
+Doing Individual iid47A and iid47B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2594-0.3796 M
+Copying in Block: 0.2594-0.3796 M
+Copying in Block: 0.6352-0.7551 M
+Copying in Block: 0.6352-0.7551 M
+Copying in Block: 1.1986-1.3187 M
+Copying in Block: 1.1986-1.3187 M
+Copying in Block: 1.7516-1.8716 M
+Copying in Block: 1.7516-1.8716 M
+
+Doing Individual iid48A and iid48B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1854-0.3056 M
+Copying in Block: 0.1854-0.3056 M
+Copying in Block: 0.8501-0.9701 M
+Copying in Block: 0.8501-0.9701 M
+Copying in Block: 1.3245-1.4444 M
+Copying in Block: 1.3245-1.4444 M
+Copying in Block: 1.8954-2.0153 M
+Copying in Block: 1.8954-2.0153 M
+
+Doing Individual iid49A and iid49B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1481-0.2682 M
+Copying in Block: 0.1481-0.2682 M
+Copying in Block: 0.8433-0.9633 M
+Copying in Block: 0.8433-0.9633 M
+Copying in Block: 1.2457-1.3662 M
+Copying in Block: 1.2457-1.3662 M
+Copying in Block: 1.9598-2.0793 M
+Copying in Block: 1.9598-2.0793 M
+
+Doing Individual iid50A and iid50B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1078-0.2273 M
+Copying in Block: 0.1078-0.2273 M
+Copying in Block: 0.6999-0.8200 M
+Copying in Block: 0.6999-0.8200 M
+Copying in Block: 1.3421-1.4620 M
+Copying in Block: 1.3421-1.4620 M
+Copying in Block: 1.7470-1.8673 M
+Copying in Block: 1.7470-1.8673 M
+
+Doing Individual iid51A and iid51B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0265-0.1463 M
+Copying in Block: 0.0265-0.1463 M
+Copying in Block: 0.6866-0.8062 M
+Copying in Block: 0.6866-0.8062 M
+Copying in Block: 1.3570-1.4768 M
+Copying in Block: 1.3570-1.4768 M
+Copying in Block: 1.8708-1.9905 M
+Copying in Block: 1.8708-1.9905 M
+
+Doing Individual iid52A and iid52B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0193-0.1392 M
+Copying in Block: 0.0193-0.1392 M
+Copying in Block: 0.5739-0.6937 M
+Copying in Block: 0.5739-0.6937 M
+Copying in Block: 1.4156-1.5359 M
+Copying in Block: 1.4156-1.5359 M
+Copying in Block: 1.7761-1.8961 M
+Copying in Block: 1.7761-1.8961 M
+
+Doing Individual iid53A and iid53B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2863-0.4066 M
+Copying in Block: 0.2863-0.4066 M
+Copying in Block: 0.5637-0.6840 M
+Copying in Block: 0.5637-0.6840 M
+Copying in Block: 1.2315-1.3518 M
+Copying in Block: 1.2315-1.3518 M
+Copying in Block: 1.9360-2.0560 M
+Copying in Block: 1.9360-2.0560 M
+
+Doing Individual iid54A and iid54B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2602-0.3796 M
+Copying in Block: 0.2602-0.3796 M
+Copying in Block: 0.6176-0.7376 M
+Copying in Block: 0.6176-0.7376 M
+Copying in Block: 1.3375-1.4565 M
+Copying in Block: 1.3375-1.4565 M
+Copying in Block: 1.7650-1.8851 M
+Copying in Block: 1.7650-1.8851 M
+
+Doing Individual iid55A and iid55B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2065-0.3258 M
+Copying in Block: 0.2065-0.3258 M
+Copying in Block: 0.8726-0.9924 M
+Copying in Block: 0.8726-0.9924 M
+Copying in Block: 1.3190-1.4394 M
+Copying in Block: 1.3190-1.4394 M
+Copying in Block: 1.7179-1.8381 M
+Copying in Block: 1.7179-1.8381 M
+
+Doing Individual iid56A and iid56B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2065-0.3265 M
+Copying in Block: 0.2065-0.3265 M
+Copying in Block: 0.5692-0.6888 M
+Copying in Block: 0.5692-0.6888 M
+Copying in Block: 1.1799-1.3001 M
+Copying in Block: 1.1799-1.3001 M
+Copying in Block: 1.6959-1.8156 M
+Copying in Block: 1.6959-1.8156 M
+
+Doing Individual iid57A and iid57B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1802-0.3002 M
+Copying in Block: 0.1802-0.3002 M
+Copying in Block: 0.5831-0.7024 M
+Copying in Block: 0.5831-0.7024 M
+Copying in Block: 1.3277-1.4475 M
+Copying in Block: 1.3277-1.4475 M
+Copying in Block: 1.8881-2.0084 M
+Copying in Block: 1.8881-2.0084 M
+
+Doing Individual iid58A and iid58B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1123-0.2318 M
+Copying in Block: 0.1123-0.2318 M
+Copying in Block: 0.6003-0.7200 M
+Copying in Block: 0.6003-0.7200 M
+Copying in Block: 1.4128-1.5329 M
+Copying in Block: 1.4128-1.5329 M
+Copying in Block: 1.9772-2.0977 M
+Copying in Block: 1.9772-2.0977 M
+
+Doing Individual iid59A and iid59B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0588-0.1789 M
+Copying in Block: 0.0588-0.1789 M
+Copying in Block: 0.7155-0.8355 M
+Copying in Block: 0.7155-0.8355 M
+Copying in Block: 1.3778-1.4969 M
+Copying in Block: 1.3778-1.4969 M
+Copying in Block: 1.8274-1.9466 M
+Copying in Block: 1.8274-1.9466 M
+
+Doing Individual iid60A and iid60B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0942-0.2146 M
+Copying in Block: 0.0942-0.2146 M
+Copying in Block: 0.8467-0.9667 M
+Copying in Block: 0.8467-0.9667 M
+Copying in Block: 1.4117-1.5318 M
+Copying in Block: 1.4117-1.5318 M
+Copying in Block: 1.8936-2.0138 M
+Copying in Block: 1.8936-2.0138 M
+
+Doing Individual iid61A and iid61B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0577-0.1777 M
+Copying in Block: 0.0577-0.1777 M
+Copying in Block: 0.8564-0.9762 M
+Copying in Block: 0.8564-0.9762 M
+Copying in Block: 1.3778-1.4975 M
+Copying in Block: 1.3778-1.4975 M
+Copying in Block: 1.6853-1.8065 M
+Copying in Block: 1.6853-1.8065 M
+
+Doing Individual iid62A and iid62B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0811-0.2013 M
+Copying in Block: 0.0811-0.2013 M
+Copying in Block: 0.8577-0.9776 M
+Copying in Block: 0.8577-0.9776 M
+Copying in Block: 1.3234-1.4433 M
+Copying in Block: 1.3234-1.4433 M
+Copying in Block: 1.8065-1.9258 M
+Copying in Block: 1.8065-1.9258 M
+
+Doing Individual iid63A and iid63B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1814-0.3014 M
+Copying in Block: 0.1814-0.3014 M
+Copying in Block: 0.7191-0.8393 M
+Copying in Block: 0.7191-0.8393 M
+Copying in Block: 1.3848-1.5050 M
+Copying in Block: 1.3848-1.5050 M
+Copying in Block: 1.8020-1.9216 M
+Copying in Block: 1.8020-1.9216 M
+
+Doing Individual iid64A and iid64B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2929-0.4129 M
+Copying in Block: 0.2929-0.4129 M
+Copying in Block: 0.5728-0.6928 M
+Copying in Block: 0.5728-0.6928 M
+Copying in Block: 1.2889-1.4089 M
+Copying in Block: 1.2889-1.4089 M
+Copying in Block: 1.7751-1.8954 M
+Copying in Block: 1.7751-1.8954 M
+
+Doing Individual iid65A and iid65B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2609-0.3809 M
+Copying in Block: 0.2609-0.3809 M
+Copying in Block: 0.6875-0.8076 M
+Copying in Block: 0.6875-0.8076 M
+Copying in Block: 1.2673-1.3869 M
+Copying in Block: 1.2673-1.3869 M
+Copying in Block: 1.7869-1.9062 M
+Copying in Block: 1.7869-1.9062 M
+
+Doing Individual iid66A and iid66B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2065-0.3256 M
+Copying in Block: 0.2065-0.3256 M
+Copying in Block: 0.6591-0.7792 M
+Copying in Block: 0.6591-0.7792 M
+Copying in Block: 1.3706-1.4904 M
+Copying in Block: 1.3706-1.4904 M
+Copying in Block: 1.7114-1.8317 M
+Copying in Block: 1.7114-1.8317 M
+
+Doing Individual iid67A and iid67B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0976-0.2183 M
+Copying in Block: 0.0976-0.2183 M
+Copying in Block: 0.7037-0.8238 M
+Copying in Block: 0.7037-0.8238 M
+Copying in Block: 1.2080-1.3282 M
+Copying in Block: 1.2080-1.3282 M
+Copying in Block: 1.8893-2.0089 M
+Copying in Block: 1.8893-2.0089 M
+
+Doing Individual iid68A and iid68B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0751-0.1950 M
+Copying in Block: 0.0751-0.1950 M
+Copying in Block: 0.8365-0.9569 M
+Copying in Block: 0.8365-0.9569 M
+Copying in Block: 1.4225-1.5427 M
+Copying in Block: 1.4225-1.5427 M
+Copying in Block: 1.9730-2.0932 M
+Copying in Block: 1.9730-2.0932 M
+
+Doing Individual iid69A and iid69B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0913-0.2113 M
+Copying in Block: 0.0913-0.2113 M
+Copying in Block: 0.5806-0.7005 M
+Copying in Block: 0.5806-0.7005 M
+Copying in Block: 1.3221-1.4421 M
+Copying in Block: 1.3221-1.4421 M
+Copying in Block: 1.8107-1.9301 M
+Copying in Block: 1.8107-1.9301 M
+
+Doing Individual iid70A and iid70B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0913-0.2113 M
+Copying in Block: 0.0913-0.2113 M
+Copying in Block: 0.6576-0.7773 M
+Copying in Block: 0.6576-0.7773 M
+Copying in Block: 1.3684-1.4882 M
+Copying in Block: 1.3684-1.4882 M
+Copying in Block: 1.7247-1.8454 M
+Copying in Block: 1.7247-1.8454 M
+
+Doing Individual iid71A and iid71B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2750-0.3944 M
+Copying in Block: 0.2750-0.3944 M
+Copying in Block: 0.7456-0.8657 M
+Copying in Block: 0.7456-0.8657 M
+Copying in Block: 1.3293-1.4491 M
+Copying in Block: 1.3293-1.4491 M
+Copying in Block: 1.7849-1.9048 M
+Copying in Block: 1.7849-1.9048 M
+
+Doing Individual iid72A and iid72B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0757-0.1968 M
+Copying in Block: 0.0757-0.1968 M
+Copying in Block: 0.7551-0.8751 M
+Copying in Block: 0.7551-0.8751 M
+Copying in Block: 1.3042-1.4250 M
+Copying in Block: 1.3042-1.4250 M
+Copying in Block: 1.8133-1.9333 M
+Copying in Block: 1.8133-1.9333 M
+
+Doing Individual iid73A and iid73B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2766-0.3966 M
+Copying in Block: 0.2766-0.3966 M
+Copying in Block: 0.6576-0.7773 M
+Copying in Block: 0.6576-0.7773 M
+Copying in Block: 1.1858-1.3055 M
+Copying in Block: 1.1858-1.3055 M
+Copying in Block: 1.7550-1.8750 M
+Copying in Block: 1.7550-1.8750 M
+
+Doing Individual iid74A and iid74B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2777-0.3979 M
+Copying in Block: 0.2777-0.3979 M
+Copying in Block: 0.8247-0.9447 M
+Copying in Block: 0.8247-0.9447 M
+Copying in Block: 1.1416-1.2615 M
+Copying in Block: 1.1416-1.2615 M
+Copying in Block: 1.7074-1.8274 M
+Copying in Block: 1.7074-1.8274 M
+
+Doing Individual iid75A and iid75B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1814-0.3014 M
+Copying in Block: 0.1814-0.3014 M
+Copying in Block: 0.8056-0.9252 M
+Copying in Block: 0.8056-0.9252 M
+Copying in Block: 1.1653-1.2855 M
+Copying in Block: 1.1653-1.2855 M
+Copying in Block: 1.7218-1.8431 M
+Copying in Block: 1.7218-1.8431 M
+
+Doing Individual iid76A and iid76B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1968-0.3165 M
+Copying in Block: 0.1968-0.3165 M
+Copying in Block: 0.8091-0.9291 M
+Copying in Block: 0.8091-0.9291 M
+Copying in Block: 1.3768-1.4966 M
+Copying in Block: 1.3768-1.4966 M
+Copying in Block: 1.7191-1.8401 M
+Copying in Block: 1.7191-1.8401 M
+
+Doing Individual iid77A and iid77B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2733-0.3932 M
+Copying in Block: 0.2733-0.3932 M
+Copying in Block: 0.5675-0.6875 M
+Copying in Block: 0.5675-0.6875 M
+Copying in Block: 1.4119-1.5318 M
+Copying in Block: 1.4119-1.5318 M
+Copying in Block: 1.7114-1.8317 M
+Copying in Block: 1.7114-1.8317 M
+
+Doing Individual iid78A and iid78B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1273-0.2473 M
+Copying in Block: 0.1273-0.2473 M
+Copying in Block: 0.7841-0.9041 M
+Copying in Block: 0.7841-0.9041 M
+Copying in Block: 1.2208-1.3402 M
+Copying in Block: 1.2208-1.3402 M
+Copying in Block: 1.7188-1.8388 M
+Copying in Block: 1.7188-1.8388 M
+
+Doing Individual iid79A and iid79B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0439-0.1640 M
+Copying in Block: 0.0439-0.1640 M
+Copying in Block: 0.7909-0.9109 M
+Copying in Block: 0.7909-0.9109 M
+Copying in Block: 1.3296-1.4496 M
+Copying in Block: 1.3296-1.4496 M
+Copying in Block: 1.7711-1.8911 M
+Copying in Block: 1.7711-1.8911 M
+
+Doing Individual iid80A and iid80B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0597-0.1801 M
+Copying in Block: 0.0597-0.1801 M
+Copying in Block: 0.6491-0.7691 M
+Copying in Block: 0.6491-0.7691 M
+Copying in Block: 1.1754-1.2953 M
+Copying in Block: 1.1754-1.2953 M
+Copying in Block: 1.8168-1.9372 M
+Copying in Block: 1.8168-1.9372 M
+
+Doing Individual iid81A and iid81B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1968-0.3161 M
+Copying in Block: 0.1968-0.3161 M
+Copying in Block: 0.6319-0.7525 M
+Copying in Block: 0.6319-0.7525 M
+Copying in Block: 1.3897-1.5086 M
+Copying in Block: 1.3897-1.5086 M
+Copying in Block: 1.6836-1.8036 M
+Copying in Block: 1.6836-1.8036 M
+
+Doing Individual iid82A and iid82B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0987-0.2183 M
+Copying in Block: 0.0987-0.2183 M
+Copying in Block: 0.6099-0.7298 M
+Copying in Block: 0.6099-0.7298 M
+Copying in Block: 1.3553-1.4755 M
+Copying in Block: 1.3553-1.4755 M
+Copying in Block: 1.8681-1.9882 M
+Copying in Block: 1.8681-1.9882 M
+
+Doing Individual iid83A and iid83B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1801-0.2994 M
+Copying in Block: 0.1801-0.2994 M
+Copying in Block: 0.7182-0.8390 M
+Copying in Block: 0.7182-0.8390 M
+Copying in Block: 1.1844-1.3043 M
+Copying in Block: 1.1844-1.3043 M
+Copying in Block: 1.9612-2.0813 M
+Copying in Block: 1.9612-2.0813 M
+
+Doing Individual iid84A and iid84B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1435-0.2636 M
+Copying in Block: 0.1435-0.2636 M
+Copying in Block: 0.6840-0.8040 M
+Copying in Block: 0.6840-0.8040 M
+Copying in Block: 1.4046-1.5246 M
+Copying in Block: 1.4046-1.5246 M
+Copying in Block: 1.8274-1.9475 M
+Copying in Block: 1.8274-1.9475 M
+
+Doing Individual iid85A and iid85B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1720-0.2929 M
+Copying in Block: 0.1720-0.2929 M
+Copying in Block: 0.8226-0.9425 M
+Copying in Block: 0.8226-0.9425 M
+Copying in Block: 1.3356-1.4559 M
+Copying in Block: 1.3356-1.4559 M
+Copying in Block: 1.9033-2.0232 M
+Copying in Block: 1.9033-2.0232 M
+
+Doing Individual iid86A and iid86B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2708-0.3920 M
+Copying in Block: 0.2708-0.3920 M
+Copying in Block: 0.5788-0.6999 M
+Copying in Block: 0.5788-0.6999 M
+Copying in Block: 1.2073-1.3274 M
+Copying in Block: 1.2073-1.3274 M
+Copying in Block: 1.7678-1.8876 M
+Copying in Block: 1.7678-1.8876 M
+
+Doing Individual iid87A and iid87B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2398-0.3596 M
+Copying in Block: 0.2398-0.3596 M
+Copying in Block: 0.6537-0.7740 M
+Copying in Block: 0.6537-0.7740 M
+Copying in Block: 1.4215-1.5403 M
+Copying in Block: 1.4215-1.5403 M
+Copying in Block: 1.8526-1.9723 M
+Copying in Block: 1.8526-1.9723 M
+
+Doing Individual iid88A and iid88B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2518-0.3720 M
+Copying in Block: 0.2518-0.3720 M
+Copying in Block: 0.5867-0.7070 M
+Copying in Block: 0.5867-0.7070 M
+Copying in Block: 1.3140-1.4333 M
+Copying in Block: 1.3140-1.4333 M
+Copying in Block: 1.7849-1.9044 M
+Copying in Block: 1.7849-1.9044 M
+
+Doing Individual iid89A and iid89B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1003-0.2215 M
+Copying in Block: 0.1003-0.2215 M
+Copying in Block: 0.6791-0.7991 M
+Copying in Block: 0.6791-0.7991 M
+Copying in Block: 1.2889-1.4088 M
+Copying in Block: 1.2889-1.4088 M
+Copying in Block: 1.9268-2.0468 M
+Copying in Block: 1.9268-2.0468 M
+
+Doing Individual iid90A and iid90B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2843-0.4043 M
+Copying in Block: 0.2843-0.4043 M
+Copying in Block: 0.5925-0.7125 M
+Copying in Block: 0.5925-0.7125 M
+Copying in Block: 1.3821-1.5021 M
+Copying in Block: 1.3821-1.5021 M
+Copying in Block: 1.8816-2.0017 M
+Copying in Block: 1.8816-2.0017 M
+
+Doing Individual iid91A and iid91B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2471-0.3676 M
+Copying in Block: 0.2471-0.3676 M
+Copying in Block: 0.6489-0.7689 M
+Copying in Block: 0.6489-0.7689 M
+Copying in Block: 1.2571-1.3778 M
+Copying in Block: 1.2571-1.3778 M
+Copying in Block: 1.7936-1.9139 M
+Copying in Block: 1.7936-1.9139 M
+
+Doing Individual iid92A and iid92B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2078-0.3282 M
+Copying in Block: 0.2078-0.3282 M
+Copying in Block: 0.8637-0.9838 M
+Copying in Block: 0.8637-0.9838 M
+Copying in Block: 1.3202-1.4401 M
+Copying in Block: 1.3202-1.4401 M
+Copying in Block: 1.6794-1.7988 M
+Copying in Block: 1.6794-1.7988 M
+
+Doing Individual iid93A and iid93B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0125-0.1325 M
+Copying in Block: 0.0125-0.1325 M
+Copying in Block: 0.6026-0.7229 M
+Copying in Block: 0.6026-0.7229 M
+Copying in Block: 1.1545-1.2752 M
+Copying in Block: 1.1545-1.2752 M
+Copying in Block: 1.8382-1.9584 M
+Copying in Block: 1.8382-1.9584 M
+
+Doing Individual iid94A and iid94B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0697-0.1899 M
+Copying in Block: 0.0697-0.1899 M
+Copying in Block: 0.5739-0.6937 M
+Copying in Block: 0.5739-0.6937 M
+Copying in Block: 1.3305-1.4505 M
+Copying in Block: 1.3305-1.4505 M
+Copying in Block: 1.9279-2.0489 M
+Copying in Block: 1.9279-2.0489 M
+
+Doing Individual iid95A and iid95B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1382-0.2583 M
+Copying in Block: 0.1382-0.2583 M
+Copying in Block: 0.8614-0.9817 M
+Copying in Block: 0.8614-0.9817 M
+Copying in Block: 1.1903-1.3104 M
+Copying in Block: 1.1903-1.3104 M
+Copying in Block: 1.8065-1.9258 M
+Copying in Block: 1.8065-1.9258 M
+
+Doing Individual iid96A and iid96B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.1356-0.2553 M
+Copying in Block: 0.1356-0.2553 M
+Copying in Block: 0.5891-0.7090 M
+Copying in Block: 0.5891-0.7090 M
+Copying in Block: 1.2169-1.3375 M
+Copying in Block: 1.2169-1.3375 M
+Copying in Block: 1.7673-1.8874 M
+Copying in Block: 1.7673-1.8874 M
+
+Doing Individual iid97A and iid97B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2769-0.3969 M
+Copying in Block: 0.2769-0.3969 M
+Copying in Block: 0.6187-0.7386 M
+Copying in Block: 0.6187-0.7386 M
+Copying in Block: 1.3684-1.4883 M
+Copying in Block: 1.3684-1.4883 M
+Copying in Block: 1.9783-2.0984 M
+Copying in Block: 1.9783-2.0984 M
+
+Doing Individual iid98A and iid98B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.0577-0.1778 M
+Copying in Block: 0.0577-0.1778 M
+Copying in Block: 0.7936-0.9126 M
+Copying in Block: 0.7936-0.9126 M
+Copying in Block: 1.2476-1.3674 M
+Copying in Block: 1.2476-1.3674 M
+Copying in Block: 1.7160-1.8360 M
+Copying in Block: 1.7160-1.8360 M
+
+Doing Individual iid99A and iid99B
+Found 107 Individuals in ['TSI']
+Setting new Genotypes...
+Finished chunked Genotypes
+Setting new Genotypes...
+Finished chunked Genotypes
+Copying in Block: 0.2163-0.3363 M
+Copying in Block: 0.2163-0.3363 M
+Copying in Block: 0.7319-0.8514 M
+Copying in Block: 0.7319-0.8514 M
+Copying in Block: 1.3195-1.4395 M
+Copying in Block: 1.3195-1.4395 M
+Copying in Block: 1.8441-1.9641 M
+Copying in Block: 1.8441-1.9641 M
+Finished creating genotypes. Dimension: (77652, 200, 2)
+Successfully saved to /n/groups/reich/hringbauer/git/hapBLOCK/output/simulated/TSI/ch3_12cm/ibd_info.csv
+Successfully saved 200 individuals to: /n/groups/reich/hringbauer/git/hapBLOCK/output/simulated/TSI/ch3_12cm/sim_ch3.h5

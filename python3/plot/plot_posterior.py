@@ -7,14 +7,16 @@ from matplotlib import rcParams
 rcParams['font.family'] = 'sans-serif'   # Set the default
 rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
 
-def plot_posterior(ax=0, df_ibd=[], morgan=[], post=[], het=[], het_m=[], state=0, figsize=(12,3), 
-                   xlim=[], ylim=[], ylabel="Posterior", xlabel="Position",
-                   c="maroon", het_c="gray", ms=1,
+def plot_posterior(ax=0, morgan=[], post=[], het=[], het_m=[], 
+                   df_ibd=[], df_truth=[], state=0, figsize=(12,3), 
+                   xlim=[], ylim=[-0.08,1.27], ylabel="Posterior", xlabel="Position",
+                   c="maroon", het_c="gray", c_truth="green", ms=1,
                    lw=3, lw_ibd=10, c_ibd="slateblue", y_ibd=1.2, dpi=400, 
                    fs_l=12, show=True, min_cm=4, title="", savepath=""):
     """Plot Posterior [k,l] array. If morgan given, plot in centimorgan.
     Can then also plot hapROH formatted IBD blocks (df_ibd).
-    If het is given [array boolean], plot het and their map"""
+    And plot ground truth hapROH formatted IBD blocks (df_truth).
+    If het is given [array boolean], plot het using het_m coordinates"""
     if ax==0:
         plt.figure(figsize=figsize)
         ax=plt.gca()
@@ -24,8 +26,6 @@ def plot_posterior(ax=0, df_ibd=[], morgan=[], post=[], het=[], het_m=[], state=
     ax.set_yticks([0., 0.2, 0.4, 0.6, 0.8, 1.0])
     ### Do optional plotting
     # Hets
-    if len(het)>0:
-        plot_hets(ax,het_m, het, ms=ms, het_c=het_c)
     if len(xlabel)>0:
         ax.set_xlabel(xlabel, fontsize=fs_l)
     if len(ylabel)>0:
@@ -34,12 +34,19 @@ def plot_posterior(ax=0, df_ibd=[], morgan=[], post=[], het=[], het_m=[], state=
         ax.set_xlim(xlim)
     if len(ylim)>0:
         ax.set_ylim(ylim)
+    if len(het)>0:
+        plot_hets(ax, het_m, het, ms=ms, het_c=het_c, fs_l=fs_l, ylim=ylim)
     if len(title)>0:
         ax.set_title(title, fontsize=fs_l)
     if len(df_ibd)>0:
         df_ibd = df_ibd[df_ibd["lengthM"] > min_cm/100]  # Filter out long enough calls
         ax.hlines(y=[y_ibd]*len(df_ibd), xmin=100 * df_ibd["StartM"], xmax= 100 * df_ibd["EndM"], 
                         colors=c_ibd, linewidth=lw_ibd)
+    if len(df_truth)>0:  # Plot Ground truth dataframe
+        ### Plot them
+        plt.hlines(y=[1.12]*len(df_truth), xmin=100 * df_truth["IBD_Begin"], 
+                   xmax=100 * df_truth["IBD_End"], colors=c_truth, linewidth=lw_ibd)
+        
     if len(savepath)>0:
         plt.savefig(savepath, bbox_inches ='tight', pad_inches = 0, dpi=dpi)
         print(f"Saved to {savepath}")
@@ -48,19 +55,22 @@ def plot_posterior(ax=0, df_ibd=[], morgan=[], post=[], het=[], het_m=[], state=
     else: 
         return ax
     
-def plot_hets(ax, het_m, het, alpha=0.3, ms=1, het_c="slateblue"):
+def plot_hets(ax, het_m, het, alpha=0.3, ms=1, het_c="slateblue",
+              ylabel = "Opp. Homozygotes (no/yes)", fs_l=12, ylim=[]):
     """Plot Heterozygote Markers onto Axis"""
-    ax.plot(het_m*100, (het * 1.1 - 0.05), "o", ms=ms, alpha=alpha, zorder=0, color=het_c)
     ax2 = ax.twinx()
-    ax2.set_ylim(ax.get_ylim())
-    ax2.set_yticks(np.array([1,0]) * 1.1 - 0.05)
+    ax2.plot(het_m*100, (het * 1.1 - 0.05), "o", ms=ms, alpha=alpha, zorder=0, color=het_c)
+    ax2.set_yticks([-0.05, 1.05])
     ax2.set_yticklabels([])
+    ax2.set_ylabel(ylabel, fontsize=fs_l, color=het_c)
+    if len(ylim)>0:
+        ax2.set_ylim(ylim)
     
 ########################################################
     
 def plot_posterior_panel(post=[], figsize=(12,9), c="maroon", c_hw="g",
-                         hspace=0.12, wspace=0.15, xlim=[], ylim=[-0.05,1.05], lw=3, fs_l=12,
-                         ch=0, savepath=""):
+                         hspace=0.12, wspace=0.15, xlim=[], ylim=[-0.05,1.05], 
+                         lw=3, fs_l=12, ch=0, savepath=""):
     """Plot Posterior [k,l] array.
     ch: If bigger 0, load 1240K map postion"""
     
