@@ -38,9 +38,9 @@ def get_coverage(f, j):
 def get_markers_good(f, j, output=True, cutoff=0.99):
     """Get markers"""
     m = np.max(f["calldata/GP"][:,j,:], axis=1)
-    idx = (m>cutoff)
+    idx = (m>=cutoff)
     if output:
-        c1 = np.mean(m>cutoff)
+        c1 = np.mean(idx)
         print(f"Filtering to {cutoff} GP variants: {c1:.3f}x")
     return idx
 

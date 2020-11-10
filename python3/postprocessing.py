@@ -15,13 +15,12 @@ class PostProcessing(object):
     (for one individual). Sometimes post-processing is done outside that,
     Has Methods to save the output. Saves using standard hapROH format"""
     folder = ""          # The Folder to operate in.
-    cutoff_post = 0.9  # Cutoff Probability for ROH State
-    ibd_min_l = 0.04  # Cutoff [in Morgan]
+    cutoff_post = 0.99    # Cutoff Probability for ROH State
+    min_cm = 4      # Cutoff of block length [in cM]
     max_gap = 0.01  # The Maximum Gap Length to be Merged [in Morgan]
-    merge = True  # Whether to Merge ROH Blocks
-    save = 0      # What to save. 0: Nothing 1: Save post-processed IBD. 2: Save 0-posterior. 3: Save full posterior
-    output = True # Whether to plot output
-    ch=1
+    save = 0        # What to save. 0: Nothing 1: Save post-processed IBD. 2: Save 0-posterior. 3: Save full posterior
+    output = True   # Whether to plot output
+    ch=3            # Chromosome to analyze
     iid="iid0"
 
     def __init__(self, folder=""):
@@ -55,13 +54,13 @@ class PostProcessing(object):
         return starts, ends
     
     def create_df(self, starts, ends, starts_map, ends_map, 
-              l, l_map, iid, ch, ibd_min_l):
+              l, l_map, iid, ch, min_cm):
         """Create and returndthe hapBLOCK/hapROH dataframe."""
 
         full_df = pd.DataFrame({'Start': starts, 'End': ends,
                                 'StartM': starts_map, 'EndM': ends_map, 'length': l,
                                 'lengthM': l_map, 'iid': iid, "ch": ch})
-        df = full_df[full_df["lengthM"] > ibd_min_l]  # Cut out long blocks
+        df = full_df[full_df["lengthM"] > min_cm/100.0]  # Cut out long blocks
         return df
     
     def merge_called_blocks(self, df, max_gap=0):
@@ -89,7 +88,7 @@ class PostProcessing(object):
 
         df_n.loc[len(df_n)] = row_c   # Append the last row
 
-        if self.output == True:
+        if self.output:
             print(f"Merged n={len(df) - len(df_n)} gaps < {max_gap} M")
         return df_n
     
@@ -122,7 +121,7 @@ class PostProcessing(object):
         ibd_post = self.roh_posterior(post0[0,:])
         ibd = ibd_post > self.cutoff_post
 
-        if self.output == True:
+        if self.output:
             frac_ibd = np.mean(ibd)
             print(f"Fraction Markers above IBD cutoff: {frac_ibd:.4f}")
 
@@ -135,14 +134,14 @@ class PostProcessing(object):
 
         # Create hapROH Dataframe
         df = self.create_df(starts, ends, starts_map, ends_map, 
-                            l, l_map, self.iid, self.ch, ibd_min_l=self.ibd_min_l)
+                            l, l_map, self.iid, self.ch, min_cm=self.min_cm)
 
         # Merge Blocks in Postprocessing Step
-        if self.merge:
+        if self.max_gap>0:
             df = self.merge_called_blocks(df)
 
         if self.output:
-            print(f"Called n={len(df)} IBD Blocks > {self.ibd_min_l * 100} cM")
+            print(f"Called n={len(df)} IBD Blocks > {self.min_cm} cM")
             l = np.max(df["lengthM"])
             print(f"Longest Block: {l *100:.2f} cM")
 

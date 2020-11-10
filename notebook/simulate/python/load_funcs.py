@@ -19,7 +19,7 @@ class Summary_IBD_Calls(object):
     output = 1 # The Level of output. 0 None, 1 All,
 
     def __init__(self, mosaic_folder, ch=3, nr_iid = 20, blen_cm = 1, output_prefix = "", 
-                 error=0, missing=0, output=0):
+                 min_cm=4, error=0, missing=0, output=0):
         """Initialize the whole Class"""
         self.mosaic_folder = mosaic_folder
         self.ch = ch
@@ -29,6 +29,7 @@ class Summary_IBD_Calls(object):
         self.output=output
         self.error=error
         self.missing=missing
+        self.min_cm = min_cm
 
     def provide_iid_folders(self):
         """Return a list of folders into which replicate simulations are saved into
@@ -56,7 +57,7 @@ class Summary_IBD_Calls(object):
 
         n_call, n_sim = 0, 0  # Number of total called blocks and simulated blocks
         for f in folders:   
-            df_o = load_observed(f)   # Loading should throw error if not existend
+            df_o = load_observed(f, min_cm=self.min_cm)   # Loading throws error if not existend
             df_s = load_simulated(f)
 
             n_call += len(df_o)
@@ -73,10 +74,10 @@ class Summary_IBD_Calls(object):
             
         return df_calls
 
-    def collect_fp_df(self):
+    def collect_fp_df(self, min_cm=2):
         """Collect and return the Dataframe with the false positive Calls"""
         folders = self.provide_iid_folders()   # Load all the folders
-        observed_dfs = [load_observed(f) for f in folders]
+        observed_dfs = [load_observed(f, min_cm=min_cm) for f in folders]
         df_observed = pd.concat(observed_dfs)
         return df_observed
     
@@ -139,9 +140,10 @@ class Summary_IBD_Calls_Missing(Summary_IBD_Calls):
 #############################################
 ### Various Helper Functions
 
-def load_observed(path, file="ibd.tsv"):
-    """ Load simulated Dataframe from path"""
+def load_observed(path, file="ibd.tsv", min_cm=2):
+    """ Load simulated Dataframe from path."""
     df = pd.read_csv(path + file, sep="\t")  # Load the Meta File
+    df = df[df["lengthM"]>min_cm/100.0] # Get only blocks long enough
     return df
 
 def load_simulated(path, file="ibd_gt.tsv"):
