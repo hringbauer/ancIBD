@@ -239,12 +239,14 @@ def calc_power(df, ovlp_frac=0.8):
 def give_SE(df):
     """Calculate and return Standard Deviation (and maybe quartiles) [in cM]"""
     s = np.std(df["CalledLength"].values)
+    print(f"Standard Deviation: {s:.6f} cM")
     return s
 
-def give_bias(df, true_lgth):
+def give_bias(df):
     """Calculate and return the bias of estimates.
     true_length: Length of simulated blocks [in cM]"""
-    b = np.mean(df["CalledLength"].values) - true_lgth
+    b = np.mean(df["CalledLength"].values - df["OriginalLength"].values)
+    print(f"Bias: {b:.6f} cM")
     return b
 
 def return_calls_only(df, ovlp=0.01):

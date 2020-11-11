@@ -15,14 +15,15 @@ from main import HMM_Full
 def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""], 
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
                    l_model="hdf5", e_model="haploid_gl", h_model="FiveStateFast", 
-                   t_model="standard", ibd_in=1, ibd_out=1, ibd_jump=500, min_cm=2,
-                   cutoff_post=0.99, max_gap=0.0):
+                   t_model="standard", ibd_in=20, ibd_out=20, ibd_jump=300, min_cm=2,
+                   cutoff_post=0.99, max_gap=0.01):
     """Run IBD for pair of Individuals.
     folder_in: hdf5 path up to chromosome.
     iids: List of IIDs to compare [length 2]
     folder_out: Where to save the hapBLOCK output to
     min_cm: Minimal block length to call and save [cM]
-    savepath: Where to save the IBD plot to"""
+    savepath: Where to save the IBD plot to.
+    Return df_ibd, posterior, map, tot_ll"""
     assert(len(iids)==2) # Sanity Check of Input IIDs
     h = HMM_Full(folder_in=folder_in, l_model=l_model, t_model=t_model, 
                      e_model=e_model, h_model = h_model,
@@ -36,3 +37,5 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     if len(folder_out)>0:
         folder_out = h.prepare_path(folder_out, iid=iids, ch=ch, prefix_out=prefix_out, logfile=logfile)
         h.p_obj.save_output(df=df_ibd, save_folder=folder_out) # r_map=[], post=[]
+
+    return df_ibd, post, r_vec, tot_ll
