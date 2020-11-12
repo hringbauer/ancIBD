@@ -74,8 +74,9 @@ def plot_power(bl_lens, df_call_vec1, powers, df_fp=[],
 
     plt.title(title, fontsize=fs)
     
-    if len(savepath) >0:
-        plt.savefig(savepath)
+    if len(savepath)>0:
+        plt.savefig(savepath, bbox_inches ='tight', pad_inches = 0, dpi=400)
+        print(f"Saved to {savepath}")
     plt.show()
     
     

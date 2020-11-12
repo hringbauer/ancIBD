@@ -149,7 +149,7 @@ class ModifyHDF5Genotypes(object):
         else:
             gt_new = gt
             r_map_new = r_map
-            survive = np.ones(l)
+            survive = np.ones(l, dtype="bool")
         
         if shuffle_cm>0:
             gt_new = shuffle_haplos(gt_new, r_map_new, scale_cm=shuffle_cm)
