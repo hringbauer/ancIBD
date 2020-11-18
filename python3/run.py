@@ -31,11 +31,12 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump)
     h.l_obj.set_params(iids=iids, ch=ch)
     h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
-    post, r_vec, fwd, bwd, tot_ll = h.run_fwd_bwd()
+    #post, r_vec, fwd, bwd, tot_ll = h.run_fwd_bwd()
+    post, r_vec =  h.run_fwd_bwd(full=False)
     df_ibd, _, _ = h.p_obj.call_roh(r_vec, post)
     
     if len(folder_out)>0:
         folder_out = h.prepare_path(folder_out, iid=iids, ch=ch, prefix_out=prefix_out, logfile=logfile)
         h.p_obj.save_output(df=df_ibd, save_folder=folder_out) # r_map=[], post=[]
 
-    return df_ibd, post, r_vec, tot_ll
+    return df_ibd, post, r_vec

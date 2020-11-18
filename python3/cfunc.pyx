@@ -9,6 +9,7 @@ from libc.math cimport exp, log   # For doing Exponentials and Logs
 
 DTYPE = np.float # The float data type
 
+
 cdef inline double logsumexp(double[:] vec):
   """Do the Log of the Sum of Exponentials."""
   cdef Py_ssize_t i  # The iterator Variable
@@ -33,6 +34,14 @@ cdef inline long argmax(double[:] vec):
       m, v = k, vec[k]
   return m  # Return Argmax
 
+cdef inline double sum_array(double[:] vec, int n):
+    """Sum over array.
+    vec: Array to sum
+    n: Number of elements"""
+    cdef double s = vec[0]
+    for i in range(1,n):
+        s = s + vec[i]
+    return s
 
 def print_memory_usage():
     """Print the current Memory Usage in mB"""
@@ -41,16 +50,16 @@ def print_memory_usage():
     print(f"Memory Usage: {mb_usage} mB")
 
 
-def fwd_bkwd(double[:, :] e_prob0, double[:, :] t_mat,
+def fwd_bkwd(double[:, :] e_mat, double[:, :] t_mat,
              double[:, :] fwd, double[:, :] bwd, double[:,:,:] t, 
              full=False, output=True):
     """Takes emission and transition probabilities, and calculates posteriors.
     Input: kxl matrices of emission, transition
-    and initialized fwd and bwd probabilities. Given in log Space
+    and initialized fwd and bwd probabilities. Given in normal space
     full: Boolean whether to return everything.
     output: Whether to print output useful for monitoring"""
-    cdef int n_states = e_prob0.shape[0]
-    cdef int n_loci = e_prob0.shape[1]
+    cdef int n_states = e_mat.shape[0]
+    cdef int n_loci = e_mat.shape[1]
     cdef Py_ssize_t i, j, k # The Array Indices
 
     # Initialize Posterior and Transition Probabilities
@@ -61,18 +70,20 @@ def fwd_bkwd(double[:, :] e_prob0, double[:, :] t_mat,
 
     ### Transform to Log space
     cdef double[:, :] t_mat0 = np.log(np.eye(n_states) + t_mat[:,:])  # Do log of (relevant) transition Matrix
+    cdef double[:, :] e_mat0 = np.log(e_mat)
+    
 
     for i in range(1, n_loci):  # Do the forward recursion
         for j in range(n_states):
           for k in range(n_states):
             trans_ll_view[k] = fwd[k, i - 1] + t_mat0[k, j]
 
-          fwd[j, i] = e_prob0[j, i] + logsumexp(trans_ll_view)
+          fwd[j, i] = e_mat0[j, i] + logsumexp(trans_ll_view)
 
     for i in range(n_loci-1, 0, -1):  # Do the backward recursion
       for j in range(n_states):
         for k in range(n_states):
-          trans_ll_view[k] = t_mat0[j, k] + e_prob0[k, i] + bwd[k, i]
+          trans_ll_view[k] = t_mat0[j, k] + e_mat0[k, i] + bwd[k, i]
         bwd[j, i - 1] = logsumexp(trans_ll_view)
 
     # Get total log likelihood
@@ -94,20 +105,20 @@ def fwd_bkwd(double[:, :] e_prob0, double[:, :] t_mat,
       return post, fwd1, bwd1, tot_ll
 
 
-def fwd_bkwd_fast(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e-4, 
+def fwd_bkwd_fast(double[:, :] e_mat, double[:, :, :] t_mat, double in_val = 1e-4, 
                   full=False, output=True):
     """Takes emission and transition probabilities, and calculates posteriors.
     Uses speed-up specific for Genotype data (pooling same transition rates)
     Input:
-    e_mat0: Emission probabilities [k x l] (log space)
+    e_mat: Emission probabilities [k x l] (normal space)
     t_mat: Transition Matrix: [l x 3 x 3]  (normal space)
     in_val: Intitial probability of single symmetric state (normal space)
     full: Boolean whether to return everything (post, fwd1, bwd1, tot_ll)
     output: Whether to print output useful for monitoring
     Otherwise only posterior mat [kxl] of post is returned
     """
-    cdef int n_states = e_mat0.shape[0]
-    cdef int n_loci = e_mat0.shape[1]
+    cdef int n_states = e_mat.shape[0]
+    cdef int n_loci = e_mat.shape[1]
     cdef Py_ssize_t i, j, k    # The Array Indices
     cdef double stay           # The Probablility of Staying
 
@@ -128,6 +139,7 @@ def fwd_bkwd_fast(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e
 
     # Do transform to Log Space:
     cdef double[:,:,:] t0 = np.log(t_mat)         # Do log of recombination Map
+    cdef double[:, :] e_mat0 = np.log(e_mat)
 
     ### Initialize FWD BWD matrices
     fwd0 = np.zeros((n_states, n_loci), dtype="float")
@@ -207,20 +219,20 @@ def fwd_bkwd_fast(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e
       return post, fwd1, bwd1, tot_ll
 
 
-def fwd_bkwd_lowmem(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 1e-4, 
+def fwd_bkwd_lowmem(double[:, :] e_mat, double[:, :, :] t_mat, double in_val = 1e-4, 
                     full=False, output=True):
     """Takes emission and transition probabilities, and calculates posteriors.
     Uses speed-up specific for Genotype data (pooling same transition rates)
     Low-Mem: Do no save the full FWD BWD and Posterior. Use temporary
     Arrays for saving. Only return 0-posterior. useful for large symmetric state arrays.
     Input:
-    e_mat0: Emission probabilities [k x l] (log space)
+    e_mat0: Emission probabilities [k x l] (normal space)
     t_mat: Transition Matrix: [l x 3 x 3]  (normal space)
     in_val: Intitial probability of single symmetric state (normal space)
     full: Boolean whether to return everything (post, fwd1, bwd1, tot_ll)
     Otherwise only posterior mat [kxl] of post is returned"""
-    cdef int n_states = e_mat0.shape[0]
-    cdef int n_loci = e_mat0.shape[1]
+    cdef int n_states = e_mat.shape[0]
+    cdef int n_loci = e_mat.shape[1]
     cdef Py_ssize_t i, j, k    # The Array Indices
     cdef double stay           # The Probablility of Staying
     cdef double tot_ll  # The total Likelihood (need for Posterior)
@@ -242,7 +254,8 @@ def fwd_bkwd_lowmem(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 
     cdef double[:] two_v_view = two_v
 
     # Do transform to Log Space:
-    cdef double[:,:,:] t0 = np.log(t_mat)         # Do log of recombination Map
+    cdef double[:,:,:] t0 = np.log(t_mat) 
+    cdef double[:, :] e_mat0 = np.log(e_mat)
 
     ### Initialize FWD BWD Arrays
     fwd0 = np.zeros(n_states, dtype=DTYPE)
@@ -336,14 +349,140 @@ def fwd_bkwd_lowmem(double[:, :] e_mat0, double[:, :, :] t_mat, double in_val = 
     elif full==True:   # Return everything
       return post[None,:], fwd0, bwd0, tot_ll
 
+###############################################################################
 
-def viterbi_path(double[:, :] e_prob0, double[:, :, :] t_mat0, double[:] end_p0):
+def fwd_bkwd_scaled(double[:, :] e_mat, double[:, :, :] t_mat, 
+                    double in_val = 1e-4, full=False, output=True):
+    """Takes emission and transition probabilities, and calculates posteriors.
+    Uses speed-up specific for Genotype data (pooling same transition rates)
+    Uses rescaling of fwd and bwd matrices
+    e_mat: Emission probabilities [k x l] (normal space)
+    t_mat: Transition Matrix: [l x 3 x 3]  (normal space)
+    in_val: Intitial probability of single symmetric state (normal space)
+    full: Boolean whether to return everything (post, fwd1, bwd1, tot_ll)
+    output: Whether to print output useful for monitoring
+    Otherwise only posterior mat [kxl] of post is returned
+    """
+    cdef int n_states = e_mat.shape[0]
+    cdef int n_loci = e_mat.shape[1]
+    cdef Py_ssize_t i, j, k    # The Array and Iteration Indices
+    cdef double stay           # The Probablility of Staying
+    cdef double x1, x2, x3     # Place holder variables [make code readable]
+
+    # Initialize Posterior and Transition Probabilities
+    post = np.empty([n_states, n_loci], dtype=DTYPE)
+    
+    c = np.empty(n_loci, dtype=DTYPE) # Array of normalization constants
+    cdef double[:] c_view = c
+    
+    temp = np.empty(n_states, dtype=DTYPE) # l Array for calculations
+    cdef double[:] temp_v = temp
+    
+    temp1 = np.empty(n_states-1, dtype=DTYPE) # l-1 Array for calculatons
+    cdef double[:] temp1_v = temp1
+
+    cdef double[:,:,:] t = t_mat   # C View of transition matrix
+
+    ### Initialize FWD BWD matrices with first and last entries filled
+    fwd1 = np.zeros((n_states, n_loci), dtype="float")
+    fwd1[:, 0] = in_val  # Initial Probabilities
+    fwd1[0, 0] = 1 - (n_states - 1) * in_val
+    cdef double[:,:] fwd = fwd1
+    
+    c_view[0] = 1 # Set the first normalization constant
+
+    bwd1 = np.zeros((n_states, n_loci), dtype="float")
+    bwd1[:, -1] = in_val
+    bwd1[0, -1] = 1 - (n_states - 1) * in_val
+    cdef double[:,:] bwd = bwd1
+
+    #############################
+    ### Do the Forward Algorithm
+    for i in range(1, n_loci):  # Run forward recursion
+        stay = t[i, 1, 1] - t[i, 1, 2]  # Do the log of the Stay term
+
+        #for k in range(1, n_states): # Calculate Sum of ROH states. 
+        f_l = 1 - fwd[0, i-1]  ### Assume they are normalized!!!
+        
+        ### Do the 0 State:
+        x1 = fwd[0, i - 1] * t[i, 0, 0]    # Staying in 0 State
+        x2 = f_l * t[i, 1, 0]               # Going into 0 State from any other
+        temp_v[0] = e_mat[0, i] * (x1 + x2) # Set the unnorm. 0 forward variable
+
+        ### Do the other states
+        # Preprocessing:
+        x1 = fwd[0, i - 1] * t[i, 0, 1]   # Coming from 0 State
+        x2 = f_l * t[i, 1, 2]             # Coming from other ROH State
+
+        for j in range(1, n_states):  # Do the final run over all states
+            x3 = fwd[j, i-1] *  stay # Staying in state
+            temp_v[j] = e_mat[j, i] * (x1 + x2 + x3)
+            
+        ### Do the normalization
+        c_view[i] = sum_array(temp_v, n_states)
+        for j in range(n_states):
+            fwd[j,i] = temp_v[j] / c_view[i] # Rescale to prob. distribution
+            
+    #############################
+    ### Do the Backward Algorithm
+    for i in range(n_loci-1, 0, -1):  # Run backward recursion
+        stay = t[i, 1, 1] - t[i, 1, 2]
+
+        for k in range(1, n_states): # Calculate logsum of ROH states:
+            temp1_v[k-1] = bwd[k, i] * e_mat[k, i]
+        f_l = sum_array(temp1_v, n_states-1) # Logsum of ROH States
+
+      # Do the 0 State:
+        x1 = bwd[0, i] * t[i, 0, 0] * e_mat[0, i]   # Staying in 0 State
+        x2 = f_l * t[i, 0, 1]                         # Going into 0 State
+        temp_v[0] = x1 + x2
+
+      ### Do the other states
+      # Preprocessing:
+        x1 = e_mat[0, i] * bwd[0, i] * t[i, 1, 0]
+        x2 = f_l * t[i, 1, 2]    # Coming from other ROH State
+
+        for j in range(1, n_states):  # Do the final run over all states
+            x3 = e_mat[j, i] * bwd[j, i] *  stay
+            temp_v[j] = x1 + x2 + x3  # Fill in the backward Probability
+        
+        ### Do the normalization
+        for j in range(n_states):
+            bwd[j, i - 1] = temp_v[j] / c_view[i] # Rescale to prob. distribution
+
+    # Get total log likelihood:
+    #for k in range(n_states):  # Simply sum the two 1D arrays
+    #    temp_v[k] = fwd[k, n_loci - 1] * bwd[k, n_loci - 1]
+    #tot_l = sum_array(temp_v, n_states)
+    
+    ### Combine the forward and backward calculations for posterior
+    #fwd2 = np.asarray(fwd, dtype=np.float)  # Transform
+    #bwd2 = np.asarray(bwd, dtype=np.float)
+    post = fwd1 * bwd1
+    if output:
+        print("Memory Usage at end of HMM:")
+        print_memory_usage()   ## For MEMORY_BENCH
+
+    if full==False:
+        return post
+
+    elif full==True:   # Return everything
+        tot_ll = np.sum(np.log(c)) # Tot Likelihood is product over all c. 
+        if output:
+            print(f"Total Log likelihood: {tot_ll: .3f}")
+        return post, fwd1, bwd1, tot_ll
+
+###############################################################################
+###############################################################################
+### Viterbi Path
+
+def viterbi_path(double[:, :] e_mat0, double[:, :, :] t_mat0, double[:] end_p0):
     """Implementation of a Viterbi Path.
-    e_prob0  Matrices with Emission Probabilities, [k,l] (log space)
+    e_mat0  Matrices with Emission Probabilities, [k,l] (log space)
     t_mat: Transition Matrix: [l x 3 x 3]  (normal space)
     end_p: probability to begin/end in states [k]"""
-    cdef int n_states = e_prob0.shape[0]
-    cdef int n_loci = e_prob0.shape[1]
+    cdef int n_states = e_mat0.shape[0]
+    cdef int n_loci = e_mat0.shape[1]
     cdef Py_ssize_t i, j, k # The Array Indices
     cdef int m  # Placeholder for Maximum
     cdef double v # Value to set
@@ -393,7 +532,7 @@ def viterbi_path(double[:, :] e_prob0, double[:, :, :] t_mat0, double[:] end_p0)
 
         m = argmax(two_v_view)      ### Do a Maximum
         v = two_v_view[m]
-        mp[0, i] = v + e_prob0[0, i]   ### Set Max. Probability
+        mp[0, i] = v + e_mat0[0, i]   ### Set Max. Probability
         pt[0, i] = two_vi_view[m]      ### Set Pointer for Backtrace
 
         ### Do the other States
@@ -406,7 +545,7 @@ def viterbi_path(double[:, :] e_prob0, double[:, :, :] t_mat0, double[:] end_p0)
           m = argmax(three_v_view)      ### Do a Maximum
           v = three_v_view[m]
 
-          mp[k, i] = v + e_prob0[k, i]   ### Set Max. Probability
+          mp[k, i] = v + e_mat0[k, i]   ### Set Max. Probability
           pt[k, i] = three_vi_view[m]      ### Set Pointer for Backtrace
 
     ### Do the trace back

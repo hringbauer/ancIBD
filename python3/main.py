@@ -13,6 +13,7 @@ from transition import load_transition_model
 from loaddata import load_loaddata
 from hmm import load_fwd_bwd_func
 from postprocessing import load_Postprocessing
+from time import time
 
 class HMM_Full(object):
     """Analyze Class for HMMs. Wrapper for various subclasses, making them
@@ -65,19 +66,32 @@ class HMM_Full(object):
         
     def run_fwd_bwd(self, full=True):
         """Run Forward Backward algorithm."""
+        t = time()
         htsl, p, r_vec =  self.l_obj.load_all_data()
+        e = time()
+        print(f"Runtime Loading: {(e-t)} s")
+        
+        t = time()
         e_mat = self.e_obj.give_emission_matrix(htsl, p)
         t_mat = self.t_obj.full_transition_matrix(r_vec, n=4, submat33=self.submat33)
+        e = time()
+        print(f"Runtime E+T Mat.: {(e-t)} s")
         
         if full:
-            post, fwd, bwd, tot_ll = self.fwd_bwd(np.log(e_mat), t_mat, in_val = self.in_val, 
+            post, fwd, bwd, tot_ll = self.fwd_bwd(e_mat, t_mat, in_val = self.in_val, 
                                                   full=full, output=self.output)
             self.p_obj.call_roh(r_vec, post)
             return post, r_vec, fwd, bwd, tot_ll
         else:
-            post = self.fwd_bwd(np.log(e_mat), t_mat, in_val = self.in_val, 
+            t = time()
+            post = self.fwd_bwd(e_mat, t_mat, in_val = self.in_val, 
                                 full=full, output=self.output)
+            e = time()
+            print(f"Runtime HMM calc.: {(e-t)} s")
+            t = time()
             self.p_obj.call_roh(r_vec, post)
+            e = time()
+            print(f"Runtime Postprocessing: {(e-t)} s")
             return post, r_vec                                                                    
                  
     def set_params(self, **kwargs):
