@@ -392,8 +392,8 @@ def fwd_bkwd_scaled(double[:, :] e_mat, double[:, :, :] t_mat,
     c_view[0] = 1 # Set the first normalization constant
 
     bwd1 = np.zeros((n_states, n_loci), dtype="float")
-    bwd1[:, -1] = in_val
-    bwd1[0, -1] = 1 - (n_states - 1) * in_val
+    bwd1[:, -1] = 1 # The initial values for the backward pass
+    #bwd1[0, -1] = 1 - (n_states - 1) * in_val
     cdef double[:,:] bwd = bwd1
 
     #############################

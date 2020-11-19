@@ -36,10 +36,11 @@ class PostProcessing(object):
             setattr(self, key, value)
             
     def roh_posterior(self, posterior0):
-        """Load and return the posterior.
-        Input: Log space [l]
-        Output: Normal space [l]"""
-        roh_post = 1 - np.exp(posterior0)  # Go to non-logspace probability
+        """Calculate the IBD posterior.
+        Input: Posterior 0 [l]
+        Output: 1 - Posterior 0 [l]"""
+        #roh_post = 1 - np.exp(posterior0)  # Go to non-logspace probability
+        roh_post = 1 - posterior0
         return roh_post
     
     def ibd_stat_to_block(self, ibd):

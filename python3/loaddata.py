@@ -105,7 +105,7 @@ class LoadHDF5(LoadData):
         
     def get_individual_idx(self, f, iid="", f_col="samples"):
         """Return index of individual iid"""
-        samples = f[f_col][:]
+        samples = f[f_col].asstr()[:]
         idx = (samples == iid)
         assert(np.sum(idx)==1) # Sanity Check
         idx=np.where(idx)[0][0]

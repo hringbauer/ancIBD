@@ -21,8 +21,8 @@ def plot_posterior(ax=0, morgan=[], post=[], het=[], het_m=[],
         plt.figure(figsize=figsize)
         ax=plt.gca()
     if len(morgan)==0:
-        morgan =np.arange(np.shape(post)[1])
-    ax.plot(morgan*100, np.exp(post[state,:]), color=c, lw=lw)
+        morgan = np.arange(np.shape(post)[1])
+    ax.plot(morgan*100, post[state,:], color=c, lw=lw)
     ax.set_yticks([0., 0.2, 0.4, 0.6, 0.8, 1.0])
     ### Do optional plotting
     # Hets

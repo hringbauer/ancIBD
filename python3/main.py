@@ -29,13 +29,13 @@ class HMM_Full(object):
     e_model = "" # haploid_gl
     t_model = "" # standard
     p_model = ""
-    h_model = "" # FiveState FiveStateFast
+    h_model = "" # FiveState FiveStateFast FiveStateScaled
     post_model = ""
     
     l_obj, t_obj, e_obj = 0, 0, 0 # Placeholder for the objects
     fwd_bwd = 0 # Placeholder Forward Backward Function
     submat33 = True
-    in_val = 1e-4 # The initial prob. in each first/last IBD state
+    in_val = 1e-4 # The prior forward prob. in first IBD state
     output = True
     
 
@@ -73,9 +73,13 @@ class HMM_Full(object):
         
         t = time()
         e_mat = self.e_obj.give_emission_matrix(htsl, p)
+        e = time()
+        print(f"Runtime E Mat.: {(e-t)} s")
+        
+        t = time()
         t_mat = self.t_obj.full_transition_matrix(r_vec, n=4, submat33=self.submat33)
         e = time()
-        print(f"Runtime E+T Mat.: {(e-t)} s")
+        print(f"Runtime T Mat.: {(e-t)} s")
         
         if full:
             post, fwd, bwd, tot_ll = self.fwd_bwd(e_mat, t_mat, in_val = self.in_val, 

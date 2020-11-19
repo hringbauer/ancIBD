@@ -4867,17 +4867,10 @@ static PyObject *__pyx_pf_7python3_5cfunc_8fwd_bkwd_scaled(CYTHON_UNUSED PyObjec
   <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_4); __pyx_t_4 = 0;
   __pyx_v_bwd1 = __pyx_t_1;
   __pyx_t_1 = 0;
-</pre><pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">395</span>:     <span class="n">bwd1</span><span class="p">[:,</span> <span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">in_val</span></pre>
-<pre class='cython code score-11 '>  __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>(__pyx_v_in_val);<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 395, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  if (unlikely(<span class='py_c_api'>PyObject_SetItem</span>(__pyx_v_bwd1, __pyx_tuple__6, __pyx_t_1) &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 395, __pyx_L1_error)</span>
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-11" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">396</span>:     <span class="n">bwd1</span><span class="p">[</span><span class="mf">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1</span> <span class="o">-</span> <span class="p">(</span><span class="n">n_states</span> <span class="o">-</span> <span class="mf">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">in_val</span></pre>
-<pre class='cython code score-11 '>  __pyx_t_1 = <span class='py_c_api'>PyFloat_FromDouble</span>((1.0 - ((__pyx_v_n_states - 1) * __pyx_v_in_val)));<span class='error_goto'> if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 396, __pyx_L1_error)</span>
-  <span class='refnanny'>__Pyx_GOTREF</span>(__pyx_t_1);
-  if (unlikely(<span class='py_c_api'>PyObject_SetItem</span>(__pyx_v_bwd1, __pyx_tuple__7, __pyx_t_1) &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 396, __pyx_L1_error)</span>
-  <span class='pyx_macro_api'>__Pyx_DECREF</span>(__pyx_t_1); __pyx_t_1 = 0;
-</pre><pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">397</span>:     <span class="k">cdef</span> <span class="kt">double</span>[<span class="p">:,:]</span> <span class="n">bwd</span> <span class="o">=</span> <span class="n">bwd1</span></pre>
+</pre><pre class="cython line score-5" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">395</span>:     <span class="n">bwd1</span><span class="p">[:,</span> <span class="o">-</span><span class="mf">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1</span> <span class="c"># The initial values for the backward pass</span></pre>
+<pre class='cython code score-5 '>  if (unlikely(<span class='py_c_api'>PyObject_SetItem</span>(__pyx_v_bwd1, __pyx_tuple__6, __pyx_int_1) &lt; 0)) <span class='error_goto'>__PYX_ERR(0, 395, __pyx_L1_error)</span>
+</pre><pre class="cython line score-0">&#xA0;<span class="">396</span>:     <span class="c">#bwd1[0, -1] = 1 - (n_states - 1) * in_val</span></pre>
+<pre class="cython line score-2" onclick="(function(s){s.display=s.display==='block'?'none':'block'})(this.nextElementSibling.style)">+<span class="">397</span>:     <span class="k">cdef</span> <span class="kt">double</span>[<span class="p">:,:]</span> <span class="n">bwd</span> <span class="o">=</span> <span class="n">bwd1</span></pre>
 <pre class='cython code score-2 '>  __pyx_t_6 = <span class='pyx_c_api'>__Pyx_PyObject_to_MemoryviewSlice_dsds_double</span>(__pyx_v_bwd1, PyBUF_WRITABLE);<span class='error_goto'> if (unlikely(!__pyx_t_6.memview)) __PYX_ERR(0, 397, __pyx_L1_error)</span>
   __pyx_v_bwd = __pyx_t_6;
   __pyx_t_6.memview = NULL;

@@ -8,7 +8,7 @@ import h5py
 
 def get_idx_iid(f,sample, unique=True):
     """Return Index of sample samples in hdf5 f"""
-    samples = pd.Series(f["samples"][:])
+    samples = pd.Series(f["samples"].asstr()[:])
     idx = samples.str.contains(sample)
     idx = np.where(idx)[0]
     if unique:
@@ -19,7 +19,7 @@ def get_idx_iid(f,sample, unique=True):
     
 def get_idx_iid_exact(f,sample, unique=True):
     """Return Index of sample samples in hdf5 f"""
-    samples = pd.Series(f["samples"][:])
+    samples = pd.Series(f["samples"].asstr()[:])
     idx = samples==sample
     idx = np.where(idx)[0]
     if unique:

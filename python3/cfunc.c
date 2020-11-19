@@ -8446,8 +8446,8 @@ static PyObject *__pyx_pf_7python3_5cfunc_8fwd_bkwd_scaled(CYTHON_UNUSED PyObjec
  *     c_view[0] = 1 # Set the first normalization constant
  * 
  *     bwd1 = np.zeros((n_states, n_loci), dtype="float")             # <<<<<<<<<<<<<<
- *     bwd1[:, -1] = in_val
- *     bwd1[0, -1] = 1 - (n_states - 1) * in_val
+ *     bwd1[:, -1] = 1 # The initial values for the backward pass
+ *     #bwd1[0, -1] = 1 - (n_states - 1) * in_val
  */
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 394, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8485,30 +8485,15 @@ static PyObject *__pyx_pf_7python3_5cfunc_8fwd_bkwd_scaled(CYTHON_UNUSED PyObjec
   /* "python3/cfunc.pyx":395
  * 
  *     bwd1 = np.zeros((n_states, n_loci), dtype="float")
- *     bwd1[:, -1] = in_val             # <<<<<<<<<<<<<<
- *     bwd1[0, -1] = 1 - (n_states - 1) * in_val
+ *     bwd1[:, -1] = 1 # The initial values for the backward pass             # <<<<<<<<<<<<<<
+ *     #bwd1[0, -1] = 1 - (n_states - 1) * in_val
  *     cdef double[:,:] bwd = bwd1
  */
-  __pyx_t_1 = PyFloat_FromDouble(__pyx_v_in_val); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 395, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (unlikely(PyObject_SetItem(__pyx_v_bwd1, __pyx_tuple__6, __pyx_t_1) < 0)) __PYX_ERR(0, 395, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-
-  /* "python3/cfunc.pyx":396
- *     bwd1 = np.zeros((n_states, n_loci), dtype="float")
- *     bwd1[:, -1] = in_val
- *     bwd1[0, -1] = 1 - (n_states - 1) * in_val             # <<<<<<<<<<<<<<
- *     cdef double[:,:] bwd = bwd1
- * 
- */
-  __pyx_t_1 = PyFloat_FromDouble((1.0 - ((__pyx_v_n_states - 1) * __pyx_v_in_val))); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 396, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  if (unlikely(PyObject_SetItem(__pyx_v_bwd1, __pyx_tuple__7, __pyx_t_1) < 0)) __PYX_ERR(0, 396, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  if (unlikely(PyObject_SetItem(__pyx_v_bwd1, __pyx_tuple__6, __pyx_int_1) < 0)) __PYX_ERR(0, 395, __pyx_L1_error)
 
   /* "python3/cfunc.pyx":397
- *     bwd1[:, -1] = in_val
- *     bwd1[0, -1] = 1 - (n_states - 1) * in_val
+ *     bwd1[:, -1] = 1 # The initial values for the backward pass
+ *     #bwd1[0, -1] = 1 - (n_states - 1) * in_val
  *     cdef double[:,:] bwd = bwd1             # <<<<<<<<<<<<<<
  * 
  *     #############################
