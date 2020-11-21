@@ -51,14 +51,14 @@ class HaplotypeSharingEmissions(Emissions):
         ht_p1, ht_p2: Array of haplotype likelihood for ancestral, l locis
         p: [l] Array of (derived) allele frequencies
         returns [l] vector of prob that shared haplotype"""
-        s1 = ht_p1 * ht_p2 * (1-p)
-        s2 = (1-ht_p1) * (1 -ht_p2) * p
+        s1 = ht_p1 * ht_p2 * (1-p) # Prob both ancestral
+        s2 = (1-ht_p1) * (1 -ht_p2) * p # Prob both derived
         prob = s1 + s2
         return prob
 
     def hw_prob_haplos_pp(self, hts_p, p):
         """Calculate HW Probabilitiy of haplotype gt
-        gt: [k,l] Array of haplotype probability for derived
+        gt: [k,l] Array of haplotype prob for ancestral
         p: [l] Array of (derived) allele frequencies
         returns [l] vector of HW prob of gt"""
         prob = (1-hts_p[:,:]) * p +  hts_p[:,:] * (1-p)

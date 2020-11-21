@@ -100,8 +100,9 @@ class LoadHDF5(LoadData):
     
     def return_p(self, f):
         """Return array of Allele Frequencies [l]
-        IMPLEMENT PROPER ALLELE FREQUENCY"""
-        p = 0.5 * np.ones(len(f["variants/MAP"]))
+        TODO: IMPLEMENT PROPER ALLELE FREQUENCY"""
+        #p = 0.5 * np.ones(len(f["variants/MAP"]))
+        p = f["variants/AF_ALL"][:] # Load the Allele Freqs from HDF5
         return p
         
     def get_individual_idx(self, f, iid="", f_col="samples"):
@@ -113,7 +114,7 @@ class LoadHDF5(LoadData):
         return idx  
     
     def get_haplo_prob(self, f, idx):
-        """Get haploid ancestral probability for indivual"""
+        """Get haploid ancestral probability for indivual [l,2]"""
         h1 = f["calldata/GT"][:,idx,:].T
         m = np.max(f["calldata/GP"][:,idx,:], axis=1)
         m = np.minimum(m,  1 - self.min_error)
@@ -121,8 +122,7 @@ class LoadHDF5(LoadData):
         return h1
         
     def load_all_data(self, **kwargs):
-        """Key Method. 
-        haplotype likelihoods [4,l,2]
+        """ Return haplotype likelihoods [2,l,2] for anc. allele
         derived allele frequencies [l]
         map in Morgan [l]"""
         path_h5_ch = f"{self.path}{self.ch}.h5"
@@ -138,6 +138,7 @@ class LoadHDF5(LoadData):
         
         self.check_valid_data(htsl, p, m)
         return htsl, p, m
+    
     
 ###############################    
 ###############################
