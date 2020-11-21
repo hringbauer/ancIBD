@@ -97,6 +97,7 @@ def fwd_bkwd(double[:, :] e_mat, double[:, :] t_mat,
     fwd1 = np.asarray(fwd)  # Transform
     bwd1 = np.asarray(bwd)
     post = fwd1 + bwd1 - tot_ll
+    post = np.exp(post) ## Transform from log to normal space
 
     if full==False:
       return post
@@ -204,9 +205,10 @@ def fwd_bkwd_fast(double[:, :] e_mat, double[:, :, :] t_mat, double in_val = 1e-
     tot_ll = logsumexp(trans_ll_view1)
 
     # Combine the forward and backward calculations
-    fwd1 = np.asarray(fwd, dtype=np.float)  # Transform
+    fwd1 = np.asarray(fwd, dtype=np.float)  ## Transform
     bwd1 = np.asarray(bwd, dtype=np.float)
-    post = fwd1 + bwd1 - np.float(tot_ll)
+    post = fwd1 + bwd1 - np.float(tot_ll) ## Posterior in log space
+    post = np.exp(post)        ## To have posterior in normal space
     if output:
         print("Memory Usage Full:")
         print_memory_usage()   ## For MEMORY_BENCH
@@ -339,10 +341,11 @@ def fwd_bkwd_lowmem(double[:, :] e_mat, double[:, :, :] t_mat, double in_val = 1
       ### Finalize the 0 Posterior
       post_view[i-1] = post_view[i-1] + bwd[0] - tot_ll
     
+    post = np.exp(post) # To transform to normal space
     if output:
         print(f"Total Log likelihood: {tot_ll: .3f}")
         print_memory_usage()   ## For MEMORY_BENCH
-
+    
     if full==False:
       return post[None,:]  # For "fake" axis
 
@@ -449,15 +452,8 @@ def fwd_bkwd_scaled(double[:, :] e_mat, double[:, :, :] t_mat,
         ### Do the normalization
         for j in range(n_states):
             bwd[j, i - 1] = temp_v[j] / c_view[i] # Rescale to prob. distribution
-
-    # Get total log likelihood:
-    #for k in range(n_states):  # Simply sum the two 1D arrays
-    #    temp_v[k] = fwd[k, n_loci - 1] * bwd[k, n_loci - 1]
-    #tot_l = sum_array(temp_v, n_states)
     
     ### Combine the forward and backward calculations for posterior
-    #fwd2 = np.asarray(fwd, dtype=np.float)  # Transform
-    #bwd2 = np.asarray(bwd, dtype=np.float)
     post = fwd1 * bwd1
     if output:
         print("Memory Usage at end of HMM:")

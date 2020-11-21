@@ -37,8 +37,8 @@ class LoadData(object):
         raise NotImplementedError("Implement This in specific subclass.")
         
     def load_all_data(self, **kwargs):
-        """Key Method. 
-        haplotype likelihoods [4,l,2]
+        """Load all haplotype likelihoods
+        haplotype likelihoods [2*n,l,2]
         derived allele frequencies [l]
         map in Morgan [l]"""
         htsl = self.return_haplotypes_ll()
@@ -99,7 +99,8 @@ class LoadHDF5(LoadData):
         return m
     
     def return_p(self, f):
-        """Return array of Allele Frequencies [l]"""
+        """Return array of Allele Frequencies [l]
+        IMPLEMENT PROPER ALLELE FREQUENCY"""
         p = 0.5 * np.ones(len(f["variants/MAP"]))
         return p
         
@@ -112,7 +113,7 @@ class LoadHDF5(LoadData):
         return idx  
     
     def get_haplo_prob(self, f, idx):
-        """Get  haploid ancestral probability for indivual"""
+        """Get haploid ancestral probability for indivual"""
         h1 = f["calldata/GT"][:,idx,:].T
         m = np.max(f["calldata/GP"][:,idx,:], axis=1)
         m = np.minimum(m,  1 - self.min_error)

@@ -57,7 +57,7 @@ class HMM_Full(object):
         self.l_obj = load_loaddata(l_model = self.l_model, path=self.folder_in)
         self.t_obj = load_transition_model(t_model = self.t_model)
         self.e_obj = load_emission_model(e_model = self.e_model)
-        self.p_obj = l = load_Postprocessing(p_model=self.p_model)
+        self.p_obj = load_Postprocessing(p_model=self.p_model)
         self.fwd_bwd = load_fwd_bwd_func(h_model=self.h_model)
         
         ### pass on output parameter

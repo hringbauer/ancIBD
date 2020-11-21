@@ -40,3 +40,19 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
         h.p_obj.save_output(df=df_ibd, save_folder=folder_out) # r_map=[], post=[]
 
     return df_ibd, post, r_vec
+
+def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
+                   ch=2, folder_out="", output=False, prefix_out="", logfile=False,
+                   l_model="hdf5", e_model="haploid_gl", h_model="FiveStateFast", 
+                   t_model="standard", ibd_in=20, ibd_out=20, ibd_jump=300, min_cm=2,
+                   cutoff_post=0.99, max_gap=0.01):
+    """Run IBD for list of Individuals, and saves their IBD csv into a single 
+    output folder.
+    folder_in: hdf5 path up to chromosome.
+    iids: List of IIDs to load [k indivdiuals]
+    run_iids: If given: list of pairs to run. If not run all pairs
+    folder_out: Where to save the hapBLOCK output to
+    min_cm: Minimal block length to call and save [cM]
+    savepath: Where to save the IBD plot to.
+    Return df_ibd, posterior, map, tot_ll"""
+    raise NotImplementedError("Needs implementation!")
