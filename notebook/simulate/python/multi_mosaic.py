@@ -44,7 +44,7 @@ class Mosaic_1000G_Multi(object):
         self.m_object = Mosaic_1000G(ch=self.ch, path1000G=self.path1000G,
                                      pop_path=self.pop_path, save_path=self.save_path)
 
-    def save_hdf5(self, gt, ad, ref, alt, pos, rec, samples, path, gp=[], compression="gzip"):
+    def save_hdf5(self, gt, ad, ref, alt, pos, rec, samples, path, gp=[], af=[], compression="gzip"):
         """Create a new HDF5 File with Input Data.
         gt: Genotype data [l,k,2]
         ad: Allele depth [l,k,2]
@@ -52,6 +52,7 @@ class Mosaic_1000G_Multi(object):
         alt: Alternate Allele [l]
         pos: Position  [l]
         m: Map position [l]
+        af: allele frequencies [l]
         samples: Sample IDs [k]"""
 
         l, k, _ = np.shape(gt)  # # loci and # of Individuals
@@ -70,7 +71,9 @@ class Mosaic_1000G_Multi(object):
             f_pos = f0.create_dataset("variants/POS", (l,), dtype='i')
             f_gt = f0.create_dataset("calldata/GT", (l, k, 2), dtype='i', compression=compression)
             if len(gp)>0:
-                f_gp = f0.create_dataset("calldata/GP", (l, k, 3), dtype="f", compression=compression)    
+                f_gp = f0.create_dataset("calldata/GP", (l, k, 3), dtype="f", compression=compression)   
+            if len(af)>0:
+                f_af = f0.create_dataset("variants/AF_ALL", (l,), dtype='f')
             f_samples = f0.create_dataset("samples", (k,), dtype=dt)
 
             # Save the Data
@@ -82,6 +85,8 @@ class Mosaic_1000G_Multi(object):
             f_gt[:] = gt
             if len(gp)>0:
                 f_gp[:] = gp
+            if len(af)>0:
+                f_af[:] = af
             f_samples[:] = np.array(samples).astype("S10")
 
         if self.output:
@@ -204,6 +209,8 @@ class Mosaic_1000G_Multi(object):
         ref, alt = f["variants/REF"][:], f["variants/ALT"][:, 0]
         pos = f["variants/POS"]
         rec = f["variants/MAP"]
+        af = f["variants/AF_ALL"] # Allele frequencies
+        
         
         if self.gp:
             gp = self.gp_from_gts(gts) # Get gentoype probabilities
@@ -211,7 +218,7 @@ class Mosaic_1000G_Multi(object):
             gp = [] # Don't save it
 
         # Maybe filter for Loci here
-        self.save_hdf5(gt, ad, ref, alt, pos, rec, samples, path, gp=gp)
+        self.save_hdf5(gt, ad, ref, alt, pos, rec, samples, path, gp=gp, af=af)
 
     def save_ibdlist(self, ibd_beg, ibd_end, iids1, iids2, copyiids, ch=0, path=""):
         """Save the ROH List to Path.

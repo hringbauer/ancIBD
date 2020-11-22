@@ -23,7 +23,7 @@ class Emissions(object):
     def give_emission_log(self, **kwargs):
         """Return the full emission Probability directly in Log Space. 
         By default just log the emissiom matrix. Can be overwritten for
-        nice computational properties"""
+        nicer computational properties"""
         m = self.give_emission_matrix(**kwargs)
         #assert(np.min(m)>0)
         return np.log(m)

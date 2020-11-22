@@ -87,7 +87,7 @@ class LoadSimulated(LoadData):
 ### Class for HDF5 data
 
 class LoadHDF5(LoadData):
-    """Class to load simulated data saved in standard format."""
+    """Class to load HDF data for 2 individuals in standard format."""
     path_h5=""
     iids = []
     ch = 3   # Which chromosome to load
@@ -139,6 +139,45 @@ class LoadHDF5(LoadData):
         self.check_valid_data(htsl, p, m)
         return htsl, p, m
     
+class LoadHDF5Multi(LoadHDF5):
+    """Class to load HDF5 data for multiple individuals"""
+    path_h5=""
+    iids = []
+    ch = 3   # Which chromosome to load
+    min_error=1e-5 # Minimum Probability of genotyping erro  
+    
+    def get_haplo_prob(self, f, idcs):
+        """Get haploid ancestral probability for n individuals 
+        Return [n,l,2] array"""
+        h1 = f["calldata/GT"][:,idcs,:]
+        m = np.max(f["calldata/GP"][:,idcs,:], axis=2)
+        m = np.minimum(m,  1 - self.min_error) # Max Cap of certainty
+        h1 = (1-h1) * m[:,:,None] + h1 * (1 - m[:,:,None]) # Probability of being ancestral
+        h1 = np.swapaxes(h1, 0, 1)
+        return h1
+    
+    def load_all_data(self, **kwargs):
+        """ Return haplotype likelihoods [n,l,2] for anc. allele
+        derived allele frequencies [l]
+        map in Morgan [l]"""
+        path_h5_ch = f"{self.path}{self.ch}.h5"
+        with h5py.File(path_h5_ch, "r") as f:
+            m = self.return_map(f)
+            #p = self.return_p(f)
+            
+            idcs = [self.get_individual_idx(f, iid) for iid in self.iids] 
+            hts = self.get_haplo_prob(f, idcs)
+            htsl = np.concatenate(hts, axis=0)
+        
+        p = self.get_p(htsl)  # Calculate Mean allele frequency from subset
+        self.check_valid_data(htsl, p, m)
+        return htsl, p, m
+    
+    def get_p(self, htsl):
+        """Get Allele frequency from haplotype probabilities"""
+        p_anc = np.mean(htsl, axis=(0, 2))
+        p_der = 1 - p_anc # get the derived allele frequency
+        return p_der
     
 ###############################    
 ###############################
@@ -150,6 +189,8 @@ def load_loaddata(l_model="simulated", path="", **kwargs):
         l_obj = LoadSimulated(path=path, **kwargs)
     elif l_model == "hdf5":
         l_obj = LoadHDF5(path=path, **kwargs)
+    elif l_model == "hdf5multi":
+        l_obj = LoadHDF5Multi(path=path, **kwargs)
     else:
         raise NotImplementedError("Loading Model not found!")
     return l_obj
