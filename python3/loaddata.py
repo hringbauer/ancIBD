@@ -91,7 +91,8 @@ class LoadHDF5(LoadData):
     path_h5=""
     iids = []
     ch = 3   # Which chromosome to load
-    min_error=1e-5 # Minimum Probability of genotyping erro
+    min_error=1e-5 # Minimum Probability of genotyping error
+    p_col = "variants/AF_ALL" # The hdf5 column with der. all freqs
     
     def return_map(self, f):
         """Return the recombination map"""
@@ -100,9 +101,13 @@ class LoadHDF5(LoadData):
     
     def return_p(self, f):
         """Return array of Allele Frequencies [l]
-        TODO: IMPLEMENT PROPER ALLELE FREQUENCY"""
-        #p = 0.5 * np.ones(len(f["variants/MAP"]))
-        p = f["variants/AF_ALL"][:] # Load the Allele Freqs from HDF5
+        self.p_col: The HDF5 field with the allele frequencies
+        If not given, use default p=0.5
+        """
+        if len(self.p_col)==0:
+            p = 0.5 * np.ones(len(f["variants/MAP"]))
+        else:
+            p = f[self.p_col][:] # Load the Allele Freqs from HDF5
         return p
         
     def get_individual_idx(self, f, iid="", f_col="samples"):
@@ -114,15 +119,15 @@ class LoadHDF5(LoadData):
         return idx  
     
     def get_haplo_prob(self, f, idx):
-        """Get haploid ancestral probability for indivual [l,2]"""
+        """Get haploid ancestral probability for indivual [2,l]"""
         h1 = f["calldata/GT"][:,idx,:].T
         m = np.max(f["calldata/GP"][:,idx,:], axis=1)
         m = np.minimum(m,  1 - self.min_error)
-        h1 = (1-h1) * m + h1 * (1 - m) # Probability of being ancestral
+        h1 = (1 - h1) * m + h1 * (1 - m) # Probability of being ancestral
         return h1
         
     def load_all_data(self, **kwargs):
-        """ Return haplotype likelihoods [2,l,2] for anc. allele
+        """ Return haplotype likelihoods [4,l] for anc. allele
         derived allele frequencies [l]
         map in Morgan [l]"""
         path_h5_ch = f"{self.path}{self.ch}.h5"
@@ -144,39 +149,44 @@ class LoadHDF5Multi(LoadHDF5):
     path_h5=""
     iids = []
     ch = 3   # Which chromosome to load
-    min_error=1e-5 # Minimum Probability of genotyping erro  
+    min_error=1e-5 # Minimum Probability of genotyping error  
+    p_col = "variants/AF_ALL" # The hdf5 column with der. all freqs
     
     def get_haplo_prob(self, f, idcs):
         """Get haploid ancestral probability for n individuals 
         Return [n,l,2] array"""
-        h1 = f["calldata/GT"][:,idcs,:]
-        m = np.max(f["calldata/GP"][:,idcs,:], axis=2)
+        h1 = f["calldata/GT"][:,idcs,:] ### Get l, n, 2
+        l,n,_ = np.shape(h1) # Get the nr loci
+        m = np.max(f["calldata/GP"][:,idcs,:], axis=2)  
         m = np.minimum(m,  1 - self.min_error) # Max Cap of certainty
         h1 = (1-h1) * m[:,:,None] + h1 * (1 - m[:,:,None]) # Probability of being ancestral
-        h1 = np.swapaxes(h1, 0, 1)
+        h1 = np.swapaxes(h1, 0, 1) # ->n,l,2
+        h1 = np.swapaxes(h1, 1, 2) #-> n,2,l
+        h1 = h1.reshape((2*n,l))
+        #h1 = np.swapaxes(h1, 0, 1)
         return h1
     
     def load_all_data(self, **kwargs):
-        """ Return haplotype likelihoods [n,l,2] for anc. allele
+        """ Return haplotype likelihoods [n*2,l] for anc. allele.
+        along first axis: 2*i, 2*(i+1) haplotype of ind i
         derived allele frequencies [l]
         map in Morgan [l]"""
         path_h5_ch = f"{self.path}{self.ch}.h5"
         with h5py.File(path_h5_ch, "r") as f:
-            m = self.return_map(f)
-            #p = self.return_p(f)
-            
-            idcs = [self.get_individual_idx(f, iid) for iid in self.iids] 
-            hts = self.get_haplo_prob(f, idcs)
-            htsl = np.concatenate(hts, axis=0)
+            m = self.return_map(f)            
+            idcs = np.array([self.get_individual_idx(f, iid) for iid in self.iids])
+            sort = np.argsort(idcs)   # Get the sorting Indices [has to go low to high]
+            samples = self.iids[sort] # Get them in sorted order
+            hts = self.get_haplo_prob(f, idcs[sort])
         
-        p = self.get_p(htsl)  # Calculate Mean allele frequency from subset
-        self.check_valid_data(htsl, p, m)
-        return htsl, p, m
+        p = self.get_p(hts)  # Calculate Mean allele frequency from subset
+        self.check_valid_data(hts, p, m)
+        return hts, p, m, samples
     
     def get_p(self, htsl):
         """Get Allele frequency from haplotype probabilities"""
-        p_anc = np.mean(htsl, axis=(0, 2))
-        p_der = 1 - p_anc # get the derived allele frequency
+        p_anc = np.mean(htsl, axis=0) # Take the expected AF of ancestral.
+        p_der = 1 - p_anc             # Get the derived allele frequency
         return p_der
     
 ###############################    
@@ -187,9 +197,9 @@ def load_loaddata(l_model="simulated", path="", **kwargs):
     """Factory method to return the right loading Model"""
     if l_model == "simulated":
         l_obj = LoadSimulated(path=path, **kwargs)
-    elif l_model == "hdf5":
+    elif l_model == "hdf5double":
         l_obj = LoadHDF5(path=path, **kwargs)
-    elif l_model == "hdf5multi":
+    elif l_model == "hdf5":
         l_obj = LoadHDF5Multi(path=path, **kwargs)
     else:
         raise NotImplementedError("Loading Model not found!")

@@ -48,7 +48,6 @@ class HMM_Full(object):
         self.set_params(folder_in=folder_in, l_model=l_model, 
                         t_model=t_model, e_model=e_model, 
                         h_model=h_model, p_model=p_model, output=output)
-        
         if load:
             self.load_objects()
 
@@ -67,7 +66,7 @@ class HMM_Full(object):
     def run_fwd_bwd(self, full=True):
         """Run Forward Backward algorithm."""
         t = time()
-        htsl, p, r_vec =  self.l_obj.load_all_data()
+        htsl, p, r_vec, _ =  self.l_obj.load_all_data()
         e = time()
         print(f"Runtime Loading: {(e-t)} s")
         

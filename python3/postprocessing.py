@@ -20,8 +20,8 @@ class PostProcessing(object):
     max_gap = 0.01  # The Maximum Gap Length to be Merged [in Morgan]
     save = 0        # What to save. 0: Nothing 1: Save post-processed IBD. 2: Save 0-posterior. 3: Save full posterior
     output = True   # Whether to plot output
-    ch=3            # Chromosome to analyze
-    iid="iid0"
+    ch = 3            # Chromosome to analyze
+    iid = "iid0"
 
     def __init__(self, folder=""):
         """Initialize Class.
@@ -55,12 +55,12 @@ class PostProcessing(object):
         return starts, ends
     
     def create_df(self, starts, ends, starts_map, ends_map, 
-              l, l_map, iid, ch, min_cm):
+              l, l_map, ch, min_cm, iid1, iid2=""):
         """Create and returndthe hapBLOCK/hapROH dataframe."""
 
         full_df = pd.DataFrame({'Start': starts, 'End': ends,
                                 'StartM': starts_map, 'EndM': ends_map, 'length': l,
-                                'lengthM': l_map, 'iid': iid, "ch": ch})
+                                'lengthM': l_map, "ch": ch, 'iid1': iid1, "iid2": iid2})
         df = full_df[full_df["lengthM"] > min_cm/100.0]  # Cut out long blocks
         return df
     
@@ -115,12 +115,15 @@ class PostProcessing(object):
         if self.output:
             print(f"Successfully saved output to {save_folder}")
         
-    def call_roh(self, r_map, post0):
+    def call_roh(self, r_map, post0, iid1="", iid2=""):
         """Call ROH of Homozygosity from Posterior Data
         bigger than cutoff.
         post0: posterior in format [5,l], log space"""
         ibd_post = self.roh_posterior(post0[0,:])
         ibd = ibd_post > self.cutoff_post
+        
+        if len(iid1)==0:
+            iid1=self.iid
 
         if self.output:
             frac_ibd = np.mean(ibd)
@@ -135,7 +138,8 @@ class PostProcessing(object):
 
         # Create hapROH Dataframe
         df = self.create_df(starts, ends, starts_map, ends_map, 
-                            l, l_map, self.iid, self.ch, min_cm=self.min_cm)
+                            l, l_map, self.ch, min_cm=self.min_cm,
+                            iid1=iid1, iid2=iid2)
 
         # Merge Blocks in Postprocessing Step
         if self.max_gap>0:
