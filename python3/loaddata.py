@@ -114,7 +114,9 @@ class LoadHDF5(LoadData):
         """Return index of individual iid"""
         samples = f[f_col].asstr()[:]
         idx = (samples == iid)
-        assert(np.sum(idx)==1) # Sanity Check
+        if np.sum(idx)!=1:
+            raise RuntimeWarning(f"{np.sum(idx)} entries found for {iid}")
+        assert(np.sum(idx)>0) # Sanity Check
         idx=np.where(idx)[0][0]
         return idx  
     
@@ -142,15 +144,18 @@ class LoadHDF5(LoadData):
             htsl = np.concatenate((h1,h2), axis=0)
         
         self.check_valid_data(htsl, p, m)
-        return htsl, p, m
+        return htsl, p, m, self.iids
     
 class LoadHDF5Multi(LoadHDF5):
-    """Class to load HDF5 data for multiple individuals"""
+    """Class to load HDF5 data for multiple individuals.
+    Developer Note: In progress of making this default even for pairs of individuals."""
     path_h5=""
     iids = []
     ch = 3   # Which chromosome to load
-    min_error=1e-5 # Minimum Probability of genotyping error  
-    p_col = "variants/AF_ALL" # The hdf5 column with der. all freqs
+    min_error = 1e-5 # Minimum Probability of genotyping error  
+    p_col = "" # The hdf5 column with der. all freqs. If given, use the field
+    # If "default" use p=0.5 everywhere
+    # default value for p_col in my hdf5s: variants/AF_ALL
     
     def get_haplo_prob(self, f, idcs):
         """Get haploid ancestral probability for n individuals 
@@ -179,15 +184,30 @@ class LoadHDF5Multi(LoadHDF5):
             samples = self.iids[sort] # Get them in sorted order
             hts = self.get_haplo_prob(f, idcs[sort])
         
-        p = self.get_p(hts)  # Calculate Mean allele frequency from subset
+            if len(self.p_col)>0:
+                p = self.get_p_hdf5(f, self.p_col)  
+            else:
+                p = self.get_p(hts)  # Calculate Mean allele frequency from subset
+            
         self.check_valid_data(hts, p, m)
         return hts, p, m, samples
     
     def get_p(self, htsl):
-        """Get Allele frequency from haplotype probabilities"""
+        """Get Allele frequency from haplotype probabilities.
+        Return array of derived allele freqs [l]"""
         p_anc = np.mean(htsl, axis=0) # Take the expected AF of ancestral.
         p_der = 1 - p_anc             # Get the derived allele frequency
         return p_der
+    
+    def get_p_hdf5(self, f, col):
+        """Get allele frequs from HDF f 
+        in dataset col.
+        Return array of derived allele freqs [l]"""
+        if col=="default":
+            p = 0.5 * np.ones(len(f["variants/MAP"]))
+        else:
+            p = f[col][:] # Load the Allele Freqs from HDF5
+        return p
     
 ###############################    
 ###############################
@@ -197,7 +217,7 @@ def load_loaddata(l_model="simulated", path="", **kwargs):
     """Factory method to return the right loading Model"""
     if l_model == "simulated":
         l_obj = LoadSimulated(path=path, **kwargs)
-    elif l_model == "hdf5double":
+    elif l_model == "hdf5double":  # use overall allele frequency
         l_obj = LoadHDF5(path=path, **kwargs)
     elif l_model == "hdf5":
         l_obj = LoadHDF5Multi(path=path, **kwargs)
