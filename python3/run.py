@@ -49,6 +49,22 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     return df_ibd, post, r_vec
 
 
+def prep_param_list_chrom(folder_in, iids = [], ch=3,
+                    folder_out="", output=True, logfile=False, prefix_out="default/",
+                    l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                    t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=1, ibd_jump=500, min_cm=2,
+                    cutoff_post=0.99, max_gap=0.0):
+    """Prepare parameter lists for multirun of hapBLOCK_chrom. Ideal for multi-processing,
+    as it gives a list of parameters - one for each iid pair."""
+    params = [[folder_in, iid2, ch, folder_out, output, prefix_out, logfile, l_model, e_model,
+              h_model, t_model, p_col, ibd_in, ibd_out, ibd_jump, min_cm, cutoff_post, max_gap] for iid2 in iids]
+    assert(len(params[0])==18)
+    return params
+
+#################################################################################
+#################################################################################
+
+
 def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
                    l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
@@ -65,6 +81,8 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
     Return df_ibd, posterior, map, tot_ll"""
     ### Run all pairs if empty
     iids = np.array(iids) # For better props when indexing
+    if not len(set(iids))==len(iids): # Check whether duplicates
+        raise RuntimeWarning("Duplicate IIDs detected!")
     if len(run_iids)==0:
         run_iids = it.combinations(iids, 2)
         
@@ -112,8 +130,9 @@ def get_sample_index(iids, sample):
 ############################################################################
 ### Run and plot in one go - for one pair of iids.
 
-def run_plot_pair(path_h5="./data/hdf5/1240k_v43/ch", iids = ["", ""], ch=2,
-                  folder_out="", plot=False, path_fig="", output=False, 
+def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_v43/ch", 
+                  iids = ["", ""], ch=2, xlim=[], folder_out="", 
+                  plot=False, path_fig="", output=False, 
                   ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2, 
                   cutoff_post=0.99, max_gap=0.0075, 
                   l_model="hdf5", p_col="variants/AF_ALL",
@@ -144,6 +163,6 @@ def run_plot_pair(path_h5="./data/hdf5/1240k_v43/ch", iids = ["", ""], ch=2,
         print(f"Plotting {len(r_vec)} markers")
         plot_posterior(post=post, morgan=r_vec, df_ibd=df_ibd, 
                        het=o_homos, het_m=m, state=state, fs_l=12, 
-                       min_cm=min_cm, ms=ms, title=title, show=True, 
+                       min_cm=min_cm, ms=ms, title=title, xlim=xlim, show=True, 
                        savepath=path_fig, xlabel="Chromosome Position [cM]")
         return post
