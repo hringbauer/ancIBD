@@ -68,7 +68,7 @@ def prep_param_list_chrom(folder_in, iids = [], ch=3,
 def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
                    l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
-                   t_model="standard", ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2,
+                   t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2,
                    cutoff_post=0.99, max_gap=0.0075, processes=1):
     """Run IBD for list of Individuals, and saves their IBD csv into a single 
     output folder.
@@ -91,7 +91,7 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
                      e_model=e_model, h_model = h_model,
                      output=output, load=True)
     h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump)
-    h.l_obj.set_params(iids=iids, ch=ch)
+    h.l_obj.set_params(iids=iids, ch=ch, p_col=p_col)
     h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
     
     ### Load all data
@@ -132,7 +132,7 @@ def get_sample_index(iids, sample):
 
 def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_v43/ch", 
                   iids = ["", ""], ch=2, xlim=[], folder_out="", 
-                  plot=False, path_fig="", output=False, 
+                  plot=False, path_fig="", output=False, exact=True,
                   ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2, 
                   cutoff_post=0.99, max_gap=0.0075, 
                   l_model="hdf5", p_col="variants/AF_ALL",
@@ -159,7 +159,7 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
             
         ### Load the data from the HDF5
         o_homos, m = get_opp_homos_f(iid1=iids[0], iid2=iids[1], 
-                                     f_path=path_h5, ch=ch)
+                                     f_path=path_h5, ch=ch, exact=exact)
         print(f"Plotting {len(r_vec)} markers")
         plot_posterior(post=post, morgan=r_vec, df_ibd=df_ibd, 
                        het=o_homos, het_m=m, state=state, fs_l=12, 

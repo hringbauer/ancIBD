@@ -44,6 +44,52 @@ def get_markers_good(f, j, output=True, cutoff=0.99):
         print(f"Filtering to {cutoff} GP variants: {c1:.3f}x")
     return idx
 
+###########################
+### Load single individual
+
+def get_genos(f, iid="SUC002", min_gp=0.98, output=True, phased=False, exact=True):
+    """Return Genotypes and Map of pairs at intersection with GP>cutoff.
+    phased: Whether to return [lx2] phased vector or [l] vetor of #derived.
+    exact: Whether IID has to be an exact match"""
+    if exact:
+        j1 = get_idx_iid_exact(f, iid)  
+    else:
+        j1 = get_idx_iid(f, iid)
+    
+    m = f["variants/MAP"][:]
+    pos = f["variants/POS"][:]
+    gt1 = f["calldata/GT"][:, j1, :]
+    gp1 = f["calldata/GP"][:, j1, :]    
+    
+    if min_gp>0:
+        idx = get_markers_good(f, j1, cutoff=min_gp, output=output)
+        m = m[idx]
+        pos = pos[idx]
+        gt1 = gt1[idx,:]
+        gp1 = gp1[idx,:]
+        
+    if not phased:
+        gt1 = np.sum(gt1, axis=1)
+    return gt1, gp1, m, pos
+
+def load_individual_h5(path_h5 = '/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_v43/ch',
+                       min_gp=0.98, chs = range(1,23), iid="SUC002", output=False):
+    """Load individual data from set of chromosomal hdf5s."""
+    dfs = []
+
+    for ch in chs:
+        path_h5_ch = f"{path_h5}{ch}.h5"
+        with h5py.File(path_h5_ch, "r") as f: 
+            gt1, gp1, m, pos = get_genos(f, iid=iid, min_gp=min_gp, output=False, phased=False) 
+            gp_max = np.max(gp1, axis=1)
+            dfs.append(pd.DataFrame({"ch":ch, "pos":pos, "gt":gt1, "gp":gp_max}))
+
+    df_ind = pd.concat(dfs)
+    return df_ind
+
+#############################
+### Extract Pairs of Markers
+
 def get_genos_pairs(f, sample1="SUC006", sample2="R26.SG", 
                     cutoff=0.98, output=True, phased=False, exact=False):
     """Return Genotypes and Map of pairs at intersection with GP>cutoff.

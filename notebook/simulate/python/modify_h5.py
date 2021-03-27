@@ -68,7 +68,7 @@ class ModifyHDF5Genotypes(object):
         m: Map position [l]
         samples: Sample IDs [k].
         Save genotype data as int8, readcount data as int16.
-        ad: whether to save allele depth
+        ad_group: whether to save allele depth
         gt_type: What genotype data type save"""
 
         l, k, _ = np.shape(gt)  # Nr loci and Nr of Individuals
