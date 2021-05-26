@@ -71,3 +71,55 @@ def lift_af(h5_target, h5_original, field="variants/AF_ALL",
     
     print("We did it. Finished.")
     return
+
+#################################################################
+### Save HDF5
+
+
+def save_h5(gt, ad, ref, alt, pos, 
+            rec, samples, path, gp=[],
+            compression="gzip", ad_group=True, gt_type="int8"):
+    """Create a new HDF5 File with Input Data.
+    gt: Genotype data [l,k,2]
+    ad: Allele depth [l,k,2]
+    ref: Reference Allele [l]
+    alt: Alternate Allele [l]
+    pos: Position  [l]
+    m: Map position [l]
+    samples: Sample IDs [k].
+    Save genotype data as int8, readcount data as int16.
+    ad: whether to save allele depth
+    gt_type: What genotype data type save"""
+
+    l, k, _ = np.shape(gt)  # Nr loci and Nr of Individuals
+
+    if os.path.exists(path):  # Do a Deletion of existing File there
+        os.remove(path)
+
+    dt = h5py.special_dtype(vlen=str)  # To have no problem with saving
+    with h5py.File(path, 'w') as f0:
+        ### Create all the Groups
+        f_map = f0.create_dataset("variants/MAP", (l,), dtype='f')
+        if ad_group:
+            f_ad = f0.create_dataset("calldata/AD", (l, k, 2), dtype='int8', compression=compression)
+        f_ref = f0.create_dataset("variants/REF", (l,), dtype=dt)
+        f_alt = f0.create_dataset("variants/ALT", (l,), dtype=dt)
+        f_pos = f0.create_dataset("variants/POS", (l,), dtype='int32')
+        f_gt = f0.create_dataset("calldata/GT", (l, k, 2), dtype=gt_type, compression=compression)
+        if len(gp)>0:
+            f_gp = f0.create_dataset("calldata/GP", (l, k, 3), dtype="f", compression=compression)     
+        f_samples = f0.create_dataset("samples", (k,), dtype=dt)
+
+        ### Save the Data
+        f_map[:] = rec
+        if ad_group:
+            f_ad[:] = ad
+        f_ref[:] = ref.astype("S1")
+        f_alt[:] = alt.astype("S1")
+        f_pos[:] = pos
+        f_gt[:] = gt
+        if len(gp)>0:
+            f_gp[:] = gp
+        f_samples[:] = np.array(samples).astype("S10")
+
+    print(f"Successfully saved {k} individuals to: {path}")
