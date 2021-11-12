@@ -18,31 +18,35 @@ def opp_homos(g1, g2):
     o2 = (g1 == 2) & (g2 == 0)
     return (o1 | o2)
 
-def plot_hets(map_het, het, het_c="slateblue", c_roh="seagreen", 
-              figsize=(14,2), cm_lim=[], fs = 12,
-              alpha=0.3, ms=1, lw = 12, title="", plot=True, min_cm=0, 
-              ylabel = f"Opp. Homozygote (y/n)", savepath=""):
+def plot_hets(map_het=[], het=[], ax=None, het_c="slateblue", c_roh="seagreen", 
+              figsize=(14,2), cm_lim=[], ylim=[-0.1, 1.1], fs = 12,
+              alpha=0.3, ms=1, lw = 12, title="", min_cm=0, xtickl=True,
+              xlabel="centimorgan", ylabel = f"Opp. Homozygote (y/n)", 
+              plot=True, savepath=""):
     """Plot Heterozygotes against genenetic map,
     plus ROH calls.
     lw: Linewidth of ROH""" 
-    plt.figure(figsize=figsize)
-    ax1 = plt.gca()
-    ax1.plot(map_het*100, (het * 1.1 - 0.05), "o", ms=ms, alpha=alpha, zorder=0, color=het_c)
-    ax1.set_xlabel("centimorgan", fontsize=fs)
-    ax1.set_ylim([-0.1, 1.1])
+    if ax==None:
+        plt.figure(figsize=figsize)
+        ax = plt.gca()
+    ax.plot(map_het*100, (het * 1.1 - 0.05), "o", ms=ms, alpha=alpha, zorder=0, color=het_c)
+    ax.set_xlabel(xlabel, fontsize=fs)
+    if not xtickl:
+        ax.set_xticklabels([])
+    ax.set_ylim(ylim)
     
-    ax2 = ax1.twinx()
-    ax2.set_ylim(ax1.get_ylim())
+    ax2 = ax.twinx()
+    ax2.set_ylim(ax.get_ylim())
     ax2.set_yticks(np.array([1,0]) * 1.1 - 0.05)
     ax2.set_yticklabels([])
-    ax1.set_yticklabels([])
+    ax.set_yticklabels([])
     ax2.set_ylabel(ylabel, fontsize=fs*0.8, color=het_c, rotation=270, labelpad=fs)
-     
+    
     if len(cm_lim)==2:
-        ax1.set_xlim(cm_lim)
+        ax.set_xlim(cm_lim)
         
     if len(title)>0:
-        ax1.set_title(title, fontsize=fs)
+        ax.set_title(title, fontsize=fs)
         
     if len(savepath)>0:
         plt.savefig(savepath, bbox_inches = 'tight', pad_inches = 0, dpi=300)

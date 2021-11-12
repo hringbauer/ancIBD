@@ -1,14 +1,14 @@
 #!/bin/bash
-#SBATCH --time=4:00:00
+#SBATCH --time=6:00:00
 #SBATCH --partition=short
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem-per-cpu=45g
-#SBATCH --job-name=prep_hdf5.46.2
+#SBATCH --job-name=prep_hdf5.49.2
 #SBATCH --export=NONE
 #SBATCH --output=./logs/%A_%a.out
 #SBATCH --error=./logs/%A_%a.err
-#SBATCH --array=1-4 #%0-12658%200
+#SBATCH --array=1-21 #%0-12658%200
 #unset SLURM_EXPORT_ENV
 #export OMP_NUM_THREADS=1
 

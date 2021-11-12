@@ -7,6 +7,11 @@ sys.path.insert(0, "/n/groups/reich/hringbauer/git/hapBLOCK/python3/prepare")  #
 from prepare_h5 import vcf_to_1240K_hdf
 
 #####################################################
+### Set Version. Make sure that Folders exist (some need creation)
+vrs = "49.2"
+v0 = vrs.split(".")[0]
+
+#####################################################
 ### Run the Main Loop
     
     
@@ -19,12 +24,12 @@ if __name__ == "__main__":
     
     ## Run the Script
     ### Set Script Parameters
-    base_path = f"/n/groups/reich/hringbauer/git/hapBLOCK"
-    in_vcf_path = f"/n/groups/reich/ali/WholeGenomeImputation/imputed/v46.2/chr{ch}.bcf"
-    path_vcf = f"{base_path}/data/vcf/1240k_v46.2/ch{ch}.vcf.gz"
-    path_h5 = f"{base_path}/data/hdf5/1240k_v46.2/ch{ch}.h5"
+    base_path = f"/n/groups/reich/hringbauer/git/hapBLOCK"    
+    in_vcf_path = f"/n/groups/reich/ali/WholeGenomeImputation/imputed/v{vrs}/chr{ch}.bcf"
+    path_vcf = f"{base_path}/data/vcf/1240k_v{vrs}/ch{ch}.vcf.gz"
+    path_h5 = f"{base_path}/data/hdf5/1240k_v{vrs}/ch{ch}.h5"
     marker_path = f"{base_path}/data/filters/1240K_1000G/snps_bcftools_ch{ch}.csv"
-    map_path = f"/n/groups/reich/DAVID/V46/V46.2/v46.2.snp"
+    map_path = f"/n/groups/reich/DAVID/V{v0}/V{vrs}/v{vrs}.snp"
     
     ### Actual Run.
     vcf_to_1240K_hdf(in_vcf_path = in_vcf_path,
@@ -34,4 +39,4 @@ if __name__ == "__main__":
                      map_path = map_path,
                      ch=ch)
 
-    print(f"Finished running chromosome {ch}")
+    print(f"Finished processing chromosome: {ch}")
