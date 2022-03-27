@@ -6,7 +6,7 @@
         "depends": [],
         "name": "python3.cfunc",
         "sources": [
-            "/n/groups/reich/hringbauer/git/hapBLOCK/python3/cfunc.pyx"
+            "/mnt/archgen/users/hringbauer/git/hapBLOCK/python3/cfunc.pyx"
         ]
     },
     "module_name": "python3.cfunc"
