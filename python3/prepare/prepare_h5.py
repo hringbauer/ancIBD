@@ -90,6 +90,8 @@ def vcf_to_1240K_hdf(in_vcf_path = "/n/groups/reich/ali/WholeGenomeImputation/im
         bctools_filter_vcf(in_vcf_path = in_vcf_path,
                            out_vcf_path= path_vcf,
                            marker_path = marker_path)
+    else:
+        path_vcf = in_vcf_path  ### If no temporary VCF available
     
     print("Converting to HDF5...")
     allel.vcf_to_hdf5(input=path_vcf, output=path_h5, 
