@@ -1,0 +1,18 @@
+Print downsampling to 1240K...
+Finished BCF tools filtering.
+Converting to HDF5...
+Finished conversion to hdf5!
+Merging in LD Map..
+Lifting LD Map from eigenstrat to HDF5...
+Loaded 89082 variants.
+Loaded 21255 individuals.
+Loaded 93166 Chr.1 1240K SNPs.
+Intersection 89082 out of 89082 HDF5 SNPs
+Finished Chromosome 1.
+Adding map to HDF5...
+We did it. Finished.
+Merging in Allele Frequencies
+Adding map to HDF5...
+Loaded 89082 variants.
+Finshed merged in allele frequencies into /n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_v49.2/ch1.h5
+Finished processing chromosome: 1

@@ -97,7 +97,7 @@ def give_sub_df(df, pop1="La Caleta", pop2="La Caleta", col="clst",
         
     idx = idx1 | idx2
     if output:
-        print(f"Found: {np.sum(idx)}\n")
+        print(f"Found: {np.sum(idx)} Pairs fitting in dataframe.\n")
     return df[idx]
 
 def give_stats_cm_bin(df, cms = [8,12,16,20], binary=True, output=True):

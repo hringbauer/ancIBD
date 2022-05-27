@@ -1,0 +1,18 @@
+Print downsampling to 1240K...
+Finished BCF tools filtering.
+Converting to HDF5...
+Finished conversion to hdf5!
+Merging in LD Map..
+Lifting LD Map from eigenstrat to HDF5...
+Loaded 38994 variants.
+Loaded 21255 individuals.
+Loaded 40441 Chr.13 1240K SNPs.
+Intersection 38994 out of 38994 HDF5 SNPs
+Finished Chromosome 13.
+Adding map to HDF5...
+We did it. Finished.
+Merging in Allele Frequencies
+Adding map to HDF5...
+Loaded 38994 variants.
+Finshed merged in allele frequencies into /n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_v49.2/ch13.h5
+Finished processing chromosome: 13

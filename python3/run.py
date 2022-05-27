@@ -136,13 +136,15 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
                   ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2, 
                   cutoff_post=0.99, max_gap=0.0075, 
                   l_model="hdf5", p_col="variants/AF_ALL",
-                  title="", c="gray", c_hw="maroon", ms=1, state=0):
+                  title="", c="gray", c_hw="maroon", 
+                  state=0, **kwargs):
     """Run and plot IBD for pair of Individuals.
     folder_out: Where to save the hapBLOCK output to
     iids: list of two iids
     path_fig: Where to save the IBD plot to
     p_col: The dataset to use in hdf5 for der. AF. If default use p=0.5.
            If empty string use in sample AF.
+    kwargs: Optional Keyword Arguments for Plotting (e.g. c_ibd)
     """
     assert(len(iids)==2) # Sanity Check of Input IIDs - as here it should be pairs
     
@@ -155,14 +157,14 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
         
     if plot:
         if len(title)==0:
-            title = f"hapBLOCK v0.1, {iids[0]} - {iids[1]}, Chr. {ch}"
+            title = f"ancIBD v0.5, {iids[0]} - {iids[1]}, Chr. {ch}"
             
         ### Load the data from the HDF5
         o_homos, m = get_opp_homos_f(iid1=iids[0], iid2=iids[1], 
                                      f_path=path_h5, ch=ch, exact=exact)
         print(f"Plotting {len(r_vec)} markers")
         plot_posterior(post=post, morgan=r_vec, df_ibd=df_ibd, 
-                       het=o_homos, het_m=m, state=state, fs_l=12, 
-                       min_cm=min_cm, ms=ms, title=title, xlim=xlim, show=True, 
-                       savepath=path_fig, xlabel="Chromosome Position [cM]")
+                       het=o_homos, het_m=m, state=state,
+                       min_cm=min_cm, title=title, xlim=xlim, show=True, 
+                       savepath=path_fig, xlabel="Chromosome Position [cM]", **kwargs)
         return post
