@@ -28,7 +28,7 @@ def merge_in_af(path_h5, af, col_af="AF_ALL"):
     af: Array of allele frequencies to save"""
     
     ### Now create the new column in hdf5
-    print("Adding map to HDF5...")
+    print("Adding Allele Frequencies to HDF5...")
     with h5py.File(path_h5, 'a') as f0:
         group = f0["variants"]
         l = len(f0["variants/POS"]) # Get number of markers
