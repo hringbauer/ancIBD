@@ -128,20 +128,18 @@ class HMM_Full(object):
     ##################################################
     ### Prepping output folder and piping output there
     
-    def prepare_path(self, base_path, iid, ch, prefix_out="", logfile=False):
+    def prepare_path(self, base_path, ch, prefix_out="", logfile=False):
         """Prepare the output path and pipe printing for one Individual.
         Create Path if not already existing.
         prefix_out: Optional additonal folder.
-        logfile: Whether to pipe output to log-file [Warning: it is a hack]"""  
-        if isinstance(iid, (list, np.ndarray)):
-            iid = "_".join(iid) # If multiple individual names given (for X IBD)
-        path_out = os.path.join(base_path, iid, "chr" + str(ch), prefix_out, "")
+        logfile: Whether to pipe output to log-file [WARNING: This is an ugly hack]"""  
+        path_out = os.path.join(base_path, "ch" + str(ch), prefix_out, "")
         if not os.path.exists(path_out):
                 os.makedirs(path_out)
         self.folder_out = path_out
         
-        ### Activate LOG FILE output if given
-        if logfile == True:
+        ### Activate  print to LOG FILE output if given
+        if logfile:
             path_log = os.path.join(path_out, "hmm_run_log.txt")
             print(f"Set Output Log to path: {path_log}")
             sys.stdout = open(path_log, 'w') 
