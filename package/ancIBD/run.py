@@ -11,6 +11,7 @@ import pandas as pd
 import itertools as it
 from time import time
 import sys as sys
+import os as os
 #sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/") 
 from main import HMM_Full  # To run the main plotting.
 from plot.plot_posterior import plot_posterior # to plot the posterior.
@@ -45,7 +46,8 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     
     if len(folder_out)>0:
         folder_out = h.prepare_path(folder_out, ch=ch, prefix_out=prefix_out, logfile=logfile)
-        h.p_obj.save_output(df=df_ibd, save_folder=folder_out) # r_map=[], post=[]
+        save_path = os.path.join(folder_out, f"ch{ch}.tsv")
+        h.p_obj.save_ibd_df(df_ibd=df_ibd, save_path = save_path)
     return df_ibd, post, r_vec
 
 
@@ -117,7 +119,8 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
     
     if len(folder_out)>0:
         folder_out = h.prepare_path(folder_out, ch=ch, prefix_out=prefix_out, logfile=logfile)
-        h.p_obj.save_output(df=df_ibd, save_folder=folder_out) # r_map=[], post=[]
+        save_path = os.path.join(folder_out, f"ch{ch}.tsv")
+        h.p_obj.save_ibd_df(df_ibd=df_ibds, save_path = save_path)
 
     return df_ibds
 

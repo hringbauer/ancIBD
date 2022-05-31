@@ -11,7 +11,8 @@ import pandas as pd
 import itertools as it
 from time import time
 import sys as sys
-sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/") 
+import os as os
+#sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/") 
 from main import HMM_Full  # To run the main plotting.
 from plot.plot_posterior import plot_posterior # to plot the posterior.
 from IO.h5_load import get_opp_homos_f
@@ -44,8 +45,9 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     df_ibd, _, _ = h.p_obj.call_roh(r_vec, post)
     
     if len(folder_out)>0:
-        folder_out = h.prepare_path(folder_out, iid=iids, ch=ch, prefix_out=prefix_out, logfile=logfile)
-        h.p_obj.save_output(df=df_ibd, save_folder=folder_out) # r_map=[], post=[]
+        folder_out = h.prepare_path(folder_out, ch=ch, prefix_out=prefix_out, logfile=logfile)
+        save_path = os.path.join(folder_out, f"ch{ch}.tsv")
+        h.p_obj.save_ibd_df(df_ibd=df_ibd, save_path = save_path)
     return df_ibd, post, r_vec
 
 
@@ -116,8 +118,9 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
     df_ibds = pd.concat(df_ibds)
     
     if len(folder_out)>0:
-        folder_out = h.prepare_path(folder_out, iid=iids, ch=ch, prefix_out=prefix_out, logfile=logfile)
-        h.p_obj.save_output(df=df_ibd, save_folder=folder_out) # r_map=[], post=[]
+        folder_out = h.prepare_path(folder_out, ch=ch, prefix_out=prefix_out, logfile=logfile)
+        save_path = os.path.join(folder_out, f"ch{ch}.tsv")
+        h.p_obj.save_ibd_df(df_ibd=df_ibds, save_path = save_path)
 
     return df_ibds
 
@@ -137,13 +140,14 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
                   cutoff_post=0.99, max_gap=0.0075, 
                   l_model="hdf5", p_col="variants/AF_ALL",
                   title="", c="gray", c_hw="maroon", 
-                  state=0, **kwargs):
+                  state=0, return_post=False, **kwargs):
     """Run and plot IBD for pair of Individuals.
     folder_out: Where to save the hapBLOCK output to
-    iids: list of two iids
-    path_fig: Where to save the IBD plot to
+    iids: list of two iids [List of Length 2]
+    path_fig: Where to save the IBD plot to [String]
     p_col: The dataset to use in hdf5 for der. AF. If default use p=0.5.
            If empty string use in sample AF.
+    return_post: Whether to return posterior [Boolean]
     kwargs: Optional Keyword Arguments for Plotting (e.g. c_ibd)
     """
     assert(len(iids)==2) # Sanity Check of Input IIDs - as here it should be pairs
@@ -167,4 +171,5 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
                        het=o_homos, het_m=m, state=state,
                        min_cm=min_cm, title=title, xlim=xlim, show=True, 
                        savepath=path_fig, xlabel="Chromosome Position [cM]", **kwargs)
+    if return_post:
         return post

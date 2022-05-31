@@ -132,4 +132,4 @@ def vcf_to_1240K_hdf(in_vcf_path = "/n/groups/reich/ali/WholeGenomeImputation/im
         lift_af_df(h5_target=path_h5, path_df=af_path,
                    field='variants/AF_ALL') # The field to use for Allele Frequencies
 
-    print(f"Transformation complete! Find new hdf5 file at: {path_h5}")
+    print(f"Transformation complete! Find new hdf5 file at: {path_h5}\n")

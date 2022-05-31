@@ -1,18 +1,25 @@
 # anIBD
-This Python package analyses ancient DNA for IBD blocks (Identity by Descent segments) shared between pairs of individuals.
+This Python package analyses ancient human DNA for long IBD blocks (Identity by Descent segments) shared between pairs of individuals.
 
 ## Scope of the Method
-The method is relatively data-hungry, and needs imputation with Glimpse that only works well . Ideally, your data has 1x coverage for 1240k SNPs, or 0.5x coverage for WGS data. For somewhat IBD calls, at least 600,000 SNPs on the 1240k panel should be covered at least once. 
+### Ancestry
+As the method relies on imputation with a modern reference panel, it is not appicable for deeply diverged humans (such as Neanderthals or Denisovans.) However, tests showed that the method works for Eurasian ancient human DNA (tested up to 45,000 years ago). 
 
-The shorter the IBD, the less robust the calls, and IBD shorter than 8 cM are prone to false-positive signals.
+### Coverage
+The method is relatively data-hungry, and needs imputation with Glimpse that only works well for samples with >0.5x coverage on 1240k SNPs. 
+
+Ideally, your data has 1x coverage for 1240k SNPs, or 0.5x coverage for WGS data. For robust IBD calls of long IBD (8 cM or longer), at least 600,000 SNPs on the 1240k panel should be covered at least once. Note that there still can be occasional false positive IBD, so please always treat the output with necessary caution and not as a black box.
+
+Generally, the shorter the IBD, the less robust the calls, and IBD shorter than 8 cM are prone to false-positive signals.
+
 
 ## Input Data
-The input data is a VCF that has been inputed and phased with the software Glimpse (https://odelaneau.github.io/GLIMPSE). ancIBD is developed for imputed data that used the 1000G reference haplotype panel. Imputation should be done on all 1000G SNPs, even if your data is 1240k capture data. This VCF **needs** to contain a field for the phased genotype (GT) as well as the three genotype probabilities (as GP field).
+The input data is a VCF that has been inputed and phased with the software Glimpse (https://odelaneau.github.io/GLIMPSE). `ancIBD` is developed for imputed data that used the 1000G reference haplotype panel. Imputation should be done on all 1000G SNPs, even if your data is 1240k capture data. This VCF **needs** to contain a field for the phased genotype (GT) as well as the three genotype probabilities (as GP field).
 
 This VCF is then transformed into a so called .hdf5 file - which is the input for ancIBD software. This .hdf5 is also downsampled to 1240k SNPs, for which the parameters of ancIBD have been optimized. 
 
 ## Example Use Cases
-For example uses cases that guide you through an application, see the Vignette notebooks in the `vignette` folder. 
+For example uses cases that guide you through a typical application, please go through the Vignette notebooks in the `vignette` folder. 
 
 - How to prepare hdf5 data from a Glimpse imputed VCF
 

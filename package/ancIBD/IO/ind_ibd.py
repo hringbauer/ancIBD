@@ -184,9 +184,9 @@ def all_pairs_ibd(df_res, df_iid):
 def combine_all_chroms(chs=[], folder_base="PATH/ch", 
                        path_save = "PATH/ch_all.tsv"):
     """Combine All Chromosomes.
-    chs: Which Chromosomes to run
-    folder_base: Where to load from (part up to ch)
-    path_save: Where to save to"""
+    chs: Which Chromosomes to run [list]
+    folder_base: Where to load from (path part up to including ch)
+    path_save: Where to save the combined file to."""
     if len(chs)==0:
         chs = range(1,23)
                        

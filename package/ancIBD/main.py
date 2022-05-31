@@ -133,7 +133,7 @@ class HMM_Full(object):
         Create Path if not already existing.
         prefix_out: Optional additonal folder.
         logfile: Whether to pipe output to log-file [WARNING: This is an ugly hack]"""  
-        path_out = os.path.join(base_path, "ch" + str(ch), prefix_out, "")
+        path_out = os.path.join(base_path, prefix_out, "")
         if not os.path.exists(path_out):
                 os.makedirs(path_out)
         self.folder_out = path_out
