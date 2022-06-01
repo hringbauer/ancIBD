@@ -6,15 +6,21 @@ import sys as sys
 import h5py
 
 
-def get_af(f, min_gp=0.99):
-    """Get Allele Frequency"""
+def get_af(f, min_gp=0.99, af_def=0.5):
+    """Get Allele Frequency from HDF file f (using GP)
+    min_gp: Minimum Genotype Probability used for calculation.
+    af_def: Default Allele Frequency if no data."""
     gp_max = np.max(f["calldata/GP"], axis=2)
     gp_good = (gp_max>=min_gp) # The decent genotype probabilitiies
     gp_max = 0 # Delete GP max (unnecessary now)
     
     gt1 = np.sum(f["calldata/GT"], axis=2)/2.0 # Get the genotype sum
     gp_good_c = np.sum(gp_good, axis=1)
-    af = np.sum(gt1 * gp_good, axis=1) / gp_good_c
+    af = np.sum(gt1 * gp_good, axis=1) #/ gp_good_c
+    
+    idx = gp_good_c>0
+    af[idx] = af[idx] / gp_good_c[idx]
+    af[~idx] = af_def # Default Value
     return af
 
 def get_af1000G(f):
