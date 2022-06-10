@@ -10,7 +10,7 @@ import os as os
 import sys as sys
 import h5py
 import allel
-from IO.h5_modify import merge_in_af, get_af, lift_af_df, merge_in_ld_map # get_af1000G, lift_af
+from ancIBD.IO.h5_modify import merge_in_af, get_af, lift_af_df, merge_in_ld_map # get_af1000G, lift_af
 #sys.path.insert(0, "/n/groups/reich/hringbauer/git/HAPSBURG/package/")  # hack to get local package first in path
 #from hapsburg.PackagesSupport.h5_python.h5_functions import merge_in_ld_map
 #sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/")
@@ -75,10 +75,10 @@ def merge_vcfs(in_vcf_paths=[], out_vcf_path=""):
 def vcf_to_1240K_hdf(in_vcf_path = "/n/groups/reich/ali/WholeGenomeImputation/imputed/v43.4/chr3.bcf",
                      path_vcf = "./data/vcf/1240k_v43/ch3.vcf.gz",
                      path_h5 = "./data/hdf5/1240k_v43/ch3.h5",
-                     marker_path="./data/filters/ho_snps_bcftools_ch3.csv",
-                     map_path="/n/groups/reich/DAVID/V43/V43.5/v43.5.snp",
-                     af_path="",
-                     col_sample_af="AF_SAMPLE",
+                     marker_path = "./data/filters/ho_snps_bcftools_ch3.csv",
+                     map_path = "/n/groups/reich/DAVID/V43/V43.5/v43.5.snp",
+                     af_path = "",
+                     col_sample_af = "AF_SAMPLE",
                      chunk_length=10000, chunk_width=8, buffer_size=20000,
                      ch=3):
     """Convert Ali's vcf to 1240K hdf5. 

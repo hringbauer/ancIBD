@@ -9,7 +9,7 @@ import pandas as pd
 import os as os
 import itertools as it
 
-from IO.ind_ibd import create_ind_ibd_df, filter_ibd_df # Post-process IBD list to individual
+from ancIBD.IO.ind_ibd import create_ind_ibd_df, filter_ibd_df # Post-process IBD list to individual
 
 #########################################################
 
