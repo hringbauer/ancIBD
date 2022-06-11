@@ -75,10 +75,10 @@ def merge_vcfs(in_vcf_paths=[], out_vcf_path=""):
 def vcf_to_1240K_hdf(in_vcf_path = "/n/groups/reich/ali/WholeGenomeImputation/imputed/v43.4/chr3.bcf",
                      path_vcf = "./data/vcf/1240k_v43/ch3.vcf.gz",
                      path_h5 = "./data/hdf5/1240k_v43/ch3.h5",
-                     marker_path="./data/filters/ho_snps_bcftools_ch3.csv",
-                     map_path="/n/groups/reich/DAVID/V43/V43.5/v43.5.snp",
-                     af_path="",
-                     col_sample_af="AF_SAMPLE",
+                     marker_path = "./data/filters/ho_snps_bcftools_ch3.csv",
+                     map_path = "/n/groups/reich/DAVID/V43/V43.5/v43.5.snp",
+                     af_path = "",
+                     col_sample_af = "AF_SAMPLE",
                      chunk_length=10000, chunk_width=8, buffer_size=20000,
                      ch=3):
     """Convert Ali's vcf to 1240K hdf5. 
