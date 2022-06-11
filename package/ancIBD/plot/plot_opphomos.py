@@ -9,8 +9,8 @@ import multiprocessing as mp
 import h5py
 import allel
 
-sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/")  # hack to get development package first in path
-from IO.h5_load import get_coverage,get_genos_pairs,get_idx_iid,get_idx_iid_exact, get_markers_good, get_opp_homos_f
+#sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/")  # hack to get development package first in path
+from ancIBD.IO.h5_load import get_coverage,get_genos_pairs,get_idx_iid,get_idx_iid_exact, get_markers_good, get_opp_homos_f
 
 def opp_homos(g1, g2):
     """Return opposing homozygotes"""

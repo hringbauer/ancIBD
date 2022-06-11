@@ -2,7 +2,7 @@
 Class for calculating Transition Probabilities, i.e. 
 infitesimal transition Matrices.
 Contains Sub-Classes, as well as factory Method.
-@ Author: Harald Ringbauer, 2019, All rights reserved
+@ Author: Harald Ringbauer, 2021, All rights reserved
 """
 import numpy as np
 

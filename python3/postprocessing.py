@@ -104,16 +104,22 @@ class PostProcessing(object):
                 print(f"Created {save_folder}.")
             
         path_ibd = os.path.join(save_folder, "ibd.tsv")
-        df.to_csv(path_ibd, sep="\t", index=False)
+        self.save_ibd_df(df_ibd=df, save_path = path_ibd)
+
         if len(r_map)>0:
             path_map = os.path.join(save_folder, "map.tsv")
             np.savetxt(path_map, r_map, delimiter="\t")
         if len(post)>0:
             path_posterior = os.path.join(save_folder, "posterior.tsv")
             np.savetxt(path_posterior, post, delimiter="\t")
-                
         if self.output:
-            print(f"Successfully saved output to {save_folder}")
+            print(f"Successfully saved all output to {save_folder}")
+            
+    def save_ibd_df(self, df_ibd, save_path):
+        """Save IBD Dataframe to path save_path"""
+        df_ibd.to_csv(save_path, sep="\t", index=False)
+        if self.output:
+            print(f"Saved IBD output to: {save_path}")
         
     def call_roh(self, r_map, post0, iid1="", iid2=""):
         """Call ROH of Homozygosity from Posterior Data

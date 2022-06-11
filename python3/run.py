@@ -14,8 +14,8 @@ import sys as sys
 import os as os
 #sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/") 
 from main import HMM_Full  # To run the main plotting.
-from plot.plot_posterior import plot_posterior # to plot the posterior.
-from IO.h5_load import get_opp_homos_f
+from ancIBD.plot.plot_posterior import plot_posterior # to plot the posterior.
+from ancIBD.IO.h5_load import get_opp_homos_f
 
 def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""], 
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,

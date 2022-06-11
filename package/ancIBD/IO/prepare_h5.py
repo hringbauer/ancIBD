@@ -10,7 +10,7 @@ import os as os
 import sys as sys
 import h5py
 import allel
-from IO.h5_modify import merge_in_af, get_af, lift_af_df, merge_in_ld_map # get_af1000G, lift_af
+from ancIBD.IO.h5_modify import merge_in_af, get_af, lift_af_df, merge_in_ld_map # get_af1000G, lift_af
 #sys.path.insert(0, "/n/groups/reich/hringbauer/git/HAPSBURG/package/")  # hack to get local package first in path
 #from hapsburg.PackagesSupport.h5_python.h5_functions import merge_in_ld_map
 #sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/")

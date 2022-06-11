@@ -11,8 +11,6 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import itertools as it
 from scipy.special import gammaincinv
-from hapsburg.PackagesSupport.roh_expectations import Expected_Roh
-
 
 def new_columns(df, df_meta, col="New Clade", col_new="", match_col="iid"):
     """Maps Entries from meta dataframe onto the IBD dataframe.
