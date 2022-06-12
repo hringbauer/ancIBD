@@ -1,6 +1,12 @@
 ## VERSION NUMBER, DATE, AUTHOR
 List of updates in this version
 
+## 0.2a2
+Minor bug fixes:
+- Only import ancIBD functions from package.
+- Removed several unneeded import
+- Added Dependency for scikit-allel
+
 ## 0.2a1
 After several bug fixes and making sure that the package structure works (in particular imports), this is the first version on the official PyPi Server.
 

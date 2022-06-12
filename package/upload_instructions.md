@@ -40,7 +40,7 @@ python3 -m pip install --index-url https://test.pypi.org/simple/ ancIBD
 
 # Further Documentation 
 ### To install via pip:
-Follow instructions on pypi site of `hapROH`.
+Follow instructions on PyPi site of `ancIBD`.
 
 ### for packaging: 
 https://packaging.python.org/tutorials/packaging-projects/

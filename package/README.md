@@ -3,12 +3,12 @@ This software package screens ancient human DNA for long IBD blocks (Identity by
 
 ## Scope of ancIBD
 ### Ancestry
-As the method relies on imputation with a modern reference panel, it is not appicable for deeply diverged humans (such as Neanderthals or Denisovans.) However, tests showed that the method works for Eurasian ancient human DNA (tested up to 45,000 years ago). 
+The method relies on imputation with a modern reference panel, therefore it is not appicable for deeply diverged humans such as Neanderthals or Denisovans. However, experiments showed that the method works well for Eurasian ancient human DNA (tested for data up to 45,000 years old). 
 
 ### Coverage
-The method is relatively data-hungry, and needs imputation with Glimpse that only works well for samples with >0.5x coverage on 1240k SNPs. 
+The method is relatively data-hungry. Imputation with Glimpse only works sufficiently well for samples with >0.5x coverage on 1240k SNPs. 
 
-Ideally, your data has 1x coverage for 1240k SNPs, or 0.5x coverage for WGS data. For robust IBD calls of long IBD (8 cM or longer), at least 600,000 SNPs on the 1240k panel should be covered at least once. Note that there still can be occasional false positive IBD, so please always treat the output with necessary caution and not as a black box.
+Ideally, your data therefore has >1x coverage for 1240k SNPs, or >0.5x coverage for WGS data. For robust IBD calls of long IBD (8 cM or longer), at least 600,000 SNPs on the 1240k panel should be covered at least once. Note that there still can be occasional false positive IBD, so please always treat the output with necessary caution and not as a black box.
 
 Generally, the shorter the IBD, the less robust the calls, and IBD shorter than 8 cM are prone to false-positive signals.
 

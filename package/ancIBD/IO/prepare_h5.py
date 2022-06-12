@@ -5,7 +5,6 @@ Functions to prepare HDF5 file from imputed VCFs
 
 import numpy as np
 import pandas as pd
-import socket as socket
 import os as os
 import sys as sys
 import h5py
