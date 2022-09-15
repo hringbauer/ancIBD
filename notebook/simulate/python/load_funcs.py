@@ -17,9 +17,10 @@ class Summary_IBD_Calls(object):
     error = 0.0   # For the Subclasses
     missing = 0 # For the Subclasses
     output = 1 # The Level of output. 0 None, 1 All,
+    file="ibd.tsv" # The called IBD file. Originally ibd.tsv
 
     def __init__(self, mosaic_folder, ch=3, nr_iid = 20, blen_cm = 1, output_prefix = "", 
-                 min_cm=4, error=0, missing=0, output=0):
+                 min_cm=4, error=0, missing=0, output=0, file="ibd.tsv"):
         """Initialize the whole Class"""
         self.mosaic_folder = mosaic_folder
         self.ch = ch
@@ -30,6 +31,7 @@ class Summary_IBD_Calls(object):
         self.error=error
         self.missing=missing
         self.min_cm = min_cm
+        self.file=file
 
     def provide_iid_folders(self):
         """Return a list of folders into which replicate simulations are saved into
@@ -57,7 +59,7 @@ class Summary_IBD_Calls(object):
 
         n_call, n_sim = 0, 0  # Number of total called blocks and simulated blocks
         for f in folders:   
-            df_o = load_observed(f, min_cm=self.min_cm)   # Loading throws error if not existend
+            df_o = load_observed(f, min_cm=self.min_cm, file=self.file)   # Loading throws error if not existend
             df_s = load_simulated(f)
 
             n_call += len(df_o)
@@ -77,7 +79,7 @@ class Summary_IBD_Calls(object):
     def collect_fp_df(self, min_cm=2):
         """Collect and return the Dataframe with the false positive Calls"""
         folders = self.provide_iid_folders()   # Load all the folders
-        observed_dfs = [load_observed(f, min_cm=min_cm) for f in folders]
+        observed_dfs = [load_observed(f, min_cm=min_cm, file=self.file) for f in folders]
         df_observed = pd.concat(observed_dfs)
         return df_observed
     
