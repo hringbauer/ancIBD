@@ -1,7 +1,7 @@
 """
 Functions to prepare parameters for a batch run.
 Splits up all pairs into batches, in a standard algorithm
-@ Author: Harald Ringbauer, 2020
+@ Author: Harald Ringbauer, 2022
 """
 
 import numpy as np
@@ -104,11 +104,12 @@ def save_ibd_df(df_ibd, savepath, create=True):
     df_ibd.to_csv(savepath, sep="\t", index=False) # Save the Values
     print(f"Saved {len(df_ibd)} IBD blocks.")
     
-def get_run_params_from_i(i, metapath="./data/iid_lists/iid_ibd_eurasia_v1.tsv", batch_size = 400, 
+def get_run_params_from_i(i, metapath="./data/iid_lists/iid_ibd_eurasia_v1.tsv", batch_size = 400, min_snps=0, 
                          output = True, folder_out = "/n/groups/reich/hringbauer/git/ibd_euro/output/ibd/v1/"):
     """Return the run parameters for run i
+    min_snps: Minimum number of SNPs covered (for potential filtering on meta file)
     Returns iids, run_iids, and the output folder"""
-    iids = get_iids(path_meta=metapath)
+    iids = get_iids(path_meta=metapath, min_snps=min_snps)
     b1, b2, ch = get_run_lists_batch(i = i, k=len(iids), batch_size = batch_size, output=output)
     iids, run_iids = get_unique_iid_pairs(iids, b1, b2, batch_size)
     path_ibd = create_savepath(folder_out, ch=ch, b1=b1, b2=b2, output=output)

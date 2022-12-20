@@ -202,14 +202,15 @@ def plot_pde_individual(df_ibd, figsize=(8,6), bw_cm=4,
                         plotlim=[4,100], savepath="", 
                         output=False, lw_curve=3,
                         comm_ancs=[4,4,4,2], ms=[6,5,4,3], labels=["First Cousins", "Aunt/Nephew", "Full Siblings", "Parent/Offpsring"],
-                        cs=["red", "green", "orange", "gray"], title="", leg_loc="upper right"):
+                        cs=["red", "green", "orange", "gray"], ls=[], title="", leg_loc="upper right"):
     """Plot Histograms/PDEs of ROH Distribution for one Individual (iid)
     bw_cm: Length of one Bin (in cM)
     comm_ancs: How many common ancestors to plot [list]
     ms: How many meiosis to plot [list]
     labels: what labels do they have [list]
     cs: what colors to plot [list]"""
-
+    if len(ls)==0:
+        ls = ["-" for _ in cs]
     ### Load And Prepare Data
     bins = np.arange(plotlim[0], plotlim[1], bw_cm)
     bin_mean = (bins[1:] + bins[:-1]) / 2.0  # Mean of each bin
@@ -224,7 +225,8 @@ def plot_pde_individual(df_ibd, figsize=(8,6), bw_cm=4,
     # Plot the Empirical Averages
     for i in range(len(labels)):
         block_pdf = exp_blocks_full_individual(bin_mean/100, m=ms[i], comm_anc=comm_ancs[i])
-        ax.plot(bin_mean, bw_cm * block_pdf/100, c=cs[i], label=labels[i], lw=lw_curve) # Plot Density Per cM (adjusted for bin width)
+        ax.plot(bin_mean, bw_cm * block_pdf/100, c=cs[i], linestyle=ls[i], 
+                label=labels[i], lw=lw_curve) # Plot Density Per cM (adjusted for bin width)
 
     plt.xlabel("IBD Length [cm]", fontsize=fs)
     plt.ylabel(f"Number per {bw_cm} cM Bin", fontsize=fs)
@@ -242,7 +244,7 @@ def plot_pde_individual(df_ibd, figsize=(8,6), bw_cm=4,
 def plot_pde_individual_from_ibd_df(df_ibd, iids=[], min_cm=12, figsize=(8,6),
                                     comm_ancs =[4,4,2,2], ms=[4,6,5,4],
                                     labels=["First Cousins", "Second Cousins", "5 generations anc.", "4 generations anc."],
-                                    cs = ["red", "green", "orange", "gray"], title="",
+                                    cs = ["red", "green", "orange", "gray"], ls = [], title="",
                                     bw_cm=4, plotlim=[4,100], lw_curve=3,
                                     leg_loc = "upper right", output=False, savepath=""):
     """df_ibd: List of IBD or ROH in standard hapROH, bapBLOCK format
@@ -258,7 +260,7 @@ def plot_pde_individual_from_ibd_df(df_ibd, iids=[], min_cm=12, figsize=(8,6),
                     plotlim=plotlim,
                     output=output, lw_curve=lw_curve, 
                     comm_ancs=comm_ancs, ms=ms, labels=labels,
-                    cs=cs, title=title, 
+                    cs=cs, ls=ls, title=title, 
                     leg_loc=leg_loc, savepath=savepath)
 
 
