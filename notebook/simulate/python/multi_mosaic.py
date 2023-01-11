@@ -9,7 +9,7 @@ import h5py                             # For Processing HDF5s
 import numpy as np
 import pandas as pd
 import os                               # To delete File
-from python.create_mosaic import Mosaic_1000G  # custom import
+from create_mosaic import Mosaic_1000G  # custom import
 
 class Mosaic_1000G_Multi(object):
     """Class for Preparing Multiple 1000G Mosaics. And Saving them.
@@ -23,9 +23,10 @@ class Mosaic_1000G_Multi(object):
     iid = "iid"                         # Prefix of Artificial Individual Names
     n = 3       # Nr of individuals to simulate
     gp = True   # Whether to save genotype probabilities in hdf5
+    IBD2 = False # whether to copy in IBD2 blocks, the default is to copy IBD1 blocks
 
-    path1000G = "/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_1000G/chr"
-    pop_path = "/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_1000G/meta_df_all.csv"
+    path1000G = "/mnt/archgen/users/yilei/Data/1000G/1000g1240khdf5/all1240/chr"
+    pop_path = "/mnt/archgen/users/yilei/Data/1000G/1000g1240khdf5/all1240/meta_df_all.csv"
     # Where to save the new HDF5 to by default
     save_path = "/n/groups/reich/hringbauer/git/hapBLOCK/output/simulated/TSI/"
 
@@ -41,7 +42,7 @@ class Mosaic_1000G_Multi(object):
         print(self.save_path)  # Create Save folder if needed
         if not os.path.exists(self.save_path):
             os.makedirs(self.save_path)
-        self.m_object = Mosaic_1000G(ch=self.ch, path1000G=self.path1000G,
+        self.m_object = Mosaic_1000G(ch=self.ch, IBD2=self.IBD2, path1000G=self.path1000G,
                                      pop_path=self.pop_path, save_path=self.save_path)
 
     def save_hdf5(self, gt, ad, ref, alt, pos, rec, samples, path, gp=[], af=[], compression="gzip"):
@@ -258,7 +259,7 @@ class Mosaic_1000G_Multi(object):
 ### Code to simulate copied in IBD
 
 def multi_run_lengths(base_path="./Simulated/1000G_Mosaic/TSI/", pop_list=["TSI"], n=20,
-                      ch=3, chunk_length=0.005, lengths=[1.0, 3.0, 5.0, 10.0], n_blocks=5):
+                      ch=3, chunk_length=0.005, lengths=[1.0, 3.0, 5.0, 10.0], n_blocks=5, IBD2=False):
     """Create Multiple IBD runs and saves combined data into base_path hdf5 and ibd_info df
     base_path:  Start of SavePaths
     pop_list: The Reference Populations for Mosaic
@@ -273,11 +274,13 @@ def multi_run_lengths(base_path="./Simulated/1000G_Mosaic/TSI/", pop_list=["TSI"
     t.n = n
     t.chunk_length = chunk_length
     t.ch = ch  # The Chromosome
+    t.IBD2 = IBD2
 
     for l in lengths:
         t.ibd_lengths = np.ones(n_blocks) * 0.01 * l  # Set the Lengths [in Morgan]
         # Where to save the new HDF5 to
-        t.save_path = base_path + "ch" + str(t.ch) + "_" + str(int(l)) + "cm/"
+        # t.save_path = base_path + "ch" + str(t.ch) + "_" + str(int(l)) + "cm/"
+        t.save_path = base_path + "ch" + str(t.ch) + "_" + str(round(l,1)) + "cm/"
         t.load_m_object()
         t.create_individuals()
 

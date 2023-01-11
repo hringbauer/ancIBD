@@ -23,6 +23,16 @@ def get_af1000G(f):
     af = np.mean(gt1, axis=1)
     return af
 
+def get_af1000G_atGivenPos(f, pos):
+    """get 1000G allele freq at the given basepair position"""
+    af = get_af1000G(f)
+    pos_all = np.array(f['variants/POS'])
+    # we assume pos is a subset of pos_all
+    assert(np.all(np.isin(pos, pos_all)))
+    _, id1, id2 = np.intersect1d(pos, pos_all, return_indices=True)
+    return af[id2]
+
+
 def merge_in_af(path_h5, af, col_af="AF_ALL"):
     """Merge in AF into hdf5 file. Save modified h5 in place 
     af: Array of allele frequencies to save"""
