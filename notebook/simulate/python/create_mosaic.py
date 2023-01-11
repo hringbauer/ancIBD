@@ -15,6 +15,7 @@ class Mosaic_1000G(object):
     It creates the Mosaic individuals and returns their genotypes"""
 
     ch = 0  # Which Chromosome to analyze
+    IBD2 = False
     path1000G = ""  # Path to the 1000 Genome Data
     pop_path = ""  # Path to Population Information
     save_path = ""  # Where to save the new HDF5 to
@@ -23,7 +24,7 @@ class Mosaic_1000G(object):
     f = 0          # HDF5 with 1000 Genome Data
     meta_df = 0    # Meta_df with Meta Information of the 1000 Genome Data
 
-    def __init__(self, ch=3, path1000G="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_1000G/chr",
+    def __init__(self, ch=3, IBD2=False, path1000G="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_1000G/chr",
                  pop_path="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_1000G/meta_df_all.csv",
                  save_path=""):
         """ch: Which chromosome to loadself.
@@ -31,7 +32,7 @@ class Mosaic_1000G(object):
         save_path: Where to save the new HDF5 to"""
         print("\nStarted Mosaic Object. Working Directory:")
         print(os.getcwd()) # Show the current working directory)
-
+        self.IBD2 = IBD2
         # Set Path of 1000G (without chromosome part)
         self.path1000G = path1000G + str(ch) + ".hdf5"
         self.pop_path = pop_path
@@ -177,7 +178,9 @@ class Mosaic_1000G(object):
 
         gts_copy = f["calldata/GT"][i_min:i_max+1, id_copy, copy_phase]  # The Stretch to copy in
         gts[i_min:i_max + 1, 0] = gts_copy  # Copy in the Stretch on first haplotype
-
+        if self.IBD2:
+            print('copy onto both haplotypes to simulate IBD2')
+            gts[i_min:i_max+1, 1] = gts_copy
         return gts
 
     def give_iids(self, meta_df="", pop_list=["TSI"]):

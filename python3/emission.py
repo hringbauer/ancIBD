@@ -90,6 +90,31 @@ class HaplotypeSharingEmissions(Emissions):
         for i, (j,k) in enumerate(it.product([0,1],repeat=2)):
             e_mat[i+1,:] = self.hw_probs_shared(hts_p, p=p, shared=[j,k+2])
         return e_mat
+
+
+class IBD2Emissions(HaplotypeSharingEmissions):
+    def hw_probs_ibd2(self, hts_p, p, shared=[(0,2), (1,3)]):
+        p_shared1 = self.hw_prob_haplo_share_pp(hts_p[shared[0][0], :], hts_p[shared[0][1], :], p=p)
+        p_shared2 = self.hw_prob_haplo_share_pp(hts_p[shared[1][0], :], hts_p[shared[1][1], :], p=p)
+        return p_shared1*p_shared2
+
+    def give_emission_matrix(self, hts_p, p, dtype="float"):
+        """Give emission Matrix for 7-state HMM.
+        0th state: HW 
+        1st-4th State: Haplotype Copying
+        5th-6th State: IBD2 state
+        Input: p: [l] Array of (derived) allele frequencies
+        hts_p: [4,l] Array of four ancestral haplotype probabilities.
+        Return: emission matrix [7,l]."""
+        l = np.shape(hts_p)[1]
+        e_mat = np.zeros((7,l), dtype=dtype)
+        e_mat[0,:] = self.hw_prob_haplos_pp(hts_p,p=p)
+        for i, (j,k) in enumerate(it.product([0,1],repeat=2)):
+            e_mat[i+1,:] = self.hw_probs_shared(hts_p, p=p, shared=[j,k+2])
+        e_mat[5, :] = self.hw_probs_ibd2(hts_p, p, shared=[(0,2), (1,3)])
+        e_mat[6, :] = self.hw_probs_ibd2(hts_p, p, shared=[(0,3), (1,2)])
+        return e_mat
+
     
 class HaplotypeSharingEmissions2(Emissions):
     """Class for emission probabilities of diploid haplotypes who
@@ -141,6 +166,8 @@ def load_emission_model(e_model="haploid_gl"):
     """Factory method to return the right Emission Model"""
     if e_model == "haploid_gl":
         e_obj = HaplotypeSharingEmissions()
+    elif e_model == "IBD2":
+        e_obj = IBD2Emissions()
     elif e_model == "haploid_gl2":
         e_obj = HaplotypeSharingEmissions2()
     else:

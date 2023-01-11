@@ -66,20 +66,23 @@ class HMM_Full(object):
     
     def run_fwd_bwd(self, full=True):
         """Run Forward Backward algorithm."""
-        htsl, p, r_vec, _ =  self.l_obj.load_all_data()
+        htsl, p, r_vec, _, bp_vec =  self.l_obj.load_all_data()
         e_mat = self.e_obj.give_emission_matrix(htsl, p)
-        t_mat = self.t_obj.full_transition_matrix(r_vec, n=4, submat33=self.submat33)
+        if self.t_model == "standard":
+            t_mat = self.t_obj.full_transition_matrix(r_vec, n=4, submat33=self.submat33)
+        else:
+            t_mat = self.t_obj.full_transition_matrix(r_vec)
         
         if full:
             post, fwd, bwd, tot_ll = self.fwd_bwd(e_mat, t_mat, in_val = self.in_val, 
-                                                  full=full, output=self.output)
-            self.p_obj.call_roh(r_vec, post)
-            return post, r_vec, fwd, bwd, tot_ll
+                                                  full=full, output=self.output) 
+            #self.p_obj.call_roh(r_vec, post)
+            return post, r_vec, bp_vec, fwd, bwd, tot_ll
         else:
             post = self.fwd_bwd(e_mat, t_mat, in_val = self.in_val, 
                                 full=full, output=self.output)
-            self.p_obj.call_roh(r_vec, post)
-            return post, r_vec  
+            #self.p_obj.call_roh(r_vec, post)
+            return post, r_vec, bp_vec  
     
     ##################################################
     ### Run FWD-BWD timed [LEGACY code]
@@ -133,7 +136,7 @@ class HMM_Full(object):
         Create Path if not already existing.
         prefix_out: Optional additonal folder.
         logfile: Whether to pipe output to log-file [WARNING: This is an ugly hack]"""  
-        path_out = os.path.join(base_path, prefix_out, "")
+        path_out = os.path.join(base_path, f"ch{ch}", prefix_out, "")
         if not os.path.exists(path_out):
                 os.makedirs(path_out)
         self.folder_out = path_out

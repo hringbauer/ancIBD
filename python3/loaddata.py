@@ -91,7 +91,7 @@ class LoadHDF5(LoadData):
     path_h5=""
     iids = []
     ch = 3   # Which chromosome to load
-    min_error=1e-5 # Minimum Probability of genotyping error
+    min_error=1e-3 # Minimum Probability of genotyping error
     p_col = "variants/AF_ALL" # The hdf5 column with der. all freqs
     
     def return_map(self, f):
@@ -152,8 +152,9 @@ class LoadHDF5Multi(LoadHDF5):
     path_h5=""
     iids = []
     ch = 3   # Which chromosome to load
-    min_error = 1e-5 # Minimum Probability of genotyping error  
+    min_error = 1e-3 # Minimum Probability of genotyping error  
     p_col = "" # The hdf5 column with der. all freqs. If given, use the field
+    maf = 0.0
     # If "default" use p=0.5 everywhere
     # default value for p_col in my hdf5s: variants/AF_ALL
     
@@ -162,9 +163,13 @@ class LoadHDF5Multi(LoadHDF5):
         Return [n,l,2] array"""
         h1 = f["calldata/GT"][:,idcs,:] ### Get l, n, 2
         l,n,_ = np.shape(h1) # Get the nr loci
-        m = np.max(f["calldata/GP"][:,idcs,:], axis=2)  
+        m = np.max(f["calldata/GP"][:,idcs,:], axis=2)
+        # m = f['calldata/GP'][:, idcs,:]
+        # print(f'shape of m: {m.shape}')
+        # m = m[:,:,0] + 0.5*m[:,:,1]
+        # print(f'shape of m: {m.shape}')
         m = np.minimum(m,  1 - self.min_error) # Max Cap of certainty
-        h1 = (1-h1) * m[:,:,None] + h1 * (1 - m[:,:,None]) # Probability of being ancestral
+        h1 = (1 - h1) * m[:,:,None] + h1 * (1 - m[:,:,None]) # Probability of being ancestral
         h1 = np.swapaxes(h1, 0, 1) # ->n,l,2
         h1 = np.swapaxes(h1, 1, 2) #-> n,2,l
         h1 = h1.reshape((2*n,l))
@@ -178,19 +183,26 @@ class LoadHDF5Multi(LoadHDF5):
         map in Morgan [l]"""
         path_h5_ch = f"{self.path}{self.ch}.h5"
         with h5py.File(path_h5_ch, "r") as f:
-            m = self.return_map(f)            
-            idcs = np.array([self.get_individual_idx(f, iid) for iid in self.iids])
-            sort = np.argsort(idcs)   # Get the sorting Indices [has to go low to high]
-            samples = self.iids[sort] # Get them in sorted order
-            hts = self.get_haplo_prob(f, idcs[sort])
-        
+            
             if len(self.p_col)>0:
                 p = self.get_p_hdf5(f, self.p_col)  
             else:
                 p = self.get_p(hts)  # Calculate Mean allele frequency from subset
-            
+
+            tokeep = np.where(np.logical_and(p >= self.maf, p <= 1 - self.maf))[0]
+            print(f'keeping {len(tokeep)} out of {len(p)} SNPs that pass MAF >= {self.maf}')
+            p = p[tokeep]
+
+            m = self.return_map(f)[tokeep]
+            idcs = np.array([self.get_individual_idx(f, iid) for iid in self.iids])
+            sort = np.argsort(idcs)   # Get the sorting Indices [has to go low to high]
+            samples = self.iids[sort] # Get them in sorted order
+            hts = self.get_haplo_prob(f, idcs[sort])[:, tokeep]
+            bp_vec = f['variants/POS'][:]
+            bp_vec = bp_vec[tokeep]
+        
         self.check_valid_data(hts, p, m)
-        return hts, p, m, samples
+        return hts, p, m, samples, bp_vec
     
     def get_p(self, htsl):
         """Get Allele frequency from haplotype probabilities.
