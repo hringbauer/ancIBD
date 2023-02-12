@@ -43,6 +43,8 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     #post, r_vec, fwd, bwd, tot_ll = h.run_fwd_bwd()
     post, r_vec =  h.run_fwd_bwd(full=False)
     df_ibd, _, _ = h.p_obj.call_roh(r_vec, post)
+    #df_ibd, _, _ = h.p_obj.call_roh(r_vec, post, iid1=iids[0], iid2=iids[1])
+
     
     if len(folder_out)>0:
         folder_out = h.prepare_path(folder_out, ch=ch, prefix_out=prefix_out, logfile=logfile)
