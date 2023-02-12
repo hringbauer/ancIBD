@@ -2,10 +2,16 @@ import matplotlib.pyplot as plt
 from matplotlib import gridspec
 import numpy as np
 import h5py as h5py
+from matplotlib.patches import Rectangle
+
 
 from matplotlib import rcParams
 rcParams['font.family'] = 'sans-serif'   # Set the default
 rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
+
+import sys
+sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/")  # hack to get development package first in path
+from IO.h5_load import get_coverage,get_genos_pairs,get_idx_iid,get_idx_iid_exact, get_markers_good, get_opp_homos_f
 
 def plot_posterior(ax=0, morgan=[], post=[], het=[], het_m=[], 
                    df_ibd=[], df_truth=[], state=0, figsize=(12,3), 
@@ -110,3 +116,100 @@ def get_map(path_h5= "./data/hdf5/1240k_v43/ch", ch=3,
     f = h5py.File(path_load, "r") # Load for Sanity Check. See below!
     m = f[col_map][:]
     return m
+
+def plot_posterior_5States(basepath, start=-1, end=-1):
+    # I assume the two files, map.npy and posterior.npy, reside in basepath
+    r_map = np.load(f'{basepath}/map.npy', 'r')
+    r_map = 100*r_map # cM is more intuitive for me
+    post = np.load(f'{basepath}/posterior.npy', 'r')
+    _, l = post.shape
+    assert(len(r_map) == l) # sanity check
+
+    i = np.searchsorted(r_map, start) if start != -1 else 0
+    j = np.searchsorted(r_map, end) if end != -1 else -1
+
+    for k in range(1,5):
+        plt.plot(r_map[i:j], post[k, i:j], label=f'state {k}', linewidth=0.25, alpha=0.75)
+    plt.plot(r_map[i:j], 1-post[0, i:j], label='sum of IBD states', color='black', linewidth=0.6)
+    plt.xlabel('Genomic Position')
+    plt.ylabel('Posterior')
+    plt.legend(loc='upper right', fontsize='xx-small')
+    plt.savefig(f'{basepath}/posterior.png', dpi=300)
+    plt.clf()
+    
+def plot_posterior_7States(basepath, start=-1, end=-1, prefix="", simplify=True):
+    # I assume the two files, map.npy and posterior.npy, reside in basepath
+    r_map = np.load(f'{basepath}/map.npy', 'r')
+    r_map = 100*r_map # cM is more intuitive for me
+    post = np.load(f'{basepath}/posterior.npy', 'r')
+    _, l = post.shape
+    assert(len(r_map) == l) # sanity check
+
+    i = np.searchsorted(r_map, start) if start != -1 else 0
+    j = np.searchsorted(r_map, end) if end != -1 else -1
+
+    if not simplify:
+        for k in range(1,5):
+            plt.plot(r_map[i:j], post[k, i:j], label=f'state {k}', linewidth=0.25, alpha=0.75)
+    plt.plot(r_map[i:j], np.sum(post[1:5, i:j], axis=0), label='sum of IBD1 states', color='black', linewidth=0.75)
+    plt.plot(r_map[i:j], np.sum(post[5:7, i:j], axis=0), label='sum of IBD2 states', color='grey', linewidth=0.75)
+
+
+    plt.xlabel('Genomic Position')
+    plt.ylabel('Posterior')
+    plt.legend(loc='upper right', fontsize='xx-small')
+
+    if len(prefix) == 0:
+        plt.savefig(f'{basepath}/posterior.png', dpi=300)
+    else:
+        plt.savefig(f'{basepath}/posterior.{prefix}.png', dpi=300)
+    plt.clf()
+    
+def plot_posterior_7States_plusGeno(basepath, start=-1, end=-1, iids=[], truth=None, path2hdf5="", ch=1, prefix="", outFolder=""):
+    # I assume the two files, map.npy and posterior.npy, reside in basepath
+    r_map = np.load(f'{basepath}/map.npy', 'r')
+    r_map = 100*r_map # cM is more intuitive for me
+    post = np.load(f'{basepath}/posterior.npy', 'r')
+    _, l = post.shape
+    assert(len(r_map) == l) # sanity check
+
+    i = np.searchsorted(r_map, start) if start != -1 else 0
+    j = np.searchsorted(r_map, end) if end != -1 else -1
+    plt.plot(r_map[i:j], np.sum(post[1:5, i:j], axis=0), label='sum of IBD1 states', color='black', linewidth=0.75)
+    plt.plot(r_map[i:j], np.sum(post[5:7, i:j], axis=0), label='sum of IBD2 states', color='grey', linewidth=0.75)
+
+    ########################### grabbing genotypes #########################
+    f = h5py.File(f'{path2hdf5}{ch}.h5', 'r')
+    gt1, gt2, map = get_genos_pairs(f, sample1=iids[0], sample2=iids[1], cutoff=0.99, output=True, phased=False, exact=False)
+    map = 100*map
+    i = np.searchsorted(map, start) if start != -1 else 0
+    j = np.searchsorted(map, end) if end != -1 else -1
+    plt.scatter(map[i:j], [-0.05]*(j-i), marker='o', color='indigo', s=0.5, alpha=0.3) # to get a sense of the density of markers
+    gt1, gt2, map = gt1[i:j], gt2[i:j], map[i:j]
+    diff_gts = (gt1 != gt2)
+    plt.scatter(map[diff_gts], [1.05]*np.sum(diff_gts), marker='o', color='blue', label='Diff. Genotypes', s=0.5, alpha=0.3)
+
+    # plot oppo homozygotes
+    index = np.logical_or(np.logical_and(gt1 == 0, gt2 == 2), np.logical_and(gt1 == 2, gt2 == 0))
+    plt.scatter(map[index], [1.1]*np.sum(index), marker='o', color='red', label='oppo homo', s=0.5, alpha=0.3) 
+
+    # plot truth IBD region if provided
+    if truth:
+        print('plot IBD new version')
+        plt.hlines(y=1.15, xmin=truth[0], xmax=truth[1], 
+                        colors="blue", linewidth=6)
+
+
+
+    plt.xlabel('Genomic Position')
+    plt.ylabel('Posterior')
+    plt.legend(loc='upper right', fontsize='xx-small')
+    if len(outFolder) > 0:
+        basepath = outFolder
+    if len(prefix) == 0:
+        plt.savefig(f'{basepath}/posterior.png', dpi=300)
+        plt.savefig(f'{basepath}/posterior.pdf', dpi=300)
+    else:
+        plt.savefig(f'{basepath}/posterior.{prefix}.png', dpi=300)
+        plt.savefig(f'{basepath}/posterior.{prefix}.pdf', dpi=300)
+    plt.clf()

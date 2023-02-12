@@ -5,7 +5,6 @@ Functions to prepare HDF5 file from imputed VCFs
 
 import numpy as np
 import pandas as pd
-import socket as socket
 import os as os
 import sys as sys
 import h5py
@@ -81,17 +80,25 @@ def vcf_to_1240K_hdf(in_vcf_path = "/n/groups/reich/ali/WholeGenomeImputation/im
                      col_sample_af = "AF_SAMPLE",
                      chunk_length=10000, chunk_width=8, buffer_size=20000,
                      ch=3):
-    """Convert Ali's vcf to 1240K hdf5. 
-    marker_path: Path to file containing SNPs to downsample to
-    If marker_path empty, no SNP filtering done.
-    map_path: Path to eigenstrat SNP file containing genetic map.
-    These are merged into a hdf5 field "variants/MAP"
-    If map_path empty, no genetic map is merged in.
-    af_path: Path to tab-seperated table containing allele frequencies
-    There are merged into the hdf5 field "variants/AF_ALL"
-    If no such path given, no allele frequencies are merged in.
-    col_sample_af: The hdf5 column name for the allele frequency calculated from sample.
-    If left empty, no such column will be calculated or added. 
+    """
+    Convert Ali's vcf to 1240K hdf5. 
+    
+    Parameters
+    ------------
+    in_vcf_path: str
+        Input VCF file (i.e, output from GLIMPSE)
+    path_vcf: str
+        A filtered vcf of in_vcf_path that contains only 1240k sites.
+    path_h5: str
+        Path of the output HDF5 files
+    marker_path: str
+        Path to file containing SNPs to downsample. If marker_path empty, no SNP filtering done.
+    map_path: str 
+        Path to eigenstrat SNP file containing genetic map. These are merged into a hdf5 field "variants/MAP". If map_path empty, no genetic map is merged in.
+    af_path: str
+        Path to tab-seperated table containing allele frequencies. There are merged into the hdf5 field "variants/AF_ALL". If no such path given, no allele frequencies are merged in.
+    col_sample_af: str:
+        The hdf5 column name for the allele frequency calculated from sample. If left empty, no such column will be calculated or added. 
     """ 
     print("Print downsampling to 1240K...")
     if len(marker_path)>0:

@@ -8,7 +8,7 @@
 #SBATCH --export=NONE
 #SBATCH --output=./logs/%A_%a.out
 #SBATCH --error=./logs/%A_%a.err
-#SBATCH --array=1-21 #%0-12658%200
+#SBATCH --array=1-22 #%0-12658%200
 #unset SLURM_EXPORT_ENV
 #export OMP_NUM_THREADS=1
 
@@ -20,5 +20,4 @@ module load samtools
 module load bcftools
 
 # Execute the following tasks
-#python3 vcf_to_hdf5.v49.2.py $SLURM_ARRAY_TASK_ID 
-python3 vcf_to_hdf5.v51.1.py $SLURM_ARRAY_TASK_ID
+python3 vcf_to_hdf5.v54.1.py $SLURM_ARRAY_TASK_ID

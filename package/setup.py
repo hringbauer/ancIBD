@@ -22,13 +22,13 @@ with open("README.md", "r") as fh:
     
 setup(
     name="ancIBD",
-    version="0.1a",  # a means alpha
+    version="0.2a2",  # a means alpha
     author="Harald Ringbauer",
     author_email="harald_ringbauer@eva.mpg.de",
     description="Identify IBD segments between pairs of individuals in ancient human DNA data",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/hringbauer/hapROH",
+    url="https://github.com/hringbauer/ancIBD",
     packages=find_packages(),
     ext_modules=extensions,
     classifiers=[
@@ -37,5 +37,6 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    install_requires=['numpy', 'pandas', 'scipy', 'h5py', 'psutil', 'cython', 'matplotlib', 'pysam'],
+    install_requires=['numpy', 'pandas', 'scipy', 'h5py', 
+                      'psutil', 'cython', 'matplotlib', 'pysam', 'scikit-allel'],
 )

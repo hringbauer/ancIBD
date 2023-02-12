@@ -6,7 +6,7 @@ Contains Sub-Classes, as well as factory Method.
 """
 import numpy as np
 from scipy.special import logsumexp as logsumexp
-from cfunc import fwd_bkwd_fast, fwd_bkwd_lowmem, fwd_bkwd_scaled
+from ancIBD.cfunc import fwd_bkwd_fast, fwd_bkwd_lowmem, fwd_bkwd_scaled
 
 ####################################################
 ### Python function FWD BWD. (C FUNCTIONS GET IMPORTED)

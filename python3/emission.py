@@ -67,7 +67,6 @@ class HaplotypeSharingEmissions(Emissions):
 
     def hw_probs_shared(self, hts_p, p, shared=(0,2), dtype="float"):
         """Give emission probabilities for shared state.
-        Assume 0/1 2/3 are diploid haplotypes, and 0/2 are shared
         hts_p: [4,l] Array of four ancestral haplotype probabilities
         p: [l] array of derived genotype probability.
         shared: tuple of length 2 giving the indices of the shared haplotypes"""
@@ -91,11 +90,86 @@ class HaplotypeSharingEmissions(Emissions):
         for i, (j,k) in enumerate(it.product([0,1],repeat=2)):
             e_mat[i+1,:] = self.hw_probs_shared(hts_p, p=p, shared=[j,k+2])
         return e_mat
+
+
+class IBD2Emissions(HaplotypeSharingEmissions):
+    def hw_probs_ibd2(self, hts_p, p, shared=[(0,2), (1,3)]):
+        p_shared1 = self.hw_prob_haplo_share_pp(hts_p[shared[0][0], :], hts_p[shared[0][1], :], p=p)
+        p_shared2 = self.hw_prob_haplo_share_pp(hts_p[shared[1][0], :], hts_p[shared[1][1], :], p=p)
+        return p_shared1*p_shared2
+
+    def give_emission_matrix(self, hts_p, p, dtype="float"):
+        """Give emission Matrix for 7-state HMM.
+        0th state: HW 
+        1st-4th State: Haplotype Copying
+        5th-6th State: IBD2 state
+        Input: p: [l] Array of (derived) allele frequencies
+        hts_p: [4,l] Array of four ancestral haplotype probabilities.
+        Return: emission matrix [7,l]."""
+        l = np.shape(hts_p)[1]
+        e_mat = np.zeros((7,l), dtype=dtype)
+        e_mat[0,:] = self.hw_prob_haplos_pp(hts_p,p=p)
+        for i, (j,k) in enumerate(it.product([0,1],repeat=2)):
+            e_mat[i+1,:] = self.hw_probs_shared(hts_p, p=p, shared=[j,k+2])
+        e_mat[5, :] = self.hw_probs_ibd2(hts_p, p, shared=[(0,2), (1,3)])
+        e_mat[6, :] = self.hw_probs_ibd2(hts_p, p, shared=[(0,3), (1,2)])
+        return e_mat
+
+    
+class HaplotypeSharingEmissions2(Emissions):
+    """Class for emission probabilities of diploid haplotypes who
+    possibly share one haplotype. Update to new emissions based
+    on that output of Glimpse are posterior probabilities"""
+    
+    
+    def hw_prob_haplo_share_pp(self, ht_p1, ht_p2, p, min_p = 0.001):
+        """Calculate probability of sharing haplotypes
+        ht_p1, ht_p2: Array of haplotype likelihood for ancestral, l locis
+        p: [l] Array of (derived) allele frequencies
+        returns [l] vector of prob that shared haplotype"""
+        ### Cut off to minimal allele frequencies
+        pt = np.maximum(p, min_p)
+        pt = np.minimum(pt, 1-min_p)
+        
+        s1 = ht_p1 * ht_p2 / (1-pt) # Prob both ancestral
+        s2 = (1-ht_p1) * (1-ht_p2) / pt # Prob both derived
+        prob = s1 + s2
+        return prob
+
+    def hw_probs_shared(self, hts_p, p, shared=(0,2), dtype="float"):
+        """Give emission probabilities for shared state.
+        hts_p: [4,l] Array of four ancestral haplotype probabilities
+        p: [l] array of derived genotype probability.
+        shared: tuple of length 2 giving the indices of the shared haplotypes"""
+        ### Sanity Check
+        not_shared = [i for i in range(0,4) if i not in shared]
+        assert(len(not_shared)==2 & len(shared)==2) # Sanity Check
+        
+        # Actual Calculation
+        p_shared = self.hw_prob_haplo_share_pp(hts_p[shared[0],:],hts_p[shared[1],:], p=p)
+        return p_shared
+
+    def give_emission_matrix(self, hts_p, p, dtype="float"):
+        """Give emission Matrix for 5-state HMM.
+        0th state: HW 1st-4th State: Haplotype Copying
+        Input: p: [l] Array of (derived) allele frequencies
+        hts_p: [4,l] Array of four ancestral haplotype probabilities.
+        Return: emission matrix [5,l]."""
+        l = np.shape(hts_p)[1]
+        e_mat = np.zeros((5,l), dtype=dtype)
+        e_mat[0,:] = 1 # Because simply proportional to P(D)
+        for i, (j,k) in enumerate(it.product([0,1],repeat=2)):
+            e_mat[i+1,:] = self.hw_probs_shared(hts_p, p=p, shared=[j,k+2])
+        return e_mat
     
 def load_emission_model(e_model="haploid_gl"):
     """Factory method to return the right Emission Model"""
     if e_model == "haploid_gl":
         e_obj = HaplotypeSharingEmissions()
+    elif e_model == "IBD2":
+        e_obj = IBD2Emissions()
+    elif e_model == "haploid_gl2":
+        e_obj = HaplotypeSharingEmissions2()
     else:
         raise NotImplementedError("Emission Model not found!")
     return e_obj

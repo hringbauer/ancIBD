@@ -208,6 +208,70 @@ class LoadHDF5Multi(LoadHDF5):
         else:
             p = f[col][:] # Load the Allele Freqs from HDF5
         return p
+
+class LoadH5Multi2(LoadHDF5Multi):
+    """Update to more accurate genotype probabilities
+    from diploid to haploid."""
+    path_h5=""
+    iids = []
+    ch = 3   # Which chromosome to load
+    min_error = 1e-3  # Minimum Probability of genotyping error  
+    pph_error = 1e-2 #1e-3 # Point Phase Error
+    p_col = "" # The hdf5 column with der. all freqs. If given, use the field
+    # If "default" use p=0.5 everywhere
+    # default value for p_col in my hdf5s: variants/AF_ALL
+    
+    def get_haplo_prob(self, f, idcs):
+        """Get haploid ancestral probability for n individuals 
+        Return [n,l,2] array. Calculated from GP and GT
+        in the proper way."""
+        
+        gt = f["calldata/GT"][:,idcs,:] ### Get l, n, 2 array of gt
+        l,n,_ = np.shape(gt) # Get the nr loci
+        gp = f["calldata/GP"][:,idcs,:] ### Get l, n, 3 array of gp
+        
+        ### The homozygotes
+        g00 = gp[:,:,0]  # homo 00 prob.
+        ### Heterozygote prob
+        gp1 = gp[:,:,1]
+        ## g11 not needed
+        
+        ### The max GT probabilities
+        g01 = gp1[:,:] * (gt[:,:,0]==0) * (gt[:,:,1]==1) # het 01 prob.
+        g10 = gp1[:,:] * (gt[:,:,0]==1) * (gt[:,:,1]==0) # het 10 prob.
+        
+        ### The default probability from the non-max GT ones
+        # Assume it is split up 50/50 between 01 10 states
+        idx = (gt[:,:,0]==0) * (gt[:,:,1]==0)
+        g01[idx] = gp1[idx]/2
+        g10[idx] = gp1[idx]/2
+        
+        idx = (gt[:,:,0]==1) * (gt[:,:,1]==1)
+        g01[idx] = gp1[idx]/2
+        g10[idx] = gp1[idx]/2
+        ### The added probability from the non-max GT ones
+        
+        # Add point phasing error  here (swap g01 and g10 with prob. x)
+        g01t = g01 * (1 - self.pph_error) + g10 * self.pph_error
+        g10t = g10 * (1 - self.pph_error) + g01 * self.pph_error
+        
+        h1 = np.zeros((l,n,2), dtype=np.float)
+        h1[:,:,0] = g00 + g01t 
+        h1[:,:,1] = g00 + g10t
+        
+        h1 = np.swapaxes(h1, 0, 1) #  l,n,2->n,l,2
+        h1 = np.swapaxes(h1, 1, 2) # -> n,2,l
+        h1 = h1.reshape((2*n,l))
+        
+        ### Add minimum error to avoid overly extreme confidence genotypes
+        h1 = np.maximum(h1, self.min_error)
+        h1 = np.minimum(h1, 1-self.min_error)
+        
+        if self.output:
+            print(f"Min. Error added: {self.min_error}")
+            print(f"Phase. Error added: {self.pph_error}")
+        
+        return h1
     
 ###############################    
 ###############################
@@ -221,6 +285,8 @@ def load_loaddata(l_model="simulated", path="", **kwargs):
         l_obj = LoadHDF5(path=path, **kwargs)
     elif l_model == "hdf5":
         l_obj = LoadHDF5Multi(path=path, **kwargs)
+    elif l_model == "h5":
+        l_obj = LoadH5Multi2(path=path, **kwargs)
     else:
         raise NotImplementedError("Loading Model not found!")
     return l_obj

@@ -124,6 +124,12 @@ def opp_homos(g1, g2):
     o2 = (g1 == 2) & (g2 == 0)
     return (o1 | o2)
 
+def both_homo(g1, g2):
+    """Return sites that both are homozygotes"""
+    o1 = (g1 == 0) | (g1 == 2)
+    o2 = (g2 == 0) | (g2 == 2)
+    return (o1 & o2)
+
 def get_opp_homos_f(f_path="/n/groups/reich/hringbauer/git/hapBLOCK/data//hdf5/1240k_v43/ch",
                     iid1="SUC006", iid2="R26.SG", ch=3,
                     cutoff=0.99, output=True, exact=False):
@@ -134,4 +140,5 @@ def get_opp_homos_f(f_path="/n/groups/reich/hringbauer/git/hapBLOCK/data//hdf5/1
         g1, g2, m = get_genos_pairs(f, sample1=iid1, sample2=iid2, 
                                 cutoff=cutoff, output=output, exact=exact)
         o_homos = opp_homos(g1, g2)
-    return o_homos, m
+        all_homo = both_homo(g1, g2)
+    return o_homos, all_homo, m

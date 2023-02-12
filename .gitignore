@@ -16,6 +16,8 @@ figs/
 cluster/prep_hdf5_ali/logs/
 c/
 notebooks/simulate/multirun/logs/
+package/dist/
+
 #
 # Distribution / packaging
 .Python
@@ -138,3 +140,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# yilei's random stuff
+/simulation
+/empirical

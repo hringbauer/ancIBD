@@ -5,7 +5,6 @@ Functions to load data from a HDF5 file
 
 import numpy as np
 import pandas as pd
-import socket as socket
 import os as os
 import sys as sys
 import h5py

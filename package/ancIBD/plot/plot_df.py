@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-from matplotlib import gridspec
 import numpy as np
 import h5py as h5py
 import pandas as pd
