@@ -5,13 +5,15 @@
 This instruction note is a brief summary of update and upload instructions from https://packaging.python.org/tutorials/packaging-projects/
 
 ### Go to base folder
-cd /home/hr97/hringbauer/git/hapBLOCK/package
+On Leipzig cluster:
+cd /mnt/archgen/users/hringbauer/git/hapBLOCK/package
 
-On Harvard O2 cluster:  
+On Harvard O2 cluster:
+cd /home/hr97/hringbauer/git/hapBLOCK/package
 envpython37
 
 ### Run Tests of Expected Behavior
-Use `/notebooks/tests/unit_tests.ipynb` to run tests of expected behavior of hapROH
+Use `/notebooks/tests/unit_tests.ipynb` to run tests of expected behavior of `ancIBD`.
 
 ### Create the Source Package 
 Update version in setup.py to next version number
@@ -24,15 +26,15 @@ rm ./dist/*
 Run the setup file:
 python3 setup.py sdist
 
-### Upload to the Sources (copy into shell, to interactively do it!)
-### For full PyPi server
+### Upload to the Sources to official PyPi server:
 python3 -m twine upload dist/* 
-### Alternatively: Upload on test server (for testing)
-python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/* 
+
 
 # Bonus Material and Checks
+## Alternatively: Upload on test server (for testing)
+python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/* 
 
-## To test whether extensions builds
+## Manually test whether extensions builds
 python3 setup.py build_ext --inplace
 
 ## Test the Python test server package
@@ -42,10 +44,9 @@ python3 -m pip install --index-url https://test.pypi.org/simple/ ancIBD
 ### To install via pip:
 Follow instructions on PyPi site of `ancIBD`.
 
-### for packaging: 
+### Further Reading:
+- For packaging: 
 https://packaging.python.org/tutorials/packaging-projects/
 
-### For C extension (here cython):
-
-### for version numbers:
+- For Versioning:
 https://www.python.org/dev/peps/pep-0440/

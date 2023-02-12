@@ -1,6 +1,9 @@
 ## VERSION NUMBER, DATE, AUTHOR
 List of updates in this version
 
+## 0.3a1, Feb 12th 2023, Harald Ringbauer
+- Fix Bug of np.float and np.int being not supported in newer version of numpy.
+
 ## 0.2a2
 Minor bug fixes:
 - Only import ancIBD functions from package.

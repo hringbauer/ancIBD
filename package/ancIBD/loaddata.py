@@ -255,7 +255,7 @@ class LoadH5Multi2(LoadHDF5Multi):
         g01t = g01 * (1 - self.pph_error) + g10 * self.pph_error
         g10t = g10 * (1 - self.pph_error) + g01 * self.pph_error
         
-        h1 = np.zeros((l,n,2), dtype=np.float)
+        h1 = np.zeros((l,n,2), dtype=np.float64)
         h1[:,:,0] = g00 + g01t 
         h1[:,:,1] = g00 + g10t
         

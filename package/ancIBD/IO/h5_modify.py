@@ -50,7 +50,7 @@ def merge_in_af(path_h5, af, col_af="AF_ALL"):
 ### Bring over AF
 
 def lift_af(h5_target, h5_original, field="variants/AF_ALL", 
-            match_col="variants/POS", dt=np.float, p_def=0.5):
+            match_col="variants/POS", dt=np.float64, p_def=0.5):
     """Bring over field from one h5 to another. Assume field does not exist in target
     h5_original: The original hdf5 path
     h5_target: The target hdf5 path
@@ -79,7 +79,7 @@ def lift_af(h5_target, h5_original, field="variants/AF_ALL",
     g.close()
     
 def lift_af_df(h5_target, path_df, field="variants/AF_ALL",
-               match_col="variants/POS", dt=np.float, p_def=0.5):
+               match_col="variants/POS", dt=np.float64, p_def=0.5):
     """Load allele frequencies from dataframe at path_df [string]
     and merge into hdf5 file at h5_target [string] at field [string]
     Match positions on match_col [string]"""

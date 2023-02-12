@@ -7,7 +7,7 @@ cimport cython
 #from scipy.special import logsumexp
 from libc.math cimport exp, log   # For doing Exponentials and Logs
 
-DTYPE = np.float # The float data type
+DTYPE = np.float64 # The float data type
 
 
 cdef inline double logsumexp(double[:] vec):
@@ -205,9 +205,9 @@ def fwd_bkwd_fast(double[:, :] e_mat, double[:, :, :] t_mat, double in_val = 1e-
     tot_ll = logsumexp(trans_ll_view1)
 
     # Combine the forward and backward calculations
-    fwd1 = np.asarray(fwd, dtype=np.float)  ## Transform
-    bwd1 = np.asarray(bwd, dtype=np.float)
-    post = fwd1 + bwd1 - np.float(tot_ll) ## Posterior in log space
+    fwd1 = np.asarray(fwd, dtype=DTYPE)  ## Transform
+    bwd1 = np.asarray(bwd, dtype=DTYPE)
+    post = fwd1 + bwd1 - float(tot_ll) ## Posterior in log space
     post = np.exp(post)        ## To have posterior in normal space
     if output:
         print("Memory Usage Full:")
@@ -485,9 +485,9 @@ def viterbi_path(double[:, :] e_mat0, double[:, :, :] t_mat0, double[:] end_p0):
 
     # Do the actual optimization (with back-tracking)
     # Initialize Views:
-    cdef double[:, :] mp = np.empty((n_states, n_loci), dtype=np.float)
-    cdef double[:] new_p = np.empty(n_states, dtype = np.float) # Temporary Array
-    cdef long[:,:] pt = np.empty((n_states, n_loci), dtype = np.int)  # Previous State Pointer
+    cdef double[:, :] mp = np.empty((n_states, n_loci), dtype=DTYPE)
+    cdef double[:] new_p = np.empty(n_states, dtype = DTYPE) # Temporary Array
+    cdef long[:,:] pt = np.empty((n_states, n_loci), dtype = np.int16)  # Previous State Pointer
 
     trans_ll = np.empty(n_states-1, dtype=DTYPE) # Array for pre-calculations
     cdef double[:] trans_ll_view = trans_ll
@@ -545,7 +545,7 @@ def viterbi_path(double[:, :] e_mat0, double[:, :, :] t_mat0, double[:] end_p0):
           pt[k, i] = three_vi_view[m]      ### Set Pointer for Backtrace
 
     ### Do the trace back
-    cdef long[:] path = -np.ones(n_loci, dtype=np.int)  # Initialize
+    cdef long[:] path = -np.ones(n_loci, dtype=np.int16)  # Initialize
 
     x = np.argmax(mp[:, n_loci-1])  # The highest probability
     path[n_loci-1] = x

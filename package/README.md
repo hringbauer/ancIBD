@@ -1,12 +1,18 @@
 # ancIBD
-This software package screens ancient human DNA for long IBD blocks (Identity by Descent segments) shared between pairs of individuals.
+This Python software package screens ancient human DNA for long IBD blocks (Identity by Descent segments) shared between pairs of individuals.
+
+## Official Documention
+Please find the up-to-date full official documentation at:
+https://ancibd.readthedocs.io/en/latest/Intro.html
+
+Below we post a vesion of the legacy documention from the Python package [January 2023].
 
 ## Scope of ancIBD
 ### Ancestry
-The method relies on imputation with a modern reference panel, therefore it is not appicable for deeply diverged humans such as Neanderthals or Denisovans. However, experiments showed that the method works well for Eurasian ancient human DNA (tested for data up to 45,000 years old). 
+The method relies on imputation with a modern `homo sapiens` haplotype reference panel, therefore it is not appicable for deeply diverged humans such as Neanderthals or Denisovans. However, our experiments showed that the method works well for Eurasian ancient human DNA (tested for data up to 45,000 years old). 
 
 ### Coverage
-The method is relatively data-hungry. Imputation with Glimpse only works sufficiently well for samples with >0.5x coverage on 1240k SNPs. 
+Be careful to run `ancIBD` only on individuals with sufficient DNA data: Imputation with Glimpse only works sufficiently well for samples with >0.5x coverage on 1240k SNPs. 
 
 Ideally, your data therefore has >1x coverage for 1240k SNPs, or >0.5x coverage for WGS data. For robust IBD calls of long IBD (8 cM or longer), at least 600,000 SNPs on the 1240k panel should be covered at least once. Note that there still can be occasional false positive IBD, so please always treat the output with necessary caution and not as a black box.
 
@@ -58,4 +64,4 @@ yilei_huang AT eva.mpg.de
 (fill in blanks with dots and AT with @)
 
 Authors:
-Harald Ringbauer, Yilei Huang, 2022
+Harald Ringbauer, Yilei Huang, 2023
