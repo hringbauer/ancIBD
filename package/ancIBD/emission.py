@@ -136,13 +136,53 @@ class HaplotypeSharingEmissions2(Emissions):
         for i, (j,k) in enumerate(it.product([0,1],repeat=2)):
             e_mat[i+1,:] = self.hw_probs_shared(hts_p, p=p, shared=[j,k+2])
         return e_mat
-    
+
+class HaplotypeSharingEmissions3(HaplotypeSharingEmissions2):
+    """
+    Basically the same as HaplotypeSharingEmissions2, but with two additional states to account for IBD2 region
+    """
+
+
+    def give_emission_matrix(self, hts_p, p, dtype='float'):
+        """
+        Give emission matrix for 7-state HMM.
+        0th state: non-IBD state
+        1st-4th state: IBD1 state
+        5-7th state: IBD2 state
+        """
+        l = np.shape(hts_p)[1]
+        e_mat = np.zeros((7,l), dtype=dtype)
+        e_mat[:5,:] = super().give_emission_matrix(hts_p, p, dtype)
+
+        x1A = 1 - hts_p[0,:]
+        x1B = 1 - hts_p[1,:]
+        x2A = 1 - hts_p[2,:]
+        x2B = 1 - hts_p[3,:]
+        # IBD2 situation 1: 1A=2A, 1B=2B
+        e_mat[5,:] = (1-x1A)*(1-x1B)*(1-x2A)*(1-x2B)/((1-p)**2) + \
+                (1-x1A)*x1B*(1-x2A)*x2B/(p*(1-p)) + \
+                x1A*(1-x1B)*x2A*(1-x2B)/(p*(1-p)) + \
+                x1A*x1B*x2A*x2B/(p**2)
+        
+        # IBD2 situation 2: 1A=2B, 1B=2A
+        e_mat[6,:] = (1-x1A)*(1-x1B)*(1-x2A)*(1-x2B)/((1-p)**2) + \
+                (1-x1A)*x1B*x2A*(1-x2B)/(p*(1-p)) + \
+                x1A*(1-x1B)*(1-x2A)*x2B/(p*(1-p)) + \
+                x1A*x1B*x2A*x2B/(p**2)
+
+        return e_mat
+
+
+
+
 def load_emission_model(e_model="haploid_gl"):
     """Factory method to return the right Emission Model"""
     if e_model == "haploid_gl":
         e_obj = HaplotypeSharingEmissions()
     elif e_model == "haploid_gl2":
         e_obj = HaplotypeSharingEmissions2()
+    elif e_model == 'IBD2':
+        e_obj = HaplotypeSharingEmissions3()
     else:
         raise NotImplementedError("Emission Model not found!")
     return e_obj

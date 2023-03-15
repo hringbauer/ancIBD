@@ -7,12 +7,11 @@ Pulls together other ancIBD modules and directs loading/running them.
 import os as os
 import sys as sys   # For piping the output
 import numpy as np
-
-from ancIBD.emission import load_emission_model
-from ancIBD.transition import load_transition_model
-from ancIBD.loaddata import load_loaddata
-from ancIBD.hmm import load_fwd_bwd_func
-from ancIBD.postprocessing import load_Postprocessing
+from emission import load_emission_model
+from transition import load_transition_model
+from loaddata import load_loaddata
+from hmm import load_fwd_bwd_func
+from postprocessing import load_Postprocessing
 from time import time # All I need is... time
 
 class HMM_Full(object):

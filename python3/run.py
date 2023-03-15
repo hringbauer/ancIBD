@@ -13,6 +13,7 @@ import itertools as it
 from time import time
 import os
 import sys
+sys.path.insert(0, '/mnt/archgen/users/yilei/tools/ancIBD/package/ancIBD')
 import h5py
 import sys
 import os
