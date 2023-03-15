@@ -1,12 +1,12 @@
 Overview
 ============
 
-``ancIBD`` is a Python package for detecting Identity-by-descent(IBD) segments for low-coverage aDNA data. It takes as input imputed genotypes by the imputaton software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_.
+``ancIBD`` is a Python package for detecting Identity-by-descent(IBD) segments for low-coverage aDNA data. It takes as input imputed genotype by `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_.
 
 Scope
 **********
 
-``ancIBD`` is tested for at least 0.25x average coverage depth for whole-genome-sequencing (WGS) data and for 0.75x average coverage on target SNPs for 1240k or TWIST captured DNA data (common SNP captures in human aDNA). We do not recommend to call IBD for aDNA data below that coverage, as false positive and error rates become substantial and likely dominate any true signal.
+According to our tests, ``ancIBD`` requires at least 0.25x average coverage depth for whole-genome-sequencing (WGS) data and for 1.0x average coverage (roughly equiavalent to 600k SNPs captured) on target SNPs for 1240k or TWIST captured DNA data (common SNP captures in human aDNA). IBD calls for aDNA data below that coverage limit have to be interpreted with extreme caution, as false positive and error rates become substantial and likely dominate any true IBD signal.
 
 Citing
 **********
