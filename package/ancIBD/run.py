@@ -203,7 +203,8 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
                   plot=False, path_fig="", output=False, exact=True,
                   ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2, 
                   cutoff_post=0.99, max_gap=0.0075, 
-                  l_model="hdf5", p_col="variants/AF_ALL",
+                  l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled",
+                  p_col="variants/AF_ALL",
                   title="", c="gray", c_hw="maroon", 
                   state=0, return_post=False, **kwargs):
     """Run and plot IBD for pair of Individuals.
@@ -220,7 +221,7 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
     df_ibd, post, r_vec = hapBLOCK_chrom(
            folder_in=path_h5, iids = iids,  ch=ch, folder_out=folder_out, 
            output=output, prefix_out="", logfile=False,
-           l_model=l_model, e_model="haploid_gl", h_model="FiveStateScaled", 
+           l_model=l_model, e_model=e_model, h_model=h_model, 
            t_model="standard", p_col=p_col, ibd_in=ibd_in, ibd_out=ibd_out, ibd_jump=ibd_jump, 
            min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
         
