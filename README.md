@@ -1,5 +1,5 @@
 # hapBLOCK
-This github repository contains development code for the Python package ==ancIBD== that is available via PyPi [here](https://pypi.org/project/ancIBD/). Please find the official instructions on Readthedocs [here (https://ancibd.readthedocs.io). The notes below are for the developers of this package who run development versions.
+This github repository contains development code for the Python package ==ancIBD== that is available via PyPi [here](https://pypi.org/project/ancIBD/). Please find the official instructions on Readthedocs [here] (https://ancibd.readthedocs.io). The notes below are for the developers of this package who run development versions.
 
 
 
