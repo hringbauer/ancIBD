@@ -6,13 +6,16 @@ Overview
 Scope
 **********
 
-According to our tests, ``ancIBD`` requires at least 0.25x average coverage depth for whole-genome-sequencing (WGS) data and for 1.0x average coverage (roughly equiavalent to 600k SNPs captured) on target SNPs for 1240k or TWIST captured DNA data (common SNP captures in human aDNA). IBD calls for aDNA data below that coverage limit have to be interpreted with extreme caution, as false positive and error rates become substantial and likely dominate any true IBD signal.
+According to our tests, ``ancIBD`` requires at least 0.25x average coverage depth for whole-genome-sequencing (WGS) data and for 1.0x average coverage (usually corresponding to ca. 600k SNPs covered at least once) on target SNPs for 1240k or TWIST captured aDNA data (common SNP captures in human aDNA). Our tests show that imputation starts to break down and false positive IBD rates increases when one gets close to that coverage limit, in particular for shorter IBD segments. IBD calls for data below that coverage limit have to be interpreted with extreme caution, as false positive and error rates become substantial and likely dominate any true IBD signal in most demographic scenarios.
 
 Citing
 **********
 
-A pre-print is in preparation and will be available soon.
+Please find a pre-print describing the method and several applications here:
 
+`ancIBD - Screening for identity by descent segments in human ancient DNA <https://doi.org/10.1101/2023.03.08.531671>`_
+
+If you use ``ancIBD`` for your scientific work you can cite this article.
 
 Contact
 **********
@@ -28,5 +31,5 @@ We are also happy to hear from you directly:
 (fill in AT with @ and other blanks with dots)
 
 
-Authors:
+Lead Authors:
 Harald Ringbauer, Yilei Huang, 2023
