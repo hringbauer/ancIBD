@@ -1,5 +1,10 @@
 ## VERSION NUMBER, DATE, AUTHOR
-List of updates in this version
+List of updates to ancIBD.
+Format:
+Version, Date, Author
+
+## 0.3a2, April 12th, Harald Ringbauer
+- Added Filter to only existing GP data when loading (use case: HDF5 with missing data). Disregards all SNPs where at least some data is missing.
 
 ## 0.3a1, Feb 12th 2023, Harald Ringbauer
 - Fix Bug of np.float and np.int being not supported in newer version of numpy.

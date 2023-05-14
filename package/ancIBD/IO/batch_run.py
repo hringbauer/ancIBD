@@ -17,8 +17,13 @@ def get_iids(path_meta="/n/groups/reich/hringbauer/git/yamnaya/data/meta_v2.tsv"
     """Return list of iids to run"""
     df1 = pd.read_csv(path_meta, sep="\t")
     df1 = df1[df1["include"]==1].copy().reset_index(drop=True) # Only include unique,unrelated samples
-    df2 = df1[df1["n_cov_snp"]>min_snps].copy()
-    print(f"Loaded {len(df2)}/{len(df1)} samples with min snps: >{min_snps}")
+    if min_snps>0:
+        df2 = df1[df1["n_cov_snp"]>min_snps].copy()
+        print(f"Loaded {len(df2)}/{len(df1)} samples with min snps: >{min_snps}")
+    else:
+        df2 = df1.copy()
+        print(f"Loaded {len(df2)}/{len(df1)} samples with include==1")
+    
     iids = df2["iid"].values
     return iids
 
@@ -197,3 +202,22 @@ def to_ibd_df_batches(batches=8, folder_out = "/n/groups/reich/hringbauer/git/ib
     df_res = pd.concat(res)
     df_res = filter_ibd_df(df_res, min_cm=min_cm, snp_cm=snp_cm, output=output) 
     return df_res 
+
+
+def print_runid_missing(b = 1, folder_out = "", output=False):
+    """Finds and prints indices of missing output (chXX.tsv) for batchwise runs.
+    Return list of missing indices. Ideal for rerunning batch scripts.
+    Uses C Indexing as would be used in submission script."""
+    batches = np.column_stack(np.tril_indices(n=b, k=0))
+
+    ls = []
+    for ch in range(1,23):
+        for b1,b2 in batches:
+            folder_batch = os.path.join(folder_out, f"batch{b1}_{b2}/ch{ch}.tsv")
+            exist = os.path.exists(folder_batch)
+            if not exist:
+                if output:
+                    print(f"Missing! ch: {ch} batch: {b1}-{b2}")
+                l = b * (b+1)/2 * (ch-1) + (b1+1) * b1/2 + b2 + 1 # The +1 is c indexing
+                ls.append(str(int(l)))
+    return ls

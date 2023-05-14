@@ -50,6 +50,7 @@ class LoadData(object):
     def check_valid_data(self, htsl, p, m):
         """Check whether data in valid format"""
         assert(np.shape(htsl)[1]==len(p))
+        assert(np.sum(np.isnan(htsl))==0) # Check that no NAN exists
         assert(len(p)==len(m))
         pass 
         
@@ -148,7 +149,7 @@ class LoadHDF5(LoadData):
     
 class LoadHDF5Multi(LoadHDF5):
     """Class to load HDF5 data for multiple individuals.
-    Developer Note: In progress of making this default even for pairs of individuals."""
+    Default now also for only pairs of individuals."""
     path_h5=""
     iids = []
     ch = 3   # Which chromosome to load
@@ -171,6 +172,21 @@ class LoadHDF5Multi(LoadHDF5):
         #h1 = np.swapaxes(h1, 0, 1)
         return h1
     
+    def filter_valid_data(self, hts, p, m):
+        """Filter to SNPs with fully valid data. 
+        Return filtered data."""
+        idx = ~(np.isnan(hts).any(axis=0)) # Flag all markers that are not null
+        
+        ### Output and Raise warning if too much data missing:
+        if self.output:
+            print(f"Filtering to {np.sum(idx)}/{len(idx)} SNPs with GP data (on target iids)")   
+        if np.mean(idx)<1:  # Missing Data detected
+            print(f"Attention: Some data in GP field is missing. Ideally, all GP entries are set.")   
+        if np.mean(idx)<0.8:  # Less than 80 percent of data there
+            raise RuntimeWarning(f"Too much data missing: {np.sum(idx)}/{len(idx)} SNPs are NULL for GP")
+            
+        return hts[:,idx], p[idx], m[idx]
+    
     def load_all_data(self, **kwargs):
         """ Return haplotype likelihoods [n*2,l] for anc. allele.
         along first axis: 2*i, 2*(i+1) haplotype of ind i
@@ -187,8 +203,11 @@ class LoadHDF5Multi(LoadHDF5):
             if len(self.p_col)>0:
                 p = self.get_p_hdf5(f, self.p_col)  
             else:
-                p = self.get_p(hts)  # Calculate Mean allele frequency from subset
-            
+                p = self.get_p(hts)  # Calculate Mean allele frequency from sample subset
+                
+        ### Filter to Valid data
+        hts, p, m = self.filter_valid_data(hts, p, m)
+        
         self.check_valid_data(hts, p, m)
         return hts, p, m, samples
     
