@@ -7,7 +7,7 @@ Contains Sub-Classes, as well as factory Method.
 import numpy as np
 from scipy.special import logsumexp as logsumexp
 import sys
-from cfunc import fwd_bkwd_fast, fwd_bkwd_lowmem, fwd_bkwd_scaled, fwd_bkwd_scaled_asymmetricTransition
+from ancIBD.cfunc import fwd_bkwd_fast, fwd_bkwd_lowmem, fwd_bkwd_scaled, fwd_bkwd_scaled_asymmetricTransition
 #from ancIBD.cfunc import fwd_bkwd_fast, fwd_bkwd_lowmem, fwd_bkwd_scaled, fwd_bkwd_scaled_7States
 
 ####################################################

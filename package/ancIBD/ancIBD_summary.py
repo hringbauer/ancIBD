@@ -5,7 +5,7 @@ import argparse
 import os
 from pathlib import Path
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='Run ancIBD.')
     parser.add_argument('--tsv', action="store", dest="tsv", type=str, required=True,
                         help="base path to the individual IBD files.")

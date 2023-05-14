@@ -8,7 +8,7 @@ import h5py
 import os
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(description='Run ancIBD.')
     parser.add_argument('--vcf', action="store", dest="vcf", type=str, required=True,
                         help="path to the imputed vcf file")

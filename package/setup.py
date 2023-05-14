@@ -39,4 +39,10 @@ setup(
     python_requires='>=3.6',
     install_requires=['numpy', 'pandas', 'scipy', 'h5py', 
                       'psutil', 'cython', 'matplotlib', 'pysam', 'scikit-allel'],
+    entry_points ={
+            'console_scripts': [
+                'ancIBD-summary = ancIBD.ancIBD_summary:main',
+                'ancIBD-run = ancIBD.run_ancIBD:main'
+            ]
+        },
 )
