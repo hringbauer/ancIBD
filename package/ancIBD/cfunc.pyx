@@ -571,7 +571,7 @@ cdef inline void set2zero(double[:] vec, int n):
     vec[i] = 0.0
 
 
-def fwd_bkwd_scaled_7States(double[:, :] e_mat, double[:, :, :] t_mat, 
+def fwd_bkwd_scaled_asymmetricTransition(double[:, :] e_mat, double[:, :, :] t_mat, 
                     double in_val = 1e-4, full=False, output=True):
     """Takes emission and transition probabilities, and calculates posteriors.
     Uses speed-up specific for Genotype data (pooling same transition rates)

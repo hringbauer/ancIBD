@@ -396,6 +396,7 @@ def gp_from_empirical(gts, bps, simulated_error, cty=0.99, verbose=False, oneMod
         for i, bp in enumerate(bps):
             for j in np.arange(1, k, step=2):
                 gt1, gt2 = gts[i,j]
+                # gp[i,j, gt1+gt2] = 1.0
                 gt1_hat = (gt1 + int(np.random.rand()<0.001))%2
                 gt2_hat = (gt2 + int(np.random.rand()<0.001))%2
                 gts[i,j] = [gt1_hat, gt2_hat]
