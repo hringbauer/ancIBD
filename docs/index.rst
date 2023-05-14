@@ -8,6 +8,7 @@ Welcome to the Documentation of ancIBD
 
    Intro
    Install
+   quick_start
    create_hdf5_from_vcf
    run_ancIBD
    plot_IBD
