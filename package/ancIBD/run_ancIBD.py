@@ -15,7 +15,7 @@ def main():
     parser.add_argument('--ch', action="store", dest="ch", type=int, required=True, help='chromosome number (1-22).')
     parser.add_argument('--marker_path', action="store", dest="marker_path", type=str, required=True, help='path to the marker file')
     parser.add_argument('--map_path', action="store", dest="map_path", type=str, required=True, help='path to the map file')
-    parser.add_argument('--af_path', action="store", dest="af_path", type=str, required=False, help='path to the allele frequency file (optional)')
+    parser.add_argument('--af_path', action="store", dest="af_path", type=str, required=False, default="", help='path to the allele frequency file (optional)')
     parser.add_argument('--out', action="store", dest="out", type=str, required=False, help='output folder to store IBD results and the intermediary .hdf5 file. If not specified, the results will be stored in the same folder as the input vcf file.')
     parser.add_argument('--prefix', action="store", dest="prefix", type=str, required=False,
                         help="prefix of output file. If not specified, the prefix will be the same as the input vcf")
@@ -46,12 +46,16 @@ def main():
 
     path_vcf_1240k = os.path.join(f"{oDir}", f"{prefix}.1240k.vcf")
     path_h5 = os.path.join(f"{oDir}", f"{prefix}.ch{ch}.h5")
+    col_sample_af = "" if len(args.af_path) > 0 else "AF_SAMPLE"
+    if len(args.af_path) == 0:
+        print("WARNING: allele frequency file not provided. The allele frequency will be calculated from the input vcf file. Make sure you have enough sample size to have good estimates of allele frequencies ")
+        print('The sample allele frequency will be stored in the "variants/AF_SAMPLE" column of the output hdf5 file.')
     vcf_to_1240K_hdf(in_vcf_path = path2vcf,
                  path_vcf = path_vcf_1240k, path_h5 = path_h5,
-                 marker_path = f"/mnt/archgen/users/yilei/bin/ancIBD_data/filters/snps_bcftools_ch{ch}.csv",
-                 map_path = "/mnt/archgen/users/yilei/bin/ancIBD_data/afs/v51.1_1240k.snp",
-                 af_path = f"/mnt/archgen/users/yilei/bin/ancIBD_data/afs/v51.1_1240k_AF_ch{ch}.tsv",
-                 col_sample_af = "",
+                 marker_path = args.marker_path,
+                 map_path = args.map_path,
+                 af_path = args.af_path,
+                 col_sample_af = col_sample_af,
                  buffer_size=20000, chunk_width=8, chunk_length=20000,
                  ch=ch)
 
@@ -72,11 +76,12 @@ def main():
                 run_iids.append((id1, id2))
     
     # I set folder_out to an empty string because I save the output file separately in the code below
+    p_col = 'variants/AF_ALL' if len(args.af_path) > 0 else 'variants/AF_SAMPLE'
     df_ibd = hapBLOCK_chroms(folder_in=os.path.join(f"{oDir}", f"{prefix}.ch"),
                              iids=iids, run_iids=run_iids,
                              ch=ch, folder_out="",
                              output=False, prefix_out='', logfile=False,
-                             l_model='hdf5', e_model='haploid_gl', h_model='FiveStateScaled', t_model='standard',
+                             l_model='hdf5', e_model='haploid_gl', h_model='FiveStateScaled', t_model='standard', p_col=p_col,
                              ibd_in=1, ibd_out=10, ibd_jump=400,
                              min_cm=args.min, cutoff_post=0.99, max_gap=0.0075)
     
