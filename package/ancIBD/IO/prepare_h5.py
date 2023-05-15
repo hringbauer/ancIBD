@@ -46,7 +46,7 @@ def save_1240_1000g_kmarkers(ch=3, snp_path="", marker_path=""):
 def bctools_filter_vcf(in_vcf_path="", out_vcf_path="", marker_path=""):
     """Same as PLINK, but with bcftools and directly via Marker Positions.
     filter_iids: Whether to use the .csv with Indivdiduals to extract"""
-    command = f"bcftools view -Oz -o {out_vcf_path} -T {marker_path} -M2 -v snps {in_vcf_path}"
+    command = f"bcftools view -Ov -o {out_vcf_path} -T {marker_path} -M2 -v snps {in_vcf_path}"
     os.system(command)
     
     #!bcftools view -Oz -o $out_vcf_path -T $marker_path -M2 -v snps $in_vcf_path
