@@ -20,7 +20,7 @@ from ancIBD.IO.h5_load import get_opp_homos_f
 
 def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""], 
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
-                   l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                   l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
                    t_model="standard", p_col="variants/AF_ALL", 
                    ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2,
                    cutoff_post=0.99, max_gap=0.0075):
@@ -57,7 +57,7 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
 
 def prep_param_list_chrom(folder_in, iids = [], ch=3,
                     folder_out="", output=True, logfile=False, prefix_out="default/",
-                    l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                    l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
                     t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=1, ibd_jump=500, min_cm=2,
                     cutoff_post=0.99, max_gap=0.0):
     """Prepare parameter lists for multirun of hapBLOCK_chrom. Ideal for multi-processing,
@@ -72,7 +72,7 @@ def prep_param_list_chrom(folder_in, iids = [], ch=3,
 
 def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
-                   l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                   l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
                    t_model="standard", p_model="hapROH", p_col="variants/AF_ALL", 
                    ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2,
                    cutoff_post=0.99, max_gap=0.0075, processes=1):
@@ -141,7 +141,7 @@ def get_sample_index(iids, sample):
 
 def hapBLOCK_times(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
-                   l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                   l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
                    t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2,
                    cutoff_post=0.99, max_gap=0.0075, processes=1):
     """Run IBD for list of Individuals, and returns runtimes. Same as hapBLOCK_chroms (see docstring there) but also return runtimes. USED ONLY FOR BENCHMARKING
@@ -208,7 +208,7 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
                   plot=False, path_fig="", output=False, exact=True,
                   ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2, 
                   cutoff_post=0.99, max_gap=0.0075, 
-                  l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled",
+                  l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled",
                   p_col="variants/AF_ALL",
                   title="", c="gray", c_hw="maroon", 
                   state=0, return_post=False, **kwargs):
