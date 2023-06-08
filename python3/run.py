@@ -163,7 +163,7 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
                    l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
                    t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2,
-                   cutoff_post=0.99, max_gap=0.0075, processes=1):
+                   cutoff_post=0.99, max_gap=0.0075):
     """Run IBD for list of Individuals, and saves their IBD csv into a single 
     output folder.
     folder_in: hdf5 path up to chromosome.

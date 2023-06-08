@@ -30,6 +30,11 @@ python3 setup.py sdist
 python3 -m twine upload dist/* 
 
 
+
+## Check Installation in Leipzig
+python3 -m pip install --user --upgrade --no-deps --force-reinstall ancIBD
+
+
 # Bonus Material and Checks
 ## Alternatively: Upload on test server (for testing)
 python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/* 

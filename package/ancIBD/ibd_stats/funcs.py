@@ -98,6 +98,17 @@ def give_sub_df(df, pop1="La Caleta", pop2="La Caleta", col="clst",
         print(f"Found: {np.sum(idx)} Pairs fitting in dataframe.\n")
     return df[idx]
 
+def remove_iids(df, iids=[]):
+    """Remove sample from pw. Indivdiual IID dataframe if pair contains one of flagged samples.
+    Return Updated Dataframe.
+    df: Input Dataframe
+    iids: List of IIDs to remove"""
+    assert(("iid1" in df.columns) and ("iid2" in df.columns))
+    idx = (df["iid1"].isin(iids)) | (df["iid2"].isin(iids))
+    df = df[~idx].reset_index(drop=True)
+    print(f"Dropped {np.sum(idx)}/{len(idx)} pairs")
+    return df
+
 def give_stats_cm_bin(df, cms = [8,12,16,20], binary=True, output=True):
     """Return counts of IBD in bins. 
     df: IBD dataframe df of pw. individuals
