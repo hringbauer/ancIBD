@@ -102,7 +102,7 @@ def give_stats_cm_bin(df, cms = [8,12,16,20], binary=True, output=True):
     """Return counts of IBD in bins. 
     df: IBD dataframe df of pw. individuals
     cms: Which bins to look into
-    binary: Only count existing
+    binary: Only count existing (e.g. 1/0 values)
     If upper bound 0: Take infinite bin"""
     counts = np.zeros(len(cms)-1) # Where the counts will be stored
     n = len(df) # The length of df (pw. comparisons)
@@ -128,6 +128,7 @@ def get_IBD_stats(df, pop1="", pop2="", col="clade", exact=False,
                   cms=[4,6,8,10,12], binary=True, output=False, a=0.05):
     """Get IBD fraction statistics.
     a: Signficance level
+    binary: Only count existence of IBD, not total count [0/1 per pair]
     Return fractions, confidence intervalls as well as 
     number of pairsise comparisons"""
     if len(pop1)>0 or len(pop2)>0:
@@ -155,7 +156,8 @@ def get_IBD_stats_pops(df, pops1=[], pops2=[], col="clade",
     """Get IBD fraction statistics for list of pop pairs.
     Return lists of fractions, confidence intervalls as well as 
     number of pairwise comparisons.
-    a: Significance Level"""
+    a: Significance Level
+    binary: Only count existence [0/1 possible per pair]"""
     assert(len(pops1)==len(pops2)) # Sanity Check
     fracss, ciss, ns = [], [], []
     
