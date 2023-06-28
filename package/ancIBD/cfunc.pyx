@@ -558,3 +558,103 @@ def viterbi_path(double[:, :] e_mat0, double[:, :, :] t_mat0, double[:] end_p0):
     print(f"Log likelihood Path: {mp[m,n_loci-1]:.3f}")
     assert(np.min(path)>=0) #Sanity check if everything was filled up
     return np.asarray(path)
+
+
+################################################### code for IBD2 states ###########################################
+
+cdef inline void elementwise_multiple(double[:] vec1, double[:] vec2, double[:] dest, int n):
+  for i in range(n):
+    dest[i] = vec1[i]*vec2[i]
+
+cdef inline void set2zero(double[:] vec, int n):
+  for i in range(n):
+    vec[i] = 0.0
+
+
+def fwd_bkwd_scaled_asymmetricTransition(double[:, :] e_mat, double[:, :, :] t_mat, 
+                    double in_val = 1e-4, full=False, output=True):
+    """Takes emission and transition probabilities, and calculates posteriors.
+    Uses speed-up specific for Genotype data (pooling same transition rates)
+    Uses rescaling of fwd and bwd matrices
+    e_mat: Emission probabilities [k x l] (normal space)
+    t_mat: Transition Matrix: [l x 7 x 7]  (normal space)
+    in_val: Intitial probability of single symmetric state (normal space)
+    full: Boolean whether to return everything (post, fwd1, bwd1, tot_ll)
+    output: Whether to print output useful for monitoring
+    Otherwise only posterior mat [kxl] of post is returned
+    """
+    cdef int n_states = e_mat.shape[0]
+    cdef int n_loci = e_mat.shape[1]
+    cdef Py_ssize_t i, j, k    # The Array and Iteration Indices
+    cdef double stay           # The Probablility of Staying
+    cdef double x1, x2, x3     # Place holder variables [make code readable]
+
+    # Initialize Posterior and Transition Probabilities
+    post = np.empty([n_states, n_loci], dtype=DTYPE)
+    
+    c = np.empty(n_loci, dtype=DTYPE) # Array of normalization constants
+    cdef double[:] c_view = c
+    
+    temp = np.empty(n_states, dtype=DTYPE) # l Array for calculations
+    cdef double[:] temp_v = temp
+    
+    temp1 = np.empty(n_states-1, dtype=DTYPE) # l-1 Array for calculatons
+    cdef double[:] temp1_v = temp1
+
+    temp2 = np.empty(n_states, dtype=DTYPE) # l Array for temporary storage (added by Yilei)
+    cdef double[:] temp2_v = temp2
+
+    cdef double[:,:,:] t = t_mat   # C View of transition matrix
+
+    ### Initialize FWD BWD matrices with first and last entries filled
+    fwd1 = np.zeros((n_states, n_loci), dtype="float")
+    fwd1[:, 0] = in_val  # Initial Probabilities
+    fwd1[0, 0] = 1 - (n_states - 1) * in_val
+    cdef double[:,:] fwd = fwd1
+    
+    c_view[0] = 1 # Set the first normalization constant
+
+    bwd1 = np.zeros((n_states, n_loci), dtype="float")
+    bwd1[:, -1] = 1 # The initial values for the backward pass
+    cdef double[:,:] bwd = bwd1
+
+    #############################
+    ### Do the Forward Algorithm
+    for i in range(1, n_loci):  # Run forward recursion
+      set2zero(temp_v, n_states)
+      for j in range(n_states):
+        for k in range(n_states):
+          temp_v[j] += fwd[k, i-1]*t[i, k, j]
+        temp_v[j] *= e_mat[j, i]
+        
+        ### Do the normalization
+        c_view[i] = sum_array(temp_v, n_states)
+        for j in range(n_states):
+            fwd[j,i] = temp_v[j] / c_view[i] # Rescale to prob. distribution
+            
+    #############################
+    ### Do the Backward Algorithm
+    for i in range(n_loci-1, 0, -1):  # Run backward recursion
+      set2zero(temp_v, n_states)
+      for j in range(n_states):
+        for k in range(n_states):
+          temp_v[j] += bwd[k, i]*t[i, j, k]*e_mat[k, i]
+      
+      ### Do the normalization
+      for j in range(n_states):
+        bwd[j, i - 1] = temp_v[j] / c_view[i] # Rescale to prob. distribution
+    
+    ### Combine the forward and backward calculations for posterior
+    post = fwd1 * bwd1
+    if output:
+        print("Memory Usage at end of HMM:")
+        print_memory_usage()   ## For MEMORY_BENCH
+
+    if full==False:
+        return post
+
+    elif full==True:   # Return everything
+        tot_ll = np.sum(np.log(c)) # Tot Likelihood is product over all c. 
+        if output:
+            print(f"Total Log likelihood: {tot_ll: .3f}")
+        return post, fwd1, bwd1, tot_ll

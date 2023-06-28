@@ -6,6 +6,8 @@ Pulls together other modules and directs loading/running them.
 
 import os as os
 import sys as sys   # For piping the output
+sys.path.insert(0, '/mnt/archgen/users/yilei/tools/ancIBD/package/ancIBD')
+
 import numpy as np
 
 from emission import load_emission_model

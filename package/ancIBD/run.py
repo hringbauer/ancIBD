@@ -12,6 +12,7 @@ import itertools as it
 from time import time
 import sys as sys
 import os as os
+
 #sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/") 
 from ancIBD.main import HMM_Full  # To run the main plotting.
 from ancIBD.plot.plot_posterior import plot_posterior # to plot the posterior.
@@ -19,9 +20,9 @@ from ancIBD.IO.h5_load import get_opp_homos_f
 
 def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""], 
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
-                   l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                   l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
                    t_model="standard", p_col="variants/AF_ALL", 
-                   ibd_in=1, ibd_out=10, ibd_jump=500, min_cm=2, min_error=1e-3,
+                   ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2, min_error=1e-3,
                    cutoff_post=0.99, max_gap=0.0075):
     """Run IBD for pair of Individuals.
     folder_in: hdf5 path up to chromosome.
@@ -38,7 +39,12 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     h = HMM_Full(folder_in=folder_in, l_model=l_model, t_model=t_model, 
                      e_model=e_model, h_model = h_model,
                      output=output, load=True)
-    h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump)
+
+    if t_model == 'asymmetric':
+        h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump, ibd_jump2 = ibd_jump2)
+    else:
+        h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump)
+        
     h.l_obj.set_params(iids=iids, ch=ch, p_col=p_col, min_error=min_error)
     h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
     #post, r_vec, fwd, bwd, tot_ll = h.run_fwd_bwd()
@@ -54,7 +60,7 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
 
 def prep_param_list_chrom(folder_in, iids = [], ch=3,
                     folder_out="", output=True, logfile=False, prefix_out="default/",
-                    l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                    l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
                     t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=1, ibd_jump=500, min_cm=2,
                     cutoff_post=0.99, max_gap=0.0):
     """Prepare parameter lists for multirun of hapBLOCK_chrom. Ideal for multi-processing,
@@ -69,8 +75,9 @@ def prep_param_list_chrom(folder_in, iids = [], ch=3,
 
 def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
-                   l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
-                   t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2,
+                   l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                   t_model="standard", p_model="hapROH", p_col="variants/AF_ALL", 
+                   ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2,
                    cutoff_post=0.99, max_gap=0.0075, processes=1):
     """Run IBD for list of Individuals, and saves their IBD csv into a single 
     output folder.
@@ -90,9 +97,12 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
         
     ### Load all the objects
     h = HMM_Full(folder_in=folder_in, l_model=l_model, t_model=t_model, 
-                     e_model=e_model, h_model = h_model,
+                     e_model=e_model, h_model = h_model, p_model=p_model,
                      output=output, load=True)
-    h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump)
+    if t_model == 'asymmetric':
+        h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump, ibd_jump2 = ibd_jump2)
+    else:
+        h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump)
     h.l_obj.set_params(iids=iids, ch=ch, p_col=p_col)
     h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
     
@@ -111,7 +121,6 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
         e_mat =  h.e_obj.give_emission_matrix(htsl[idcs,:], p)
         post =  h.fwd_bwd(e_mat, t_mat, in_val =  h.in_val, 
                             full=False, output= h.output)
-
         df_ibd, _, _ = h.p_obj.call_roh(r_vec, post, iid1, iid2)
         df_ibds.append(df_ibd)
     
@@ -135,7 +144,7 @@ def get_sample_index(iids, sample):
 
 def hapBLOCK_times(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
-                   l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                   l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
                    t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2,
                    cutoff_post=0.99, max_gap=0.0075, processes=1):
     """Run IBD for list of Individuals, and returns runtimes. Same as hapBLOCK_chroms (see docstring there) but also return runtimes. USED ONLY FOR BENCHMARKING

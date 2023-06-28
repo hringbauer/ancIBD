@@ -108,7 +108,7 @@ class ModifyHDF5Genotypes(object):
         if self.output == True:
             print(f"Successfully saved {k} individuals to: {path}")
 
-    def create_error_gt(self, freq_flips=0.01, gp=True):
+    def create_error_gt(self, freq_flips=0.01, gp=True, cty=0.99):
         """Create Error on the HDF5 of genotypes.
         freq_flips: How often to do flip of genotyps"""
         f = self.f
@@ -130,7 +130,7 @@ class ModifyHDF5Genotypes(object):
             
     def downsample_gt(self, frac=0.9, cty=0.99, shuffle_cm=0, error=0,
                       ad=True, gp=False, mult_alt=False, 
-                      gt_type="int8", simulated_error=None, compression="gzip"):
+                      gt_type="int8", simulated_error=None, oneModern=False, compression="gzip"):
         """Downsample the HDF5 to fewer reads.
         Update also the recombination and position map if needed to remove missing values
         frac: To what fraction of markers one downsamples
@@ -140,7 +140,10 @@ class ModifyHDF5Genotypes(object):
         shuffle_cm: If >0 shuffle cM with random exp. waiting times (shuffle_cm mean)
         mult_alt: Whether there are multiple alternative Allelels in the original HDF5
         simulated_error: A dictionary storing empirical imputation error. If this is provided,
-        then frac and error will be ignored."""
+        then frac and error will be ignored.
+        oneModern: whether to mimic the scenario where one sample is ancient and the other is modern.
+        """
+
         f = self.f
         gt = f["calldata/GT"][:] # Load everything in 1 go
         r_map = f["variants/MAP"][:]
@@ -163,7 +166,7 @@ class ModifyHDF5Genotypes(object):
             survive = np.ones(l, dtype="bool")
         
         if shuffle_cm>0:
-            gt_new = shuffle_haplos(gt_new, r_map_new, scale_cm=shuffle_cm)
+            gt_new = shuffle_haplos(gt_new, r_map_new, scale_cm=shuffle_cm, oneModern=oneModern)
             
         if error>0:
             switch = (np.random.random(np.shape(gt_new)) < error) & (gt_new >= 0)
@@ -177,7 +180,7 @@ class ModifyHDF5Genotypes(object):
         if gp and not simulated_error:
             gp = gp_from_gts(gt_new, cty=cty)
         elif gp and simulated_error:
-            gt_new, gp = gp_from_empirical(gt_new, bps, simulated_error)
+            gt_new, gp = gp_from_empirical(gt_new, bps, simulated_error, oneModern=oneModern)
         else:
             gp = []
         
@@ -353,7 +356,7 @@ def gp_from_gts(gts, cty=0.99):
     #(np.sum(gp, axis=2)==1).all()
     return gp
 
-def gp_from_empirical(gts, bps, simulated_error, cty=0.99, verbose=False):
+def gp_from_empirical(gts, bps, simulated_error, cty=0.99, verbose=False, oneModern=False):
     """Create GP [l,k,3] from
     genotypes [l,k,2], with prob.
     of genotype set to empirical error"""
@@ -363,14 +366,15 @@ def gp_from_empirical(gts, bps, simulated_error, cty=0.99, verbose=False):
     gp = np.zeros((l, k, 3))
     count_err_impute = 0
     count_err_hard = 0
+    step = 1 if not oneModern else 2
     for i, bp in enumerate(bps):
-        for j in range(k):
+        for j in np.arange(k, step=step):
             dosage_groundtruth = gs[i,j]
             # no empirical data available, use the simple model
             if len(simulated_error[bp][dosage_groundtruth]) == 0:
                 gt1, gt2 = gts[i,j]
-                gt1_hat = (gt1 + np.random.rand()<0.01)%2
-                gt2_hat = (gt2 + np.random.rand()<0.01)%2
+                gt1_hat = (gt1 + int(np.random.rand()<0.01))%2
+                gt2_hat = (gt2 + int(np.random.rand()<0.01))%2
                 if gt1 != gt1_hat or gt2 != gt2_hat:
                     count_err_hard += 1
                 gts[i,j] = [gt1_hat, gt2_hat]
@@ -388,13 +392,25 @@ def gp_from_empirical(gts, bps, simulated_error, cty=0.99, verbose=False):
                         gts[i,j] = [int(gt_err/2), int(gt_err/2)]
                     else:
                         gts[i,j] = random.choice([[0,1], [1,0]])
-    print(f'{count_err_impute/k} error added per sample to simulate the effect of low coverage imputation...', flush=True)
-    print(f'{count_err_hard/k} error added per sample for sites not in the imputation dictionary...', flush=True)
+    if step == 2:
+        for i, bp in enumerate(bps):
+            for j in np.arange(1, k, step=2):
+                gt1, gt2 = gts[i,j]
+                # gp[i,j, gt1+gt2] = 1.0
+                gt1_hat = (gt1 + int(np.random.rand()<0.001))%2
+                gt2_hat = (gt2 + int(np.random.rand()<0.001))%2
+                gts[i,j] = [gt1_hat, gt2_hat]
+                gp[i,j,:] = (1-0.999)/2
+                gp[i,j, gt1_hat + gt2_hat] = 0.999
+    
+
+    print(f'{count_err_impute/(k/step)} error added per sample to simulate the effect of low coverage imputation...', flush=True)
+    print(f'{count_err_hard/(k/step)} error added per sample for sites not in the imputation dictionary...', flush=True)
     return gts, gp
 
 
 
-def shuffle_haplos(gts, rec, scale_cm=0.4):
+def shuffle_haplos(gts, rec, scale_cm=0.4, oneModern=False):
     """Shuffle genotypes with random waiting times 
     (mean scale in cM, exponentially distributed)"""
     m = np.max(rec)
@@ -409,7 +425,8 @@ def shuffle_haplos(gts, rec, scale_cm=0.4):
     
     gts_new = np.copy(gts)
     # Iterate over all individuals and all swap points
-    for i in range(n):
+    step = 1 if not oneModern else 2
+    for i in np.arange(n, step=step):
         for j in range(0,k-1,2):
             a,b= idx[i,j], idx[i,j+1]
             if a>=l:
