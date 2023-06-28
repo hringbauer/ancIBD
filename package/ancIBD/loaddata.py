@@ -109,6 +109,8 @@ class LoadHDF5(LoadData):
             p = 0.5 * np.ones(len(f["variants/MAP"]))
         else:
             p = f[self.p_col][:] # Load the Allele Freqs from HDF5
+            if len(p.shape) > 1:
+                p = p[:,0]
         return p
         
     def get_individual_idx(self, f, iid="", f_col="samples"):

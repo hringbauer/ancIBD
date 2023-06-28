@@ -17,9 +17,10 @@ def main():
                         Only one of --vcf and --h5 should be specified.\
                         But please make sure that the hdf5 file has suffix ch{chromosome number}.h5 (e.g, test.ch20.h5).")
     parser.add_argument('--ch', action="store", dest="ch", type=int, required=True, help='chromosome number (1-22).')
-    parser.add_argument('--marker_path', action="store", dest="marker_path", type=str, required=True, help='path to the marker file')
-    parser.add_argument('--map_path', action="store", dest="map_path", type=str, required=True, help='path to the map file')
+    parser.add_argument('--marker_path', action="store", dest="marker_path", type=str, required=False, help='path to the marker file')
+    parser.add_argument('--map_path', action="store", dest="map_path", type=str, required=False, help='path to the map file')
     parser.add_argument('--af_path', action="store", dest="af_path", type=str, required=False, default="", help='path to the allele frequency file (optional)')
+    parser.add_argument('--af_column', action='store', dest='af_column', type=str, required=False, default='', help='column name of the allele frequency in the hdf5. For example, "variants/AF_ALL" or "variants/AF_SAMPLE".')
     parser.add_argument('--out', action="store", dest="out", type=str, required=False, help='output folder to store IBD results and the intermediary .hdf5 file. If not specified, the results will be stored in the same folder as the input vcf file.')
     parser.add_argument('--prefix', action="store", dest="prefix", type=str, required=False,
                         help="prefix of output file. If not specified, the prefix will be the same as the input vcf")
@@ -88,8 +89,10 @@ def main():
                 run_iids.append((id1, id2))
     
     # I set folder_out to an empty string because I save the output file separately in the code below
-    p_col = 'variants/AF_ALL' if len(args.af_path) > 0 else 'variants/AF_SAMPLE'
-    df_ibd = hapBLOCK_chroms(folder_in=path_h5[:2+path_h5.find('ch')],
+    p_col = args.af_column
+    if len(p_col) == 0:
+        p_col = 'variants/AF_ALL' if len(args.af_path) > 0 else 'variants/AF_SAMPLE'
+    df_ibd = hapBLOCK_chroms(folder_in=path_h5[:2+path_h5.rfind('ch')],
                              iids=iids, run_iids=run_iids,
                              ch=ch, folder_out="",
                              output=False, prefix_out='', logfile=False,
