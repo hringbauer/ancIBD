@@ -19,7 +19,7 @@ cythonize -a -i cfunc.pyx
 Then switch to th correct folder and build the extensions via:
 
 envpython37  #load the python environment
-cd python3/  # or path where the cfunc.pyx file is located
+cd package/ancIBD/  # or path where the cfunc.pyx file is located
 module load gcc/6.2.0
 module load python/3.7.4
 cythonize -a -i cfunc.pyx
