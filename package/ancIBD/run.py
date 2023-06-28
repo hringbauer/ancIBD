@@ -22,7 +22,7 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
                    l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
                    t_model="standard", p_col="variants/AF_ALL", 
-                   ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2,
+                   ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2, min_error=1e-3,
                    cutoff_post=0.99, max_gap=0.0075):
     """Run IBD for pair of Individuals.
     folder_in: hdf5 path up to chromosome.
@@ -31,6 +31,7 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     min_cm: Minimal block length to call and save [cM]
     savepath: Where to save the IBD plot to.
     p_col: The dataset to use in hdf5 for der. AF. If default use p=0.5.
+    min_error: Caps min/max prob. haplotype being derived to min_error/1-min_error when loading data
     If empyt use in sample AF.
     Return df_ibd, posterior, map, tot_ll"""
     iids = np.array(iids) # For better props when indexing
@@ -38,11 +39,13 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     h = HMM_Full(folder_in=folder_in, l_model=l_model, t_model=t_model, 
                      e_model=e_model, h_model = h_model,
                      output=output, load=True)
+
     if t_model == 'asymmetric':
         h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump, ibd_jump2 = ibd_jump2)
     else:
         h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump)
-    h.l_obj.set_params(iids=iids, ch=ch, p_col=p_col)
+        
+    h.l_obj.set_params(iids=iids, ch=ch, p_col=p_col, min_error=min_error)
     h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
     #post, r_vec, fwd, bwd, tot_ll = h.run_fwd_bwd()
     post, r_vec =  h.run_fwd_bwd(full=False)
@@ -207,8 +210,8 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
                   iids = ["", ""], ch=2, xlim=[], folder_out="", 
                   plot=False, path_fig="", output=False, exact=True,
                   ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2, 
-                  cutoff_post=0.99, max_gap=0.0075, 
-                  l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled",
+                  cutoff_post=0.99, max_gap=0.0075, min_error=1e-3,
+                  l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled",
                   p_col="variants/AF_ALL",
                   title="", c="gray", c_hw="maroon", 
                   state=0, return_post=False, **kwargs):
@@ -219,6 +222,7 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
     p_col: The dataset to use in hdf5 for der. AF. If default use p=0.5.
            If empty string use in sample AF.
     return_post: Whether to return posterior [Boolean]
+    min_error: Caps min/max prob. haplotype being derived to min_error/1-min_error when loading data
     kwargs: Optional Keyword Arguments for Plotting (e.g. c_ibd)
     """
     assert(len(iids)==2) # Sanity Check of Input IIDs - as here it should be pairs
@@ -228,7 +232,7 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
            output=output, prefix_out="", logfile=False,
            l_model=l_model, e_model=e_model, h_model=h_model, 
            t_model="standard", p_col=p_col, ibd_in=ibd_in, ibd_out=ibd_out, ibd_jump=ibd_jump, 
-           min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
+           min_error=min_error, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
         
     if plot:
         if len(title)==0:

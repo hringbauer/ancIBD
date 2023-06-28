@@ -1,9 +1,8 @@
 # hapBLOCK
 This github repository contains development code for the Python package `ancIBD` that is available via PyPi [here](https://pypi.org/project/ancIBD/). Please find the official instructions on Readthedocs [here](https://ancibd.readthedocs.io). The notes below are for the developers of this package who run development versions.
 
-
-
-
+### Depracation warning
+The code in `./python3` is all legacy code and will be removed soon. All Python code has now been moved to `./package/ancIBD` - and continues to be updated there.
 
 ### Produce C extension
 In order to run the code, you need to have the C extension that implements the forward/backward pass.

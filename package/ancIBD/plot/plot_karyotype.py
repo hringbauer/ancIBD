@@ -186,7 +186,7 @@ def coal_prob(m, comm_anc=1):
 
 def exp_blocks_full_individual(x, m, comm_anc=1):
     """Calculates the Expected Nr of ROH Blocks per Morgan for full Individual
-    x: Array of Block Lenths
+    x: Array of Block Lenths [in Morgan]
     m: Nr of Meisois
     comm_anc: Nr of Ancestry Loops"""
     
@@ -201,9 +201,10 @@ def exp_blocks_full_individual(x, m, comm_anc=1):
 def plot_pde_individual(df_ibd, figsize=(8,6), bw_cm=4,
                         plotlim=[4,100], savepath="", 
                         output=False, lw_curve=3,
-                        comm_ancs=[4,4,4,2], ms=[6,5,4,3], labels=["First Cousins", "Aunt/Nephew", "Full Siblings", "Parent/Offpsring"],
+                        comm_ancs=[4,4,4,2], ms=[4,6,5,4], 
+                        labels=["First Cousins", "Second Cousins", "5 generations anc.", "4 generations anc."],
                         cs=["red", "green", "orange", "gray"], ls=[], title="", leg_loc="upper right"):
-    """Plot Histograms/PDEs of ROH Distribution for one Individual (iid)
+    """Plot Histograms/PDEs of IBD Distribution for one Individual (iid)
     bw_cm: Length of one Bin (in cM)
     comm_ancs: How many common ancestors to plot [list]
     ms: How many meiosis to plot [list]

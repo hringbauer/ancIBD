@@ -297,7 +297,7 @@ def load_loaddata(l_model="simulated", path="", **kwargs):
         l_obj = LoadHDF5(path=path, **kwargs)
     elif l_model == "hdf5":
         l_obj = LoadHDF5Multi(path=path, **kwargs)
-    elif l_model == "h5":
+    elif l_model == "h5": # The most updated version - as described in preprint.
         l_obj = LoadH5Multi2(path=path, **kwargs)
     else:
         raise NotImplementedError("Loading Model not found!")

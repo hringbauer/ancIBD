@@ -45,12 +45,20 @@ def save_1240_1000g_kmarkers(ch=3, snp_path="", marker_path=""):
     
 def bctools_filter_vcf(in_vcf_path="", out_vcf_path="", marker_path=""):
     """Same as PLINK, but with bcftools and directly via Marker Positions.
-    filter_iids: Whether to use the .csv with Indivdiduals to extract"""
-    command = f"bcftools view -Ov -o {out_vcf_path} -T {marker_path} -M2 -v snps {in_vcf_path}"
-    os.system(command)
+    filter_iids: Whether to use the .csv with Indivdiduals to extract.
+    Check whether out_vcf_path has .gz or .vcf at end and compresses for former"""
+    if out_vcf_path.endswith(".gz"):
+        command = f"bcftools view -Oz -o {out_vcf_path} -T {marker_path} -M2 -v snps {in_vcf_path}"
+    elif out_vcf_path.endswith(".vcf"):
+        command = f"bcftools view -Ov -o {out_vcf_path} -T {marker_path} -M2 -v snps {in_vcf_path}"
+    else:
+        raise RuntimeError("Enter valid filename for VCF: Has to end with .gz or .vcf")
+    
+    print(f"Running bash command: \n{command}")
+    os.system(command)  # Run the actual command in shell
     
     #!bcftools view -Oz -o $out_vcf_path -T $marker_path -M2 -v snps $in_vcf_path
-    print("Finished BCF tools filtering.")
+    print("Finished BCF tools filtering to target markers.")
     
 def bctools_filter_vcf_allvariants(in_vcf_path="", out_vcf_path="", marker_path=""):
     """Same as PLINK, but with bcftools and directly via Marker Positions.
@@ -106,7 +114,7 @@ def vcf_to_1240K_hdf(in_vcf_path = "/n/groups/reich/ali/WholeGenomeImputation/im
                            out_vcf_path= path_vcf,
                            marker_path = marker_path)
     else:
-        path_vcf = in_vcf_path  ### If no temporary VCF available
+        path_vcf = in_vcf_path  ### If no temporary VCF use input VCF
     
     if os.path.exists(path_h5):  # Do a Deletion of existing hdf5 File there
         print(f"Deleting previous HDF5 file at path_h5: {path_h5}...")
