@@ -203,7 +203,7 @@ class LoadHDF5Multi(LoadHDF5):
             hts = self.get_haplo_prob(f, idcs[sort])
         
             if len(self.p_col)>0:
-                p = self.get_p_hdf5(f, self.p_col)  
+                p = self.get_p_hdf5(f, self.p_col)
             else:
                 p = self.get_p(hts)  # Calculate Mean allele frequency from sample subset
                 
@@ -228,6 +228,13 @@ class LoadHDF5Multi(LoadHDF5):
             p = 0.5 * np.ones(len(f["variants/MAP"]))
         else:
             p = f[col][:] # Load the Allele Freqs from HDF5
+            
+        ### Filter if p is matrix (e.g. sometimes for three alt alleles)
+        if len(np.shape(p))==2:
+            p=p[:,0]
+        elif len(np.shape(p))!=1:
+            raise RuntimeWarning(f"Allele Frequency field in h5 {col} has invalid dimensions!")
+            
         return p
 
 class LoadH5Multi2(LoadHDF5Multi):
