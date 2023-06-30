@@ -1,0 +1,17 @@
+Print downsampling to 1240K...
+Running bash command: 
+bcftools view -Ov -o test/example_hazelton.ch20.1240k.vcf -T ./data/filters/snps_bcftools_ch20.csv -M2 -v snps ./data/vcf.raw/example_hazelton_chr20.vcf.gz
+Finished BCF tools filtering to target markers.
+Converting to HDF5...
+Finished conversion to hdf5!
+Merging in LD Map..
+Lifting LD Map from eigenstrat to HDF5...
+Loaded 28940 variants.
+Loaded 6 individuals.
+Loaded 30377 Chr.20 1240K SNPs.
+Intersection 28827 out of 28940 HDF5 SNPs
+Interpolating 113 variants.
+Finished Chromosome 20.
+Adding map to HDF5...
+Intersection 28827 out of 28940 target HDF5 SNPs. 113 SNPs set to AF=0.5
+Transformation complete! Find new hdf5 file at: test/example_hazelton.ch20.h5

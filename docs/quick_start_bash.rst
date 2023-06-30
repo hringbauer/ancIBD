@@ -42,6 +42,9 @@ directory as this jupyter notebook.
     # Modify file paths according to your own environment if needed
     ancIBD-run --vcf ./data/vcf.raw/example_hazelton_chr20.vcf.gz --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv --map_path ./data/afs/v51.1_1240k.snp --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv --prefix example_hazelton
 
+.. literalinclude:: qs_output1.txt
+   :language: console
+
 
 If you already have the appropriate hdf5 file for your samples, you can
 also supply the command line with the hdf5 file directly. But please
