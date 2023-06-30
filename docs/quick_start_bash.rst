@@ -36,6 +36,9 @@ environment if needed. The file path in the following tutorial has
 assumed that the folder downloaded from dropbox link is in the same
 directory as this jupyter notebook.
 
+.. command-output:: python --version
+
+
 .. code:: bash
 
     # Modify file paths according to your own environment if needed
