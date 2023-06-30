@@ -23,3 +23,5 @@ In addition to the imputed vcf files, you need additionally three files, all of 
 We now run ancIBD on ch20 as an example. To run the following command, change the path to the above three files according to your own environment if needed. The file path in the following tutorial has assumed that the folder downloaded from dropbox link is in the same directory as this jupyter notebook.
 
 
+.. command-output:: ancIBD-run --vcf ./data/vcf.raw/example_hazelton_chr20.vcf.gz --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv --map_path ./data/afs/v51.1_1240k.snp --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv --prefix example_hazelton
+    :ellipsis: 30
