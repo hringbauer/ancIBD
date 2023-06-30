@@ -3,3 +3,4 @@ sphinx_rtd_theme
 sphinx-autoapi
 ipykernel
 nbsphinx
+sphinxcontrib.programoutput
