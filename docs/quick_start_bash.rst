@@ -1,14 +1,14 @@
 Quick Start for ancIBD
 ========================
 
-This notebook is a quick start guide for running ancIBD. It uses wrapper scripts for various functions introduced in section 
-[preparing input](create_hdf5_from_vcf.ipynb) and [calling IBD with ancIBD](run_ancIBD.ipynb). 
+This notebook is a quick start guide for running ancIBD. It uses wrapper scripts for various functions introduced in section :ref:`preparing input <create_hdf5_from_vcf>`
+and :ref:`calling IBD with ancIBD <run_ancIBD>`. 
 Writing your own wrapper script for these functions provides more flexibility, while using the command line interface 
 to be introduced in this quick starting guide is easier. 
-We have created two command-line interfaces (`ancIBD-run` and `ancIBD-summary`)for running ancIBD quickly on your imputed data. 
+We have created two command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``)for running ancIBD quickly on your imputed data. 
 The test data used to run these tutorials can be downloaded from https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0. 
 It contains imputed vcf of a subset of samples from early Neolithic Britain that belong to an extended pedigree 
-(`Fowler et al.<https://www.nature.com/articles/s41586-021-04241-4>`_). 
+(`Fowler et al. <https://www.nature.com/articles/s41586-021-04241-4>`_). 
 
 
 calling IBD
