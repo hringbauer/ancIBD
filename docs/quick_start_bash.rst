@@ -92,6 +92,9 @@ share at least one IBD passing the length cutoff are recorded).
 
     ancIBD-summary --tsv test/example_hazelton.ch --out test/
 
+.. literalinclude:: qs_output2.txt
+   :language: console
+
 
 To view the complete options provided by the two command-line interface,
 use -h. For power users or people interested in applying the method

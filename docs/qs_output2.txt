@@ -1,0 +1,30 @@
+Chromosome 1; Loaded 10 IBD
+Chromosome 2; Loaded 9 IBD
+Chromosome 3; Loaded 6 IBD
+Chromosome 4; Loaded 9 IBD
+Chromosome 5; Loaded 8 IBD
+Chromosome 6; Loaded 7 IBD
+Chromosome 7; Loaded 9 IBD
+Chromosome 8; Loaded 7 IBD
+Chromosome 9; Loaded 6 IBD
+Chromosome 10; Loaded 7 IBD
+Chromosome 11; Loaded 5 IBD
+Chromosome 12; Loaded 5 IBD
+Chromosome 13; Loaded 8 IBD
+Chromosome 14; Loaded 6 IBD
+Chromosome 15; Loaded 3 IBD
+Chromosome 16; Loaded 6 IBD
+Chromosome 17; Loaded 4 IBD
+Chromosome 18; Loaded 5 IBD
+Chromosome 19; Loaded 8 IBD
+Chromosome 20; Loaded 6 IBD
+Chromosome 21; Loaded 6 IBD
+Chromosome 22; Loaded 6 IBD
+Saved 146 IBD to test/ch_all.tsv.
+> 8.0 cM: 146/146
+Of these with suff. SNPs per cM> 220:               113/146
+...
+22    3
+15    2
+Name: ch, dtype: int64
+Saved 9 individual IBD pairs to: test/ibd_ind.tsv
