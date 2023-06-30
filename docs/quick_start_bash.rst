@@ -1,8 +1,8 @@
 Quick Start for ancIBD
 ========================
 
-This notebook is a quick start guide for running ancIBD. It uses wrapper scripts for various functions introduced in section :ref:`preparing input <create_hdf5_from_vcf>`
-and :ref:`calling IBD with ancIBD <run_ancIBD>`. 
+This notebook is a quick start guide for running ancIBD. It uses wrapper scripts for various functions introduced in section :ref:`preparing input <create_hdf5_from_vcf.ipynb>`
+and :ref:`calling IBD with ancIBD <run_ancIBD.ipynb>`. 
 Writing your own wrapper script for these functions provides more flexibility, while using the command line interface 
 to be introduced in this quick starting guide is easier. 
 We have created two command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``)for running ancIBD quickly on your imputed data. 
