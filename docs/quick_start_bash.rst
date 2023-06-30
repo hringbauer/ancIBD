@@ -36,18 +36,10 @@ environment if needed. The file path in the following tutorial has
 assumed that the folder downloaded from dropbox link is in the same
 directory as this jupyter notebook.
 
-.. code:: ipython3
+.. code:: bash
 
     # Modify file paths according to your own environment if needed
-    ch = 20
-    marker_path = f'./data/filters/snps_bcftools_ch{ch}.csv'
-    map_path = './data/afs/v51.1_1240k.snp'
-    af_path = f'./data/afs/v51.1_1240k_AF_ch{ch}.tsv'
-    vcf_path = f'./data/vcf.raw/example_hazelton_chr{ch}.vcf.gz'
-
-.. code:: ipython3
-
-    !ancIBD-run --vcf $vcf_path --ch $ch --out test --marker_path $marker_path --map_path $map_path --af_path $af_path --prefix example_hazelton
+    ancIBD-run --vcf ./data/vcf.raw/example_hazelton_chr20.vcf.gz --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv --map_path ./data/afs/v51.1_1240k.snp --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv --prefix example_hazelton
 
 
 .. parsed-literal::
