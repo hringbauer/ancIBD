@@ -38,6 +38,8 @@ directory as this jupyter notebook.
 
 .. command-output:: python --version
 
+.. command-output:: ancIBD-run --vcf ./data/vcf.raw/example_hazelton_chr20.vcf.gz --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv --map_path ./data/afs/v51.1_1240k.snp --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv --prefix example_hazelton
+
 
 .. code:: bash
 
