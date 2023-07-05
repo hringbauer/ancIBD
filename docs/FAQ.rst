@@ -14,7 +14,7 @@ Do I need to mask certain genomic regions?
 ******************************************
 In most cases you don't need to apply genomic mask as the SNP density filter (>220 SNPs per cM) can effectively remove most false positive IBD segments.
 
-However, if you are interested in using shorter segments (e.g, <8cM), a mask file to remove regions with low SNP density is recommended. A mask file is provided in the `dropbox link <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0>`_.
+However, if you are interested in using shorter segments (e.g, <8cM), a mask file to remove regions with low SNP density is recommended. A mask file is provided “./data/map” in the `dropbox link <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0>`_.
 These masks are based on false positive rates along the genome out of the 10,156 Eurasia samples described in our manuscript. But you can also use your own mask file that suits your purpose.
 
 
