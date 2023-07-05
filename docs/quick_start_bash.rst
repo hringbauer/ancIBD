@@ -1,4 +1,4 @@
-Quick Start for ancIBD
+Quick Start for ancIBD (Under Developemnt; will be available in the next release)
 ======================
 
 This notebook is a quick start guide for running ancIBD. It uses wrapper
