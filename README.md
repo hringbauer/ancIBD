@@ -1,13 +1,11 @@
-# hapBLOCK
-This github repository contains development code for the Python package `ancIBD` that is available via PyPi [here](https://pypi.org/project/ancIBD/). Please find the official instructions on Readthedocs [here](https://ancibd.readthedocs.io). The notes below are for the developers of this package who run development versions.
+# ancIBD
+This GitHub repository contains development code for the Python package `ancIBD` that is [available via PyPi](https://pypi.org/project/ancIBD/). Please find the official documentation on Readthedocs [here](https://ancibd.readthedocs.io). 
 
-### Depracation warning
-The code in `./python3` is all legacy code and will be removed soon. All Python code has now been moved to `./package/ancIBD` - and continues to be updated there.
+The notes below are only for developers of this package who run development versions.
+
 
 ### Produce C extension
-In order to run the code, you need to have the C extension that implements the forward/backward pass.
-
-When installing the Python package, this is done automatically. However, if you are a developer and want to test the latest changes to the packages you will have to do that manually.
+In order to run the code, you need to have the C extension that implements the forward/backward pass. When installing the Python package, this is done automatically. However, if you are a developer and want to test the latest changes to the packages you will have to do that manually.
 
 ### On Leipzig Cluster
 Simply cd into the python folder, and then cythonize:
