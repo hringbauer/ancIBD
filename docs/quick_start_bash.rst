@@ -5,7 +5,7 @@ Here we describe how to run ``ancIBD`` using the two main command-line interface
 
 Calling IBD
 ~~~~~~~~~~~
-The test data used to run these tutorials can be downloaded from https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0.
+The test data used to run this tutorial can be downloaded `here <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0>`_
 
 In addition to the imputed .vcf files, you need additionally three files,
 all of which are provided in the same Dropbox link as indicated above.
