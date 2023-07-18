@@ -47,7 +47,7 @@ Contact
 
 If you have bug reports, suggestions, or any general comments please do not hesitate to reach out - we are happy to hear from you! Your suggestions will help us to improve this software.
 
-You can report bugs as an issue on the official ``ancIBD`` `github development page <https://github.com/hringbauer/ancIBD>`_
+You can report bugs as an issue on the ``ancIBD`` `GitHub page <https://github.com/hringbauer/ancIBD>`_
 
 We are also happy to hear from you via email:
 
