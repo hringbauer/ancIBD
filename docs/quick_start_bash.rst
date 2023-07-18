@@ -1,8 +1,7 @@
 Running ancIBD via bash (available in the next release)
 ======================
 
-Users not familiar with using Python functions can run ``ancIBD`` via bash, we have created two command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``). Here we describe how to run those. 
-
+One can run ``ancIBD`` via bash. Here we describe how to run the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``).
 
 Calling IBD
 ~~~~~~~~~~~
