@@ -1,16 +1,16 @@
 Overview
 ============
 
-The package ``ancIBD`` detects Identity-by-descent (IBD) segments in typical human aDNA data. It takes as input imputed genotype data by `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_.
+The package ``ancIBD`` detects Identity-by-descent (IBD) segments in typical human aDNA data. It takes as input imputed genotype data.
 
 Scope
 **********
 
 ``ancIBD`` is a comparably data-hungry method but can be applied to a substantial fraction of the aDNA record. Our tests showed that ``ancIBD`` requires at least 0.25x average coverage depth for whole-genome-sequencing (WGS) data and 1.0x average coverage on target SNPs (corresponding broadly to at least 600k SNPs covered for 1240k or TWIST captured aDNA data, two popular SNP captures in human aDNA). When one gets close to that coverage limit,  imputation starts to break down and false positive IBD rates increase, in particular for shorter IBD segments. Inferred IBD segments for data below that coverage limit have to be interpreted with extreme caution, as false positive and error rates become substantial and likely dominate any true signal in most demographic scenarios.
 
-We recommend imputing ancient data using the software GLIMPSE, imputing ancient samples one by one. The default parameters of ``ancIBD`` are optimized for data imputed using the modern 1000 Genome reference panels and all SNPs in this reference panel, and then downsampling to the so-called 1240k SNP set widely used in human ancient DNA. 
+We recommend imputing ancient data using the software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_, imputing ancient samples one by one as described `in its tutorial <https://odelaneau.github.io/GLIMPSE/glimpse1/tutorial_b38.html>`_. The default parameters of ``ancIBD`` are optimized for data imputed using the modern 1000 Genome reference panels and all SNPs in this reference panel, and then downsampling to the so-called 1240k SNP set widely used in human ancient DNA. 
 
-As ``ancIBD`` relies on imputed data, it works well for up to several ten-thousands year old modern human genomes when using the present-day 1000 Genome reference panel. We have observed that ``ancIBD`` performs well for global ancient genomes sharing the out-of-Africa bottleneck (i.e. modern humans from Eurasia, Oceania, Americas), however, some Sub-Saharan ancestries can be problematic as they contain deeply diverged haplotypes that are not represented well in the 1000 Genome reference panel and are imputed exceptionally poorly.
+As ``ancIBD`` relies on imputed data, it works well for up to several ten-thousands year old modern human genomes when using the present-day 1000 Genome reference panel. We have observed that ``ancIBD`` performs well for global ancient genomes sharing the out-of-Africa bottleneck (i.e. modern humans from Eurasia, Oceania, Americas), however, some Sub-Saharan ancestries can be problematic as they contain deeply diverged haplotypes that are not represented well in the 1000 Genome reference panel.
 
 Citing
 **********
