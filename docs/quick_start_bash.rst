@@ -1,11 +1,11 @@
 Running ancIBD via bash (available in the next release)
 ======================
 
-Here we describe how to run ``ancIBD`` using the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``).
+Here we describe how to run ``ancIBD`` using the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``). We showcase chromosome 20 as an example.
 
 Calling IBD
 ~~~~~~~~~~~
-The test data used to run this tutorial can be downloaded `here <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0>`_
+The test data used to run this tutorial can be downloaded `here <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0>`_.
 
 In addition to the imputed .vcf files, you need additionally three files,
 all of which are provided in the same Dropbox link as indicated above.
@@ -19,9 +19,7 @@ all of which are provided in the same Dropbox link as indicated above.
    download link. If not provided, allele frequencies calculated from
    samples themselves will be used)
 
-
-We showcase how to run ``ancIBD`` on ch20 as an example. The file path in the following tutorial assumes that the folder downloaded from the Dropbox link is in the same directory as this jupyter notebook. You will have to change the path to the above three files if needed.
-
+The file path in the following tutorial assumes that the folder downloaded from the Dropbox link is in the same directory as this jupyter notebook. You will have to change the path to the above three files if needed.
 
 .. code:: bash
 
