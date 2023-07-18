@@ -31,9 +31,9 @@ Using ``ancIBD`` via Python functions
 
 One can run ``ancIBD`` using Python functions, and we provide example Jupyter notebooks on how to:
 
--   `prepare the data <create_hdf5_from_vcf.ipynb>`__
--   `call IBD with ancIBD <run_ancIBD.ipynb>`__
--   `visualize the IBD output <plot_IBD.ipynb>`__
+-   `Prepare the data <create_hdf5_from_vcf.ipynb>`__
+-   `Call IBD with ancIBD <run_ancIBD.ipynb>`__
+-   `Visualize the IBD output <plot_IBD.ipynb>`__
 
 Users can embed the underlying Python functions into Python wrapper scripts and their own interactive Jupyter notebooks.
 
