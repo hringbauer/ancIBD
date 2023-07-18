@@ -1,7 +1,7 @@
 Running ancIBD via bash (available in the next release)
 ======================
 
-One can run ``ancIBD`` via bash. Here we describe how to run the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``).
+Here we describe how to run ``ancIBD`` using the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``).
 
 Calling IBD
 ~~~~~~~~~~~
