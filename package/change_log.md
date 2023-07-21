@@ -1,7 +1,9 @@
 ## VERSION NUMBER, DATE, AUTHOR
 List of updates to ancIBD.
-Format:
-Version, Date, Author
+
+## 0.5, July 21st, Harald Ringbauer, Yilei Huang
+- Added command line support for ancIBD (as described on readthedocs)
+- Fixed bug on some setups of function vcf_to_1240K_hdf when intermediate .vcf was compressed but not flagged in path_vcf as .gz. We now choose whether to compress based on the path automatically. 
 
 ## 0.3a2, April 12th, Harald Ringbauer
 - Added Filter to only existing GP data when loading (use case: HDF5 with missing data). Disregards all SNPs where at least some data is missing.
