@@ -35,7 +35,7 @@ One can run ``ancIBD`` using Python functions that are imported from the package
 
 The example notebooks and data can be also downloaded `here <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0Users1>`_ Users can modify hose functions and embed them into Python wrapper scripts or their own interactive Jupyter notebooks. 
 
-Using ``ancIBD`` via the command line (available in the next release)
+Using ``ancIBD`` via the command line
 **********
 
 Alternatively, one can also run ``ancIBD`` directly from the command line. These commands are automatically added during the installation of the Python package. You can find a detailed walk-through in the section `Running ancIBD via bash <quick_start_bash.rst>`__.
