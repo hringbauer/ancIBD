@@ -1,4 +1,4 @@
-Running ancIBD via bash (available in the next release)
+Running ancIBD via bash
 ======================
 
 Here we describe how to run ``ancIBD`` using the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``). We showcase chromosome 20 as an example.
