@@ -1,7 +1,7 @@
 Overview
 ============
 
-The software package ``ancIBD`` detects Identity-by-descent (IBD) segments in typical human aDNA data. It takes as input imputed genotype data. The default parameters of ``ancIBD`` are optimized for imputation using the software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`, downsampled to the 1240k SNP set.
+The software package ``ancIBD`` detects Identity-by-descent (IBD) segments in typical human aDNA data, implementing an algorithm described `in a preprint <https://doi.org/10.1101/2023.03.08.531671>`_. It takes as input imputed genotype data. The default parameters of ``ancIBD`` are optimized for imputation using the software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`, downsampled to the 1240k SNP set.
 
 Scope
 **********
@@ -18,15 +18,6 @@ Close to that coverage limit, imputation starts to break down and false positive
 Preprocessing the data
 **********
 We recommend imputing ancient data using the software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_, imputing ancient samples one by one as described `in its tutorial <https://odelaneau.github.io/GLIMPSE/glimpse1/tutorial_b38.html>`_. The default parameters of ``ancIBD`` are optimized for data imputed using the modern 1000 Genome reference panels and all SNPs in this reference panel, and then downsampling to the so-called 1240k SNP set widely used in human ancient DNA. The imputed 1240k SNP VCF **needs** to contain a field for the phased diploid genotypes (GT) as well as the three genotype probabilities (as GP field). This imputed VCF is then transformed into a so-called .hdf5 file - which is the input for ``ancIBD`` functions to call and visualize IBD.
-
-Citing
-**********
-
-A pre-print that describes ``ancIBD`` and several applications is available here:
-
-`ancIBD - Screening for identity by descent segments in human ancient DNA <https://doi.org/10.1101/2023.03.08.531671>`_
-
-You can cite this article if you use ``ancIBD`` for your scientific work.
 
 Example Data
 **********
@@ -48,6 +39,16 @@ Using ``ancIBD`` via the command line (available in the next release)
 **********
 
 Alternatively, one can also run ``ancIBD`` directly from the command line. These commands are automatically added during the installation of the Python package. You can find a detailed walk-through in the section `Running ancIBD via bash <quick_start_bash.rst>`__.
+
+Citing
+**********
+
+A pre-print that describes ``ancIBD`` and several applications is available here:
+
+`ancIBD - Screening for identity by descent segments in human ancient DNA <https://doi.org/10.1101/2023.03.08.531671>`_
+
+You can cite this article if you use ``ancIBD`` for your scientific work.
+
 
 Contact
 **********
