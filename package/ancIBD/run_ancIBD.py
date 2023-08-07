@@ -96,7 +96,7 @@ def main():
                              iids=iids, run_iids=run_iids,
                              ch=ch, folder_out="",
                              output=False, prefix_out='', logfile=False,
-                             l_model='h5', e_model='haploid_gl', h_model='FiveStateScaled', t_model='standard', p_col=p_col,
+                             l_model='h5', e_model='haploid_gl2', h_model='FiveStateScaled', t_model='standard', p_col=p_col,
                              ibd_in=1, ibd_out=10, ibd_jump=400,
                              min_cm=args.min, cutoff_post=0.99, max_gap=0.0075)
     

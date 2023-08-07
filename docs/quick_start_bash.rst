@@ -29,6 +29,12 @@ The file path in the following tutorial assumes that the folder downloaded from 
 .. literalinclude:: qs_output1.txt
    :language: console
 
+If you use ancIBD on your own GLIMPSE-imputed dataset, we note that GLIMPSE output phased and imputed bcfs separately (in folder GLIMPSE/phased and GLIMIPSE/ligated, respectively). For ancIBD, however, the two bcfs need to be combined (and converted to vcf). You can use the following bash command to merge the phased and imputed bcfs.
+
+.. code:: bash
+bcftools annotate -a ./GLIMPSE_ligated/YOUR_BCF_FILE -c FORMAT/GP ./GLIMPSE_phased/YOUR_BCF_FILE -Oz -o OUTPUT_COMBINED_VCF_FILE
+
+
 
 If you already have the appropriate hdf5 file for your samples, you can also supply the command line with the hdf5 file directly. Make sure that the hdf5 file has the suffix “ch{chromosome number}.h5” (e.g. “test.ch20.h5”).
 
