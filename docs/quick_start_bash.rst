@@ -1,10 +1,13 @@
-Running ancIBD via bash (available in the next release)
+Running ancIBD via bash
 ======================
 
-Here we describe how to run ``ancIBD`` using the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``). We showcase chromosome 20 as an example.
+Here we describe how to run ``ancIBD`` using the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``). These are available since version 0.5, and are added automatically when installing the software package via ``pip``.
+
 
 Calling IBD
 ~~~~~~~~~~~
+We showcase chromosome 20 as an example. 
+
 The test data used to run this tutorial can be downloaded `here <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0>`_.
 
 In addition to the imputed .vcf files, you need additionally three files,
@@ -24,7 +27,11 @@ The file path in the following tutorial assumes that the folder downloaded from 
 .. code:: bash
 
     # Modify file paths according to your own environment if needed
-    ancIBD-run --vcf ./data/vcf.raw/example_hazelton_chr20.vcf.gz --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv --map_path ./data/afs/v51.1_1240k.snp --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv --prefix example_hazelton
+    ancIBD-run --vcf ./data/vcf.raw/example_hazelton_chr20.vcf.gz \
+    --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv \
+    --map_path ./data/map/v51.1_1240k.snp \
+    --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv \
+    --prefix example_hazelton
 
 .. literalinclude:: qs_output1.txt
    :language: console
@@ -40,9 +47,13 @@ If you already have the appropriate hdf5 file for your samples, you can also sup
 
 .. code:: bash
 
-    ancIBD-run --h5 ./test/example_hazelton.ch20.h5 --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv --map_path ./data/afs/v51.1_1240k.snp --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv --prefix example_hazelton
+    ancIBD-run --h5 ./test/example_hazelton.ch20.h5 --ch 20 \
+    --out test --marker_path ./data/filters/snps_bcftools_ch20.csv \
+    --map_path ./data/map/v51.1_1240k.snp \
+    --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv \
+    --prefix example_hazelton
 
-now we can do the same for all the 22 autosomes. This takes about 6min.
+Now we can run a loop for all 22 autosomes. This takes about 6min.
 
 .. code:: bash
     
@@ -62,9 +73,8 @@ now we can do the same for all the 22 autosomes. This takes about 6min.
 .. note::
 
 
-   For large sample sizes, we recommend that one parallizes over
-   autosomes for speed-up (e.g., by submitting array jobs on a cluster).
-   The above for-loop is efficient only for small sample sizes.
+   For large sample sizes, we recommend that one runs multiple
+   autosomes in parallel for speed-up (e.g., by submitting array jobs on a cluster, with each chromosome as one job).
 
 Combine IBD over 22 autosomes and generate summary statistics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
