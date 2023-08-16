@@ -1,7 +1,8 @@
 """
-Functions to prepare parameters for a batch run.
-Splits up all pairs into batches, in a standard algorithm
-@ Author: Harald Ringbauer, 2022
+Various Functions to prepare parameters for a batched run on a cluster
+Splits up individuals into batches, run all pw. batches with ancIBD, and then collect results.
+Functions here splits up input into batches, in a standardized way
+@ Author: Harald Ringbauer, 2023
 """
 
 import numpy as np
@@ -203,7 +204,6 @@ def to_ibd_df_batches(batches=8, folder_out = "/n/groups/reich/hringbauer/git/ib
     df_res = filter_ibd_df(df_res, min_cm=min_cm, snp_cm=snp_cm, output=output) 
     return df_res 
 
-
 def print_runid_missing(b = 1, folder_out = "", output=False):
     """Finds and prints indices of missing output (chXX.tsv) for batchwise runs.
     Return list of missing indices. Ideal for rerunning batch scripts.
@@ -221,3 +221,35 @@ def print_runid_missing(b = 1, folder_out = "", output=False):
                 l = b * (b+1)/2 * (ch-1) + (b1+1) * b1/2 + b2 + 1 # The +1 is c indexing
                 ls.append(str(int(l)))
     return ls
+
+def find_output_missing(metapath="", folder_out="",
+                        batch_size = 400, rge = [10, 20]):
+    """Return List of all run nr.s that are missing.
+    metapath: Path to .tsv of IIDs run for IBD screening [str]
+    folder_out: Output folder [str]
+    batch_size: How many individuals have been run per batch [int]"""
+    
+    df = pd.read_csv(metapath, sep="\t")
+    k = len(df)
+
+    run_nr_missing = []
+    for i in range(rge[0], rge[1]):
+        b1, b2, ch  = get_run_lists_batch(i, k=k, batch_size=batch_size, output=False)
+        path = os.path.join(folder_out, f"batch{b1}_{b2}", f"ch{ch}.tsv")
+        there = os.path.exists(path)
+
+        if not there:
+            run_nr_missing.append(i)
+
+    print(f"Did not find output for: {len(run_nr_missing)} / {rge[1]-rge[0]} Runs")
+    if len(run_nr_missing) == 0:
+        print("Success! Everything found")
+    return run_nr_missing
+
+def get_batch_nr(n_iids, batchsize=400, n_chr=22):
+    """Get the number of jobs to submit to cluster.
+    Return n [int]"""
+    n_batch = np.ceil(n_iids/batchsize)
+    print(f"{n_iids} in batches of {batchsize}: {n_batch} Batches")
+    n = int((n_batch * (n_batch+1) * n_chr)/2)
+    print(f"Need {n} Submissions in total (0-{n-1})")
