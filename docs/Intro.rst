@@ -1,7 +1,7 @@
 Overview
 ============
 
-The software package ``ancIBD`` detects Identity-by-descent (IBD) segments in typical human aDNA data, implementing an algorithm described `in a preprint <https://doi.org/10.1101/2023.03.08.531671>`_. It takes as input imputed genotype data. The default parameters of ``ancIBD`` are optimized for imputed data using the software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_ using the 1000G reference panel.
+The software package ``ancIBD`` detects Identity-by-descent (IBD) segments in typical human aDNA data, implementing an algorithm described `in this preprint <https://doi.org/10.1101/2023.03.08.531671>`_. The input data are imputed and phased genotype data. The default parameters of ``ancIBD`` are optimized for imputed data using the software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_ using the 1000G reference panel.
 
 Scope
 **********
