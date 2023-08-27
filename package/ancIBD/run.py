@@ -12,6 +12,7 @@ import itertools as it
 from time import time
 import sys as sys
 import os as os
+import warnings
 
 #sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/") 
 from ancIBD.main import HMM_Full  # To run the main plotting.
@@ -90,8 +91,13 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
     Return df_ibd, posterior, map, tot_ll"""
     ### Run all pairs if empty
     iids = np.array(iids) # For better props when indexing
-    if not len(set(iids))==len(iids): # Check whether duplicates
-        raise RuntimeWarning("Duplicate IIDs detected!")
+    u_iids = set(iids) # Get unique IIDs to run
+    if not len(u_iids)==len(iids): # Check whether duplicates
+        warnings.warn("Duplicate IIDs detected!", RuntimeWarning)
+        #raise RuntimeWarning("Duplicate IIDs detected!")
+        print(f"Reducing to {len(u_iids)}/{len(iids)} unique IID")
+        iids = np.array(list(u_iids)) # Keep only the unique Values
+        
     if len(run_iids)==0:
         run_iids = it.combinations(iids, 2)
         
