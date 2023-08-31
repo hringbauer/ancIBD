@@ -11,6 +11,7 @@ import pickle as pickle
 import numpy as np
 import os as os
 import h5py as h5py
+import warnings
 
 ###############################
 ###############################
@@ -117,10 +118,12 @@ class LoadHDF5(LoadData):
         """Return index of individual iid"""
         samples = f[f_col].asstr()[:]
         idx = (samples == iid)
-        if np.sum(idx)!=1:
-            raise RuntimeWarning(f"{np.sum(idx)} entries found for {iid}")
-        assert(np.sum(idx)>0) # Sanity Check
-        idx=np.where(idx)[0][0]
+        
+        if np.sum(idx)==0:  # Sanity Check wheter IID found at all (raise stop)
+            raise RuntimeWarning(f"No entry in H5 found for iid: {iid}") 
+        if np.sum(idx)>1:   # Sanity Check wether multiple IIDs found (warning only)
+            warnings.warn(f"{np.sum(idx)} entries found for iid: {iid}", RuntimeWarning)    
+        idx=np.where(idx)[0][0] # Get the first IID match index
         return idx  
     
     def get_haplo_prob(self, f, idx):
@@ -185,7 +188,7 @@ class LoadHDF5Multi(LoadHDF5):
         if np.mean(idx)<1:  # Missing Data detected
             print(f"Attention: Some data in GP field is missing. Ideally, all GP entries are set.")   
         if np.mean(idx)<0.8:  # Less than 80 percent of data there
-            raise RuntimeWarning(f"Too much data missing: {np.sum(idx)}/{len(idx)} SNPs are NULL for GP")
+            print(f"Too much data missing: {np.sum(idx)}/{len(idx)} SNPs have GP ({np.mean(idx)*100}% there)")
             
         return hts[:,idx], p[idx], m[idx]
     
