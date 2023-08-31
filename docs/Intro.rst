@@ -1,7 +1,7 @@
 Overview
 ============
 
-The software package ``ancIBD`` detects Identity-by-descent (IBD) segments in typical human aDNA data, implementing an algorithm described `in this preprint <https://doi.org/10.1101/2023.03.08.531671>`_. The input data are imputed and phased genotype data. The default parameters of ``ancIBD`` are optimized for imputed data using the software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_ using the 1000G reference panel.
+The software package ``ancIBD`` detects Identity-by-Descent (IBD) segments in typical human aDNA data, implementing an algorithm described `in this preprint <https://doi.org/10.1101/2023.03.08.531671>`_. The input data are imputed and phased genotype data. The default parameters of ``ancIBD`` are optimized for imputed data using the software `GLIMPSE <https://odelaneau.github.io/GLIMPSE/glimpse1/index.html>`_ using the 1000 Genome haplotype reference panel.
 
 Scope
 **********
@@ -11,7 +11,7 @@ Scope
 - at least 0.25x average coverage depth for whole-genome-sequencing (WGS) data 
 - 1.0x depth on dense target SNPs (corresponding broadly to at least 600k SNPs covered for 1240k or TWIST captured aDNA data, two popular SNP captures in human aDNA)
 
-Close to that coverage limit, imputation starts to break down and false positive IBD rates quickly increase. Inferred IBD segments for data below that coverage limit have to be interpreted with extreme caution, as false positive and error rates become substantial. Generally, the shorter the IBD, the less robust the calls. The minimum output IBD length is 8 centimorgan (cM), but we note that already IBD shorter than 12 cM are enriched for false-positive IBD segments. Please always treat the output with necessary caution and not as a black box.
+Close to that coverage limit, imputation starts to break down and false positive IBD rates quickly increase. Therefore, inferred IBD segments for data below that coverage limit have to be interpreted with extreme caution, as false positive and error rates become substantial. Generally, the shorter the IBD and the lower the coverage, the less robust the IBD calls. The minimum output IBD length is 8 centimorgan (cM), but we note that already IBD shorter than 12 cM are enriched for false-positive IBD segments. **Please always treat the ancIBD output with necessary caution and not as a black box**.
 
 ``ancIBD`` relies on imputation with a haplotype reference panel. We observed that using the present-day 1000 Genome reference panel results in robust IBD calls for up to several ten-thousands year-old human genomes for global  `homo sapiens` ancient genomes sharing the out-of-Africa bottleneck (i.e. from Eurasia, Oceania, and Americas), however, some Sub-Saharan ancestries can be problematic as they contain deeply diverged haplotypes that are not represented in the 1000 Genome reference panel. Currently, ``ancIBD`` is not applicable to other humans such as Neanderthals or Denisovans due to the lack of a suitable haplotype reference panel for imputation.
 
@@ -33,12 +33,12 @@ One can run ``ancIBD`` using Python functions that are imported from the package
 -   `Call IBD with ancIBD <run_ancIBD.ipynb>`__
 -   `Visualize the IBD output <plot_IBD.ipynb>`__
 
-The example notebooks and data can be also downloaded `here <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0Users1>`_ Users can modify hose functions and embed them into Python wrapper scripts or their own interactive Jupyter notebooks. 
+Please find those example notebooks and data `here <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0Users1>`_ You can modify hose functions and embed them into your Python scripts or Jupyter notebooks.
 
 Using ``ancIBD`` via the command line (available since v0.5)
 **********
 
-Alternatively, one can also run ``ancIBD`` directly from the command line. These commands are automatically added during the installation of the Python package. You can find a detailed walk-through in the section `Running ancIBD via bash <quick_start_bash.rst>`__.
+Alternatively, one can also run ``ancIBD`` from the command line. The commands are automatically added during the installation of the Python package. You can find a detailed walk-through in the section `Running ancIBD via bash <quick_start_bash.rst>`__.
 
 Citing
 **********
@@ -62,8 +62,7 @@ We are also happy to hear from you via email:
 -   harald_ringbauer AT eva mpg de
 -   yilei_huang AT eva mpg de
 
-(fill in AT with @ and other blanks with dots)
+(Fill in AT with @ and other blanks with dots)
 
 
-Lead Authors:
 Harald Ringbauer, Yilei Huang, 2023
