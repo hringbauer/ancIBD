@@ -177,7 +177,7 @@ class LoadHDF5Multi(LoadHDF5):
         #h1 = np.swapaxes(h1, 0, 1)
         return h1
     
-    def filter_valid_data(self, hts, p, m):
+    def filter_valid_data(self, hts, p, m, bp):
         """Filter to SNPs with fully valid data. 
         Return filtered data."""
         idx = ~(np.isnan(hts).any(axis=0)) # Flag all markers that are not null
@@ -190,13 +190,15 @@ class LoadHDF5Multi(LoadHDF5):
         if np.mean(idx)<0.8:  # Less than 80 percent of data there
             print(f"Too much data missing: {np.sum(idx)}/{len(idx)} SNPs have GP ({np.mean(idx)*100}% there)")
             
-        return hts[:,idx], p[idx], m[idx]
+        return hts[:,idx], p[idx], m[idx], bp[idx]
     
     def load_all_data(self, **kwargs):
         """ Return haplotype likelihoods [n*2,l] for anc. allele.
         along first axis: 2*i, 2*(i+1) haplotype of ind i
         derived allele frequencies [l]
-        map in Morgan [l]"""
+        map in Morgan [l]
+        bp positions [l]
+        """
         path_h5_ch = f"{self.path}{self.ch}.h5"
         with h5py.File(path_h5_ch, "r") as f:
             m = self.return_map(f)            
@@ -204,17 +206,17 @@ class LoadHDF5Multi(LoadHDF5):
             sort = np.argsort(idcs)   # Get the sorting Indices [has to go low to high]
             samples = self.iids[sort] # Get them in sorted order
             hts = self.get_haplo_prob(f, idcs[sort])
-        
+            bp = f['variants/POS'][:]
             if len(self.p_col)>0:
                 p = self.get_p_hdf5(f, self.p_col)
             else:
                 p = self.get_p(hts)  # Calculate Mean allele frequency from sample subset
                 
         ### Filter to Valid data
-        hts, p, m = self.filter_valid_data(hts, p, m)
+        hts, p, m, bp = self.filter_valid_data(hts, p, m, bp)
         
         self.check_valid_data(hts, p, m)
-        return hts, p, m, samples
+        return hts, p, m, bp, samples
     
     def get_p(self, htsl):
         """Get Allele frequency from haplotype probabilities.

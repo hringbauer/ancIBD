@@ -113,7 +113,7 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
     h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
     
     ### Load all data
-    htsl, p, r_vec, samples =  h.l_obj.load_all_data()
+    htsl, p, r_vec, bp, samples =  h.l_obj.load_all_data()
     
     ### Load transition matrix
     t_mat = h.t_obj.full_transition_matrix(r_vec, n=4, submat33 = h.submat33)
@@ -127,7 +127,7 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
         e_mat =  h.e_obj.give_emission_matrix(htsl[idcs,:], p)
         post =  h.fwd_bwd(e_mat, t_mat, in_val =  h.in_val, 
                             full=False, output= h.output)
-        df_ibd, _, _ = h.p_obj.call_roh(r_vec, post, iid1, iid2)
+        df_ibd, _, _ = h.p_obj.call_roh(r_vec, bp, post, iid1, iid2)
         df_ibds.append(df_ibd)
     
     df_ibds = pd.concat(df_ibds)

@@ -55,12 +55,13 @@ class PostProcessing(object):
         return starts, ends
     
     def create_df(self, starts, ends, starts_map, ends_map, 
-              l, l_map, ch, min_cm, iid1, iid2=""):
+              l, l_map, ch, starts_bp, ends_bp, min_cm, iid1, iid2=""):
         """Create and returndthe hapBLOCK/hapROH dataframe."""
 
         full_df = pd.DataFrame({'Start': starts, 'End': ends,
                                 'StartM': starts_map, 'EndM': ends_map, 'length': l,
-                                'lengthM': l_map, "ch": ch, 'iid1': iid1, "iid2": iid2})
+                                'lengthM': l_map, "ch": ch, 'StartBP': starts_bp, 'EndBP':ends_bp, \
+                                'iid1': iid1, "iid2": iid2})
         df = full_df[full_df["lengthM"] > min_cm/100.0]  # Cut out long blocks
         return df
     
@@ -82,6 +83,7 @@ class PostProcessing(object):
                 row_c["EndM"] = row["EndM"]
                 row_c["length"] = row_c["End"] - row_c["Start"]
                 row_c["lengthM"] = row_c["EndM"] - row_c["StartM"]
+                row_c['EndBP'] = row['EndBP']
 
             else:  # Save and go to next row
                 df_n.loc[len(df_n)] = row_c  # Append a row to new df
@@ -121,7 +123,7 @@ class PostProcessing(object):
         if self.output:
             print(f"Saved IBD output to: {save_path}")
         
-    def call_roh(self, r_map, post0, iid1="", iid2=""):
+    def call_roh(self, r_map, bp, post0, iid1="", iid2=""):
         """Call ROH of Homozygosity from Posterior Data
         bigger than cutoff.
         post0: posterior in format [5,l], log space"""
@@ -141,10 +143,12 @@ class PostProcessing(object):
         ends_map = r_map[ends - 1]  # -1 to stay within bounds
         starts_map = r_map[starts]
         l_map = ends_map - starts_map
+        ends_bp = bp[ends - 1]  # -1 to stay within bounds
+        starts_bp = bp[starts]
 
         # Create hapROH Dataframe
         df = self.create_df(starts, ends, starts_map, ends_map, 
-                            l, l_map, self.ch, min_cm=self.min_cm,
+                            l, l_map, self.ch, starts_bp, ends_bp, min_cm=self.min_cm,
                             iid1=iid1, iid2=iid2)
 
         # Merge Blocks in Postprocessing Step
