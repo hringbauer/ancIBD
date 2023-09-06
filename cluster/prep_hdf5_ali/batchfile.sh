@@ -20,4 +20,4 @@ module load samtools
 module load bcftools
 
 # Execute the following tasks
-python3 vcf_to_hdf5.v54.1.py $SLURM_ARRAY_TASK_ID
+python3 vcf_to_hdf5.v56.3.py $SLURM_ARRAY_TASK_ID

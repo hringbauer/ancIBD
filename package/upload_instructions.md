@@ -2,7 +2,7 @@
 ### June 2022, Harald Ringbauer
 
 
-This instruction note is a brief summary of update and upload instructions from https://packaging.python.org/tutorials/packaging-projects/
+This instruction note gives a summary of update and upload instructions described in detail in https://packaging.python.org/tutorials/packaging-projects/. It also contains specific instructions for the Cluster environments of the developers of ancIBD.
 
 ### Go to base folder
 On Leipzig cluster:
@@ -12,9 +12,6 @@ On Harvard O2 cluster:
 cd /home/hr97/hringbauer/git/hapBLOCK/package
 envpython37
 
-### Run Tests of Expected Behavior
-Use `/notebooks/tests/unit_tests.ipynb` to run tests of expected behavior of `ancIBD`.
-
 ### Create the Source Package 
 Update version in setup.py to next version number
 
@@ -23,17 +20,21 @@ Delete previous ./dist/* (alternatively be specific below what to upload):
 
 rm ./dist/*
 
-Run the setup file:
+### Run the setup file:
 python3 setup.py sdist
+
+### [Optional] Run local install to finish tests (e.g. bash commands):
+python3 -m pip install ./
+
+### Run Tests of Expected Behavior
+Use `/notebooks/tests/unit_tests.ipynb` to run tests of `ancIBD`.
 
 ### Upload to the Sources to official PyPi server:
 python3 -m twine upload dist/* 
 
 
-
 ## Check Installation in Leipzig
 python3 -m pip install --user --upgrade --no-deps --force-reinstall ancIBD
-
 
 # Bonus Material and Checks
 ## Alternatively: Upload on test server (for testing)
