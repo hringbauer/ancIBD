@@ -1,8 +1,9 @@
 # ancIBD
-This GitHub repository contains development code for the Python package `ancIBD` that is [available via PyPi](https://pypi.org/project/ancIBD/). Please find the official documentation on Readthedocs [here](https://ancibd.readthedocs.io). 
+This GitHub repository contains development code for the Python package `ancIBD` that is [available via PyPi](https://pypi.org/project/ancIBD/). Please find the official documentation on [readthedocs](https://ancibd.readthedocs.io). 
+
+This [github repository](https://github.com/hringbauer/ancIBD) contains the development code (in `./package/`), and also the code underlying the `ancIBD` publication (in particular in `./notebook/`).
 
 The notes below are only for developers of this package who run development versions.
-
 
 ### Produce C extension
 In order to run the code, you need to have the C extension that implements the forward/backward pass. When installing the Python package, this is done automatically. However, if you are a developer and want to test the latest changes to the packages you will have to do that manually.
