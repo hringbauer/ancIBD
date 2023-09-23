@@ -114,6 +114,86 @@ def create_ind_ibd_df(ibd_data = "/n/groups/reich/hringbauer/git/yamnaya/output/
 
     return df_res
 
+def create_ind_ibd_df_IBD2(ibd_data = "/n/groups/reich/hringbauer/git/yamnaya/output/ibd/v43/ch_all.tsv",
+                      min_cms = [8, 12, 16, 20], snp_cm = 220, 
+                      min_cm = 6, sort_col = -1,
+                      savepath="", output=True):
+    """Create dataframe with summary statistics for each individual.
+    !!!This should only be used for ancIBD run with the IBD2 mode.!!!
+    Return this novel dataframe in hapROH format [IBD in cM]
+    ibd_data: If string, what ibd file to load. Or IBD dataframe.
+    savepath: If given: Save post-processed IBD dataframe to there.
+    min_cms: What IBD lengths to use as cutoff in analysis [cM]. Note that this filter only applies to IBD1.
+    snp_cm: Minimum Density of SNP per cM of IBD block. Note that this filter only applies to IBD1.
+    sort_col: Which min_cms col to use for sort. If <0 no sort conducted."""
+    if isinstance(ibd_data, str): 
+        df_ibd = pd.read_csv(ibd_data, sep="\t")
+    else:
+        df_ibd = ibd_data
+        
+    ### Filter. Be aggressive here for good set for  relatedness. Cutoff the slack
+    df_ibd1 = df_ibd[df_ibd['segment_type'] == 'IBD1']
+    df_ibd1 = filter_ibd_df(df_ibd1, min_cm=min_cms[0], snp_cm=snp_cm, output=output)
+    df_ibd2 = df_ibd[df_ibd['segment_type'] == 'IBD2']
+
+    ### Fish out the no IBD data
+    if len(df_ibd)==0:
+        df_res = pd.DataFrame(columns=['iid1','iid2', "max_IBD"])
+        for m_cm in min_cms:
+            df_res[f"sum_IBD>{m_cm}"] = 0
+            df_res[f"n_IBD>{m_cm}"] = 0
+    
+    else: # In case there are IBD
+        if output:
+            print('IBD1:')
+            print(df_ibd1["ch"].value_counts())
+            print('IBD2:')
+            print(df_ibd2["ch"].value_counts())
+
+        #df_ibd = df_ibd.sort_values(by = ["iid1", "iid2", "ch"]) # Sort so it is easier to split up
+        grouped1 = df_ibd1.groupby(['iid1','iid2'])
+
+        df_res = pd.DataFrame(grouped1.groups.keys())
+
+        df_res.columns = ["iid1", "iid2"]
+
+        ### Create the actual statistics
+        stats = [roh_statistics_df(df, min_cms=min_cms) for _, df in grouped1]
+        stats = np.array(stats)
+
+        df_res["max_IBD"] = stats[:, 0, 2] * 100
+
+        ### Add Values for varying cM cutoffs:
+        for j, m_cm in enumerate(min_cms):
+            df_res[f"sum_IBD>{m_cm}"] = stats[:,j, 0] * 100
+            df_res[f"n_IBD>{m_cm}"] = stats[:,j,1]
+
+        ### add IBD2 column
+        sumIBD2 = df_ibd2.groupby(['iid1','iid2'])['lengthM'].sum().reset_index()
+        print(sumIBD2)
+        stats = [100*sumIBD2[(sumIBD2["iid1"]==k[0]) & (sumIBD2["iid2"]==k[1])]['lengthM'].sum() for k in grouped1.groups.keys()]
+        print(stats)
+        df_res["sum_IBD2"] = stats
+
+        if sort_col>=0:
+            df_res = df_res.sort_values(by=f"sum_IBD>{min_cms[sort_col]}", ascending=False)  # Sort output by minimal Cutoff  
+    
+    ### Save if needed
+    if len(savepath) > 0:
+        df_res.to_csv(savepath, sep="\t", index=False)
+        print(f"Saved {len(df_res)} individual IBD pairs to: {savepath}")
+
+    return df_res
+
+
+
+
+
+
+
+
+
+
 def ind_all_ibd_df(path_ibd = "/n/groups/reich/hringbauer/git/yamnaya/output/ibd/v43/ch_all.tsv",
                    col_lengthM="lengthM", snp_cm = 220, min_cm = 5,
                    output=True, sort=True, decimals=2, col_new="ibd", savepath=""):

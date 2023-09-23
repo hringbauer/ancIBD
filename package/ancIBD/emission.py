@@ -143,13 +143,17 @@ class HaplotypeSharingEmissions3(HaplotypeSharingEmissions2):
     """
 
 
-    def give_emission_matrix(self, hts_p, p, dtype='float'):
+    def give_emission_matrix(self, hts_p, p, p_min=1e-3, dtype='float'):
         """
         Give emission matrix for 7-state HMM.
         0th state: non-IBD state
         1st-4th state: IBD1 state
         5-7th state: IBD2 state
         """
+        # to avoid division by zero error, set p to be at least p_min and at most 1 - p_min
+        p = np.maximum(p, p_min)
+        p = np.minimum(p, 1-p_min)
+        
         l = np.shape(hts_p)[1]
         e_mat = np.zeros((7,l), dtype=dtype)
         e_mat[:5,:] = super().give_emission_matrix(hts_p, p, dtype)

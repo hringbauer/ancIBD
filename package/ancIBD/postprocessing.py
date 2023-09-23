@@ -176,14 +176,18 @@ class NoPostProcessing(PostProcessing):
         pass
 
 class IBD2Postprocessing(PostProcessing):
-    min_cm2 = 2.0
+    min_cm2 = 1.0
+    cutoff_post1 = 0.99    # Cutoff Probability for IBD1 state
+    cutoff_post2 = 0.975    # Cutoff Probability for IBD2 state
+
     def create_df(self, starts, ends, starts_map, ends_map, 
-              l, l_map, ch, min_cm, iid1, iid2, segment_type="IBD1"):
+              l, l_map, starts_bp, ends_bp, ch, min_cm, iid1, iid2, segment_type="IBD1"):
         """Create and returndthe hapBLOCK/hapROH dataframe."""
         segment_types = [segment_type]*len(starts)
         full_df = pd.DataFrame({'iid1': iid1, "iid2": iid2, "ch": ch,
                                 'Start': starts, 'End': ends, 'length': l,
                                 'StartM': starts_map, 'EndM': ends_map, 'lengthM': l_map,
+                                'StartBP':starts_bp, 'EndBP':ends_bp, \
                                 'segment_type': segment_types})
         df = full_df[full_df["lengthM"] > min_cm/100.0]  # Cut out long blocks
         return df
@@ -194,23 +198,23 @@ class IBD2Postprocessing(PostProcessing):
         return ibd1, ibd2
 
 
-    def call_roh(self, r_map, post0, iid1="", iid2=""):
+    def call_roh(self, r_map, bp, post0, iid1="", iid2=""):
         """Call ROH of Homozygosity from Posterior Data
         bigger than cutoff.
         post0: posterior in format [7,l], log space"""
         assert(post0.shape[0] == 7)
         ibd1_post, ibd2_post = self.get_posterior(post0)
-        ibd1 = ibd1_post > self.cutoff_post
-        ibd2 = ibd2_post > self.cutoff_post
+        ibd1 = ibd1_post > self.cutoff_post1
+        ibd2 = ibd2_post > self.cutoff_post2
         
         if len(iid1)==0:
             iid1=self.iid
 
         if self.output:
             frac_ibd1 = np.mean(ibd1)
-            print(f"Fraction Markers above IBD1 cutoff: {frac_ibd1:.4f}")
+            print(f"Fraction Markers above IBD1 cutoff {self.cutoff_post1}: {frac_ibd1:.4f}")
             frac_ibd2 = np.mean(ibd2)
-            print(f'Fraction Markers above IBD2 cutoff: {frac_ibd2:.4f}')
+            print(f'Fraction Markers above IBD2 cutoff {self.cutoff_post2}: {frac_ibd2:.4f}')
 
     ############################ Writing IBD1 blocks to pandas dataframe ############################
         # Identify Stretches by difference (up and down)
@@ -218,11 +222,13 @@ class IBD2Postprocessing(PostProcessing):
         l_ibd1 = ends_ibd1 - starts_ibd1
         ends_map_ibd1 = r_map[ends_ibd1 - 1]  # -1 to stay within bounds
         starts_map_ibd1 = r_map[starts_ibd1]
+        starts_bp_ibd1 = bp[starts_ibd1]
+        ends_bp_ibd1 = bp[ends_ibd1 - 1]  # -1 to stay within bounds
         l_map_ibd1 = ends_map_ibd1 - starts_map_ibd1
 
         # Create hapROH Dataframe
         df1 = self.create_df(starts_ibd1, ends_ibd1, starts_map_ibd1, ends_map_ibd1, 
-                            l_ibd1, l_map_ibd1, self.ch, self.min_cm,
+                            l_ibd1, l_map_ibd1, starts_bp_ibd1, ends_bp_ibd1, self.ch, self.min_cm,
                             iid1, iid2, segment_type='IBD1')
         if self.output:
             print(f"Called n={len(df1)} IBD1 Blocks > {self.min_cm} cM")
@@ -237,10 +243,12 @@ class IBD2Postprocessing(PostProcessing):
         l_ibd2 = ends_ibd2 - starts_ibd2
         ends_map_ibd2 = r_map[ends_ibd2 - 1]  # -1 to stay within bounds
         starts_map_ibd2 = r_map[starts_ibd2]
+        starts_bp_ibd2 = bp[starts_ibd2]
+        ends_bp_ibd2 = bp[ends_ibd2 - 1]  # -1 to stay within bounds
         l_map_ibd2 = ends_map_ibd2 - starts_map_ibd2
 
         df2 = self.create_df(starts_ibd2, ends_ibd2, starts_map_ibd2, ends_map_ibd2, 
-                            l_ibd2, l_map_ibd2, self.ch, self.min_cm2,
+                            l_ibd2, l_map_ibd2, starts_bp_ibd2, ends_bp_ibd2, self.ch, self.min_cm2,
                             iid1, iid2, segment_type='IBD2')
         if self.output:
             print(f"Called n={len(df2)} IBD2 Blocks > {self.min_cm2} cM")

@@ -27,6 +27,8 @@ def main():
     parser.add_argument('--min', action="store", dest="min", type=float, required=False, default=8, help="minimum length of IBD segment in cM. Default is 8.")
     parser.add_argument('--iid', action="store", dest="iid", type=str, required=False, help="A list of sample iids to run ancIBD on (each line contains one sample IID). The sample list must match the sample name in the provided vcf file. If unspecified, ancIBD will run on all samples in the vcf file")
     parser.add_argument('--pair', action="store", dest="pair", type=str, required=False, help="A list of sample pairs to run ancIBD on (each line contains two sample IIDs separated by a whitespace). The sample list must match the sample name in the provided vcf file, and, if --iid is specified, all samples must also appear in the iid file. If unspecified, ancIBD will run on all pairs of samples in the vcf file")
+    parser.add_argument('--IBD2', action="store_true", dest="IBD2", required=False, help="If specified, ancIBD will enable the detection of IBD2 segments. Default is false.")
+    parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', required=False, help='turn on verbose mode')
     args = parser.parse_args()
 
     if args.vcf is None and args.h5 is None:
@@ -95,10 +97,10 @@ def main():
     df_ibd = hapBLOCK_chroms(folder_in=path_h5[:2+path_h5.rfind('ch')],
                              iids=iids, run_iids=run_iids,
                              ch=ch, folder_out="",
-                             output=False, prefix_out='', logfile=False,
+                             output=args.verbose, prefix_out='', logfile=False,
                              l_model='h5', e_model='haploid_gl2', h_model='FiveStateScaled', t_model='standard', p_col=p_col,
                              ibd_in=1, ibd_out=10, ibd_jump=400,
-                             min_cm=args.min, cutoff_post=0.99, max_gap=0.0075)
+                             min_cm=args.min, cutoff_post=0.99, max_gap=0.0075, IBD2=args.IBD2)
     
     df_ibd.to_csv(os.path.join(f"{oDir}", f"{prefix}.tsv"), sep='\t', index=False)
     

@@ -21,7 +21,7 @@ from ancIBD.IO.h5_load import get_opp_homos_f
 
 def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""], 
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
-                   l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                   l_model="h5", e_model="haploid_gl2", h_model="FiveStateScaled", 
                    t_model="standard", p_col="variants/AF_ALL", 
                    ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2, min_error=1e-3,
                    cutoff_post=0.99, max_gap=0.0075):
@@ -61,7 +61,7 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
 
 def prep_param_list_chrom(folder_in, iids = [], ch=3,
                     folder_out="", output=True, logfile=False, prefix_out="default/",
-                    l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                    l_model="h5", e_model="haploid_gl2", h_model="FiveStateScaled", 
                     t_model="standard", p_col="variants/AF_ALL", ibd_in=1, ibd_out=1, ibd_jump=500, min_cm=2,
                     cutoff_post=0.99, max_gap=0.0):
     """Prepare parameter lists for multirun of hapBLOCK_chrom. Ideal for multi-processing,
@@ -76,10 +76,10 @@ def prep_param_list_chrom(folder_in, iids = [], ch=3,
 
 def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
-                   l_model="h5", e_model="haploid_gl", h_model="FiveStateScaled", 
+                   l_model="h5", e_model="haploid_gl2", h_model="FiveStateScaled", 
                    t_model="standard", p_model="hapROH", p_col="variants/AF_ALL", 
                    ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2,
-                   cutoff_post=0.99, max_gap=0.0075, processes=1):
+                   cutoff_post=0.99, max_gap=0.0075, IBD2=False):
     """Run IBD for list of Individuals, and saves their IBD csv into a single 
     output folder.
     folder_in: hdf5 path up to chromosome.
@@ -102,6 +102,10 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
         run_iids = it.combinations(iids, 2)
         
     ### Load all the objects
+    if IBD2:
+        t_model = 'IBD2'
+        e_model = 'IBD2'
+        p_model = 'IBD2'
     h = HMM_Full(folder_in=folder_in, l_model=l_model, t_model=t_model, 
                      e_model=e_model, h_model = h_model, p_model=p_model,
                      output=output, load=True)
