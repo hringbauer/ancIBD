@@ -16,16 +16,17 @@ import warnings
 
 #sys.path.append("/n/groups/reich/hringbauer/git/hapBLOCK/python3/") 
 from ancIBD.main import HMM_Full  # To run the main plotting.
-from ancIBD.plot.plot_posterior import plot_posterior # to plot the posterior.
-from ancIBD.IO.h5_load import get_opp_homos_f
+from ancIBD.plot.plot_posterior import plot_posterior, plot_posterior_IBD2 # to plot the posterior.
+from ancIBD.IO.h5_load import get_opp_homos_f, get_opp_homos_X, get_diff_gt_f
 
 def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""], 
                    ch=2, folder_out="", output=False, prefix_out="", logfile=False,
                    l_model="h5", e_model="haploid_gl2", h_model="FiveStateScaled", 
-                   t_model="standard", p_col="variants/AF_ALL", 
+                   t_model="standard", p_model='hapROH', p_col="variants/AF_ALL", 
                    ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2, min_error=1e-3,
-                   cutoff_post=0.99, max_gap=0.0075):
-    """Run IBD for pair of Individuals.
+                   cutoff_post=0.99, max_gap=0.0075,
+                   IBD2=False, cutoff_post2=0.975, min_cm2_init=1.0, min_cm2_after_merge=2.0):
+    """Run IBD for ONE pair of Individuals.
     folder_in: hdf5 path up to chromosome.
     iids: List of IIDs to compare [length 2]
     folder_out: Where to save the hapBLOCK output to
@@ -37,9 +38,15 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
     Return df_ibd, posterior, map, tot_ll"""
     iids = np.array(iids) # For better props when indexing
     assert(len(iids)==2) # Sanity Check of Input IIDs
+    ### Load all the objects
+    if IBD2:
+        t_model = 'IBD2'
+        e_model = 'IBD2'
+        p_model = 'IBD2'
     h = HMM_Full(folder_in=folder_in, l_model=l_model, t_model=t_model, 
-                     e_model=e_model, h_model = h_model,
+                     e_model=e_model, h_model = h_model, p_model=p_model,
                      output=output, load=True)
+
 
     if t_model == 'asymmetric':
         h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump, ibd_jump2 = ibd_jump2)
@@ -48,9 +55,15 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
         
     h.l_obj.set_params(iids=iids, ch=ch, p_col=p_col, min_error=min_error)
     h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
+    if IBD2:
+        h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap, 
+                           cutoff_post2=cutoff_post2, min_cm2_init=min_cm2_init, min_cm2_after_merge=min_cm2_after_merge)
+    else:
+        h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
+    
     #post, r_vec, fwd, bwd, tot_ll = h.run_fwd_bwd()
-    post, r_vec =  h.run_fwd_bwd(full=False)
-    df_ibd, _, _ = h.p_obj.call_roh(r_vec, post)
+    post, r_vec, bp =  h.run_fwd_bwd(full=False)
+    df_ibd, _, _ = h.p_obj.call_roh(r_vec, bp, post)
     
     if len(folder_out)>0:
         folder_out = h.prepare_path(folder_out, ch=ch, prefix_out=prefix_out, logfile=logfile)
@@ -79,7 +92,9 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
                    l_model="h5", e_model="haploid_gl2", h_model="FiveStateScaled", 
                    t_model="standard", p_model="hapROH", p_col="variants/AF_ALL", 
                    ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2,
-                   cutoff_post=0.99, max_gap=0.0075, IBD2=False):
+                   cutoff_post=0.99, max_gap=0.0075, 
+                   IBD2=False, cutoff_post2=0.975, min_cm2_init=1.0, min_cm2_after_merge=2.0,
+                   mask=""):
     """Run IBD for list of Individuals, and saves their IBD csv into a single 
     output folder.
     folder_in: hdf5 path up to chromosome.
@@ -114,7 +129,13 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
     else:
         h.t_obj.set_params(ibd_in = ibd_in, ibd_out = ibd_out, ibd_jump = ibd_jump)
     h.l_obj.set_params(iids=iids, ch=ch, p_col=p_col)
-    h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
+    if IBD2:
+        h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap, 
+                           cutoff_post2=cutoff_post2, min_cm2_init=min_cm2_init, 
+                           min_cm2_after_merge=min_cm2_after_merge, mask=mask)
+    else:
+        h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, 
+                           max_gap=max_gap, mask=mask)
     
     ### Load all data
     htsl, p, r_vec, bp, samples =  h.l_obj.load_all_data()
@@ -252,6 +273,99 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
         o_homos, m = get_opp_homos_f(iid1=iids[0], iid2=iids[1], 
                                      f_path=path_h5, ch=ch, exact=exact)
         print(f"Plotting {len(r_vec)} markers")
+        plot_posterior(post=post, morgan=r_vec, df_ibd=df_ibd, 
+                       het=o_homos, het_m=m, state=state,
+                       min_cm=min_cm, title=title, xlim=xlim, show=True, 
+                       savepath=path_fig, xlabel="Chromosome Position [cM]", **kwargs)
+    if return_post:
+        return post
+    
+
+def run_plot_pair_IBD2(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_v43/ch", 
+                  iids = ["", ""], ch=2, xlim=[], folder_out="", 
+                  plot=False, path_fig="", output=False, exact=True,
+                  ibd_in=1, ibd_out=10, ibd_jump=400, min_cm1=4, min_cm2=2,  
+                  cutoff_post=0.99, max_gap=0.0075, p_col="variants/AF_ALL",
+                  cutoff_post2=0.975, min_cm2_init=1.0, min_cm2_after_merge=2.0, 
+                  title="", state=0, return_post=False):
+    """Run and plot IBD for pair of Individuals.
+    folder_out: Where to save the hapBLOCK output to
+    iids: list of two iids [List of Length 2]
+    path_fig: Where to save the IBD plot to [String]
+    p_col: The dataset to use in hdf5 for der. AF. If default use p=0.5.
+           If empty string use in sample AF.
+    return_post: Whether to return posterior [Boolean]
+    min_error: Caps min/max prob. haplotype being derived to min_error/1-min_error when loading data
+    kwargs: Optional Keyword Arguments for Plotting (e.g. c_ibd)
+    """
+    assert(len(iids)==2) # Sanity Check of Input IIDs - as here it should be pairs
+    
+    df_ibd, post, r_vec = hapBLOCK_chrom(
+           folder_in=path_h5, iids = iids,  ch=ch, folder_out=folder_out, 
+           output=output, prefix_out="", logfile=False,
+           l_model="h5", h_model="FiveStateScaled", p_col=p_col, 
+           ibd_in=ibd_in, ibd_out=ibd_out, ibd_jump=ibd_jump, 
+           min_error=1e-3, min_cm=min_cm1, cutoff_post=cutoff_post, max_gap=max_gap,
+           IBD2=True, cutoff_post2=cutoff_post2, min_cm2_init=min_cm2_init, min_cm2_after_merge=min_cm2_after_merge)
+        
+    if plot:
+        if len(title)==0:
+            title = f"{iids[0]} - {iids[1]}, Chr. {ch}"
+            
+        ### Load the data from the HDF5
+        o_homos, m_homos = get_opp_homos_f(iid1=iids[0], iid2=iids[1], 
+                                     f_path=path_h5, ch=ch, exact=exact)
+        diff_gt, m_diffgt = get_diff_gt_f(path_h5, iids[0], iids[1], ch)
+        
+        plot_posterior_IBD2(post=post, morgan=r_vec, df_ibd=df_ibd, 
+                       het=o_homos, het_m=m_homos, idengt=diff_gt, idengt_m=m_diffgt, state=state,
+                       min_cm1=min_cm1, min_cm2=min_cm2, title=title, xlim=xlim, show=True, 
+                       savepath=path_fig, xlabel="Chromosome Position [cM]")
+    if return_post:
+        return post
+    
+
+def run_plot_pair_X(path_h5="", iids = ["", ""], ploidy=(2,2), 
+                    xlim=[], folder_out="", 
+                  plot=False, gp_filter=0.99, path_fig="", output=False, exact=True,
+                  ibd_in=1, ibd_out=10, ibd_jump=400, min_cm=2, 
+                  cutoff_post=0.99, max_gap=0.0075, min_error=1e-3,
+                  l_model="hdf5", e_model="haploid_gl", h_model="FiveStateScaled",
+                  p_col="variants/AF_ALL",
+                  title="", c="gray", c_hw="maroon", 
+                  state=0, return_post=False, **kwargs):
+    """Run and plot IBD for pair of Individuals.
+    folder_out: Where to save the hapBLOCK output to
+    iids: list of two iids [List of Length 2]
+    path_fig: Where to save the IBD plot to [String]
+    p_col: The dataset to use in hdf5 for der. AF. If default use p=0.5.
+           If empty string use in sample AF.
+    return_post: Whether to return posterior [Boolean]
+    min_error: Caps min/max prob. haplotype being derived to min_error/1-min_error when loading data
+    kwargs: Optional Keyword Arguments for Plotting (e.g. c_ibd)
+    """
+    assert(len(iids)==2) # Sanity Check of Input IIDs - as here it should be pairs
+    
+    # df_ibd, post, r_vec = hapBLOCK_chrom(
+    #        folder_in=path_h5, iids = iids,  ch=ch, folder_out=folder_out, 
+    #        output=output, prefix_out="", logfile=False,
+    #        l_model=l_model, e_model=e_model, h_model=h_model, 
+    #        t_model="standard", p_col=p_col, ibd_in=ibd_in, ibd_out=ibd_out, ibd_jump=ibd_jump, 
+    #        min_error=min_error, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
+        
+    if plot:
+        if len(title)==0:
+            title = f"ancIBD v0.5, {iids[0]} - {iids[1]}, Chr. X"
+            
+        ### Load the data from the HDF5
+        import h5py
+        f = h5py.File(path_h5, 'r')
+        r_vec = f['variants/MAP'][:]
+        o_homos, m = get_opp_homos_X(path_h5, iid1=iids[0], iid2=iids[1], ploidy=ploidy, cutoff=gp_filter, output=output, exact=exact)
+        print(f"Plotting {len(r_vec)} markers")
+        print(f'# of oppo homos: {np.sum(o_homos)}')
+        post = np.zeros((3, len(r_vec))) # set some dummy value for now
+        df_ibd = []
         plot_posterior(post=post, morgan=r_vec, df_ibd=df_ibd, 
                        het=o_homos, het_m=m, state=state,
                        min_cm=min_cm, title=title, xlim=xlim, show=True, 

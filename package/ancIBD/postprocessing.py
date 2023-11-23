@@ -22,6 +22,7 @@ class PostProcessing(object):
     output = True   # Whether to plot output
     ch = 3            # Chromosome to analyze
     iid = "iid0"
+    mask = ""
 
     def __init__(self, folder=""):
         """Initialize Class.
@@ -122,6 +123,65 @@ class PostProcessing(object):
         df_ibd.to_csv(save_path, sep="\t", index=False)
         if self.output:
             print(f"Saved IBD output to: {save_path}")
+    
+    def mask_regions(self, df):
+        df_maskTrack = pd.read_csv(self.mask, sep='\t')
+        df_maskTrack = df_maskTrack[df_maskTrack['ch'] == self.ch]
+        if len(df_maskTrack) == 0 or len(df) == 0:
+            return df
+        df2mask = df.copy()
+        df_masked = []
+        for _, row in df_maskTrack.iterrows():
+            mask_start_bp, mask_end_bp = int(row['start_bp']), int(row['end_bp'])
+            mask_start_cm, mask_end_cm = row['start_cm'], row['end_cm']
+            for index, row in df2mask.iterrows():
+                if row['StartBP'] >= mask_end_bp or row['EndBP'] <= mask_start_bp:
+                    # no action needed
+                    df_masked.append(pd.DataFrame([df2mask.loc[index]]))
+                elif row['StartBP'] >= mask_start_bp and row['EndBP'] <= mask_end_bp:
+                    # the whole segment is masked, drop it
+                    continue
+                elif row['StartBP'] < mask_start_bp and row['EndBP'] > mask_end_bp:
+                    # the mask is inside the segment, split the segment into two
+                    df_masked.append(pd.DataFrame([{'Start': row['Start'], 'End': row['End'],
+                                      'StartM': row['StartM'], 'EndM': mask_start_cm/100,
+                                      'length': row['length'],
+                                      'lengthM': mask_start_cm/100 - row['StartM'], "ch": row['ch'],
+                                      'StartBP': row['StartBP'], 'EndBP':mask_start_bp, \
+                                      'iid1': row['iid1'], "iid2": row['iid2']}], index=[0]))
+                    df_masked.append(pd.DataFrame([{'Start': row['Start'], 'End': row['End'],
+                                      'StartM': mask_end_cm/100, 'EndM': row['EndM'],
+                                      'length': row['length'],
+                                      'lengthM': row['EndM'] - mask_end_cm/100, "ch": row['ch'],
+                                      'StartBP': mask_end_bp, 'EndBP':row['EndBP'], \
+                                      'iid1': row['iid1'], "iid2": row['iid2']}], index=[0]))
+                elif row['StartBP'] >= mask_start_bp and row['StartBP'] < mask_end_bp:
+                    # the start of the segment is inside the mask
+                    df_masked.append(pd.DataFrame([{'Start': row['Start'], 'End': row['End'],
+                                      'StartM': mask_end_cm/100, 'EndM': row['EndM'],
+                                      'length': row['length'],
+                                      'lengthM': row['EndM'] - mask_end_cm/100, "ch": row['ch'],
+                                      'StartBP': mask_end_bp, 'EndBP':row['EndBP'], \
+                                      'iid1': row['iid1'], "iid2": row['iid2']}], index=[0]))
+                elif row['EndBP'] > mask_start_bp and row['EndBP'] <= mask_end_bp:
+                    # the end of the segment is inside the mask
+                    df_masked.append(pd.DataFrame([{'Start': row['Start'], 'End': row['End'],
+                                      'StartM': row['StartM'], 'EndM': mask_start_cm/100,
+                                      'length': row['length'],
+                                      'lengthM': mask_start_cm/100 - row['StartM'], "ch": row['ch'],
+                                      'StartBP': row['StartBP'], 'EndBP':mask_start_bp, \
+                                      'iid1': row['iid1'], "iid2": row['iid2']}], index=[0]))
+            if len(df_masked) > 0:
+                #df_masked = pd.DataFrame(df_masked)
+                df_masked = pd.concat(df_masked, ignore_index=True)
+            else:
+                df_masked = pd.DataFrame(columns=df.columns)
+            print(f'size of df_masked: {len(df_masked)}')
+            df2mask = df_masked.copy()
+            df_masked = [] # why need this complex set-up? because one segment can be potentially masked multiple times (bug prone!!!)
+        return df2mask
+
+
         
     def call_roh(self, r_map, bp, post0, iid1="", iid2=""):
         """Call ROH of Homozygosity from Posterior Data
@@ -154,6 +214,14 @@ class PostProcessing(object):
         # Merge Blocks in Postprocessing Step
         if self.max_gap>0:
             df = self.merge_called_blocks(df)
+        # mask out regions if applicable
+        
+        if len(self.mask) > 0:
+            print('Applying mask to IBD segments...')
+            print(df)
+            df = self.mask_regions(df)
+            print(df)
+            df = df[df['lengthM'] > self.min_cm/100.0] # remove short segments created by intersecting with masks
 
         if self.output:
             print(f"Called n={len(df)} IBD Blocks > {self.min_cm} cM")
@@ -176,7 +244,8 @@ class NoPostProcessing(PostProcessing):
         pass
 
 class IBD2Postprocessing(PostProcessing):
-    min_cm2 = 1.0
+    min_cm2_init = 1.0
+    min_cm2_after_merge = 2.0
     cutoff_post1 = 0.99    # Cutoff Probability for IBD1 state
     cutoff_post2 = 0.975    # Cutoff Probability for IBD2 state
 
@@ -247,8 +316,9 @@ class IBD2Postprocessing(PostProcessing):
         ends_bp_ibd2 = bp[ends_ibd2 - 1]  # -1 to stay within bounds
         l_map_ibd2 = ends_map_ibd2 - starts_map_ibd2
 
+        # here this is to call all segments before merge, so we use min_cm2_init
         df2 = self.create_df(starts_ibd2, ends_ibd2, starts_map_ibd2, ends_map_ibd2, 
-                            l_ibd2, l_map_ibd2, starts_bp_ibd2, ends_bp_ibd2, self.ch, self.min_cm2,
+                            l_ibd2, l_map_ibd2, starts_bp_ibd2, ends_bp_ibd2, self.ch, self.min_cm2_init,
                             iid1, iid2, segment_type='IBD2')
         if self.output:
             print(f"Called n={len(df2)} IBD2 Blocks > {self.min_cm2} cM")
@@ -257,6 +327,8 @@ class IBD2Postprocessing(PostProcessing):
         # Merge Blocks in Postprocessing Step
         if self.max_gap>0:
             df2 = self.merge_called_blocks(df2)
+        # after merge, filter to segments longer than min_cm2_after_merge
+        df2 = df2[100*df2['lengthM'] > self.min_cm2_after_merge]
 
         # merge IBD2 blocks to the same dataframe as IBD1 blocks
         df = pd.concat((df1, df2), ignore_index=True)

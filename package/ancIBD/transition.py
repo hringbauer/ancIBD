@@ -211,6 +211,23 @@ class SevenStateTransitions(FiveStateTransitions):
     #ibd_switch = 20  # the rate of jumping between IBD1 and IBD2 state, actually let's leave it the same as ibd_out for now
     
 
+    def exponentiate_r(self, rates, rec_v):
+        """Calculates exponentiation of the rates matrix with rec_v
+        rates: 2D Matrix of transitions
+        rec_v: Array of length l"""
+        print('new matrix exponential for IBD2 model')
+        eva, evec = np.linalg.eig(rates)  # Do the Eigenvalue Decomposition
+        assert(np.max(eva) <= 1)   # Sanity Check whether rate Matrix
+        evec_r = np.linalg.inv(evec)    # Do the Inversion
+        # Create vector of the exponentiated diagonals
+        d = np.exp(rec_v[:, None] * eva)
+        # Use some Einstein Sum Convention Fun (C Speed):
+        res = np.einsum('...ik, ...k, ...kj ->...ij', evec, d, evec_r)
+        # Make sure that all transition rates are valuable
+        res[res<0] = 0.0 # numerical issues cause some entries to be very very small negative values, so we just set them to 0
+        assert(0 <= np.min(res))
+        return res
+
     def calc_transition_rate(self):
         """Return Transition Rate Matrix [k,k] to exponate.
         n: Number of symetric IBD states. Usually four (2x2 copying possibilities)
@@ -218,9 +235,9 @@ class SevenStateTransitions(FiveStateTransitions):
         t_mat = -np.ones((7, 7))
 
         t_mat[1:5, 0] = self.ibd_out  # The rate of jumping out IBD1 to nonIBD
-        t_mat[5:7, 0] = 1e-5 # the rate of jumping out IBD2 to nonIBD
+        t_mat[5:7, 0] = 0 # the rate of jumping out IBD2 to nonIBD
         t_mat[0, 1:5] = self.ibd_in / 4  # Jumping into any IBD1 State from IBD0
-        t_mat[0, 5:7] = 1e-5 # jumping into any IBD2 state from IBD0
+        t_mat[0, 5:7] = 0 # jumping into any IBD2 state from IBD0
         t_mat[1:5, 1:5] = self.ibd_jump / 4  # Jumping between IBD1 State
         t_mat[5:7, 5:7] = self.ibd_jump / 2  # Jumping between IBD2 State
         t_mat[1:5, 5:7] = self.ibd_in / 2 # jumping from IBD1 to IBD2 State

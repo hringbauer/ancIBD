@@ -24,10 +24,16 @@ def main():
     parser.add_argument('--out', action="store", dest="out", type=str, required=False, help='output folder to store IBD results and the intermediary .hdf5 file. If not specified, the results will be stored in the same folder as the input vcf file.')
     parser.add_argument('--prefix', action="store", dest="prefix", type=str, required=False,
                         help="prefix of output file. If not specified, the prefix will be the same as the input vcf")
+    parser.add_argument('--ibd-in', action="store", dest="ibd_in", type=float, required=False, default=1, help="IBD in rate. Default is 1.")
+    parser.add_argument('--ibd-out', action="store", dest="ibd_out", type=float, required=False, default=10, help="IBD out rate. Default is 10.")
     parser.add_argument('--min', action="store", dest="min", type=float, required=False, default=8, help="minimum length of IBD segment in cM. Default is 8.")
     parser.add_argument('--iid', action="store", dest="iid", type=str, required=False, help="A list of sample iids to run ancIBD on (each line contains one sample IID). The sample list must match the sample name in the provided vcf file. If unspecified, ancIBD will run on all samples in the vcf file")
     parser.add_argument('--pair', action="store", dest="pair", type=str, required=False, help="A list of sample pairs to run ancIBD on (each line contains two sample IIDs separated by a whitespace). The sample list must match the sample name in the provided vcf file, and, if --iid is specified, all samples must also appear in the iid file. If unspecified, ancIBD will run on all pairs of samples in the vcf file")
     parser.add_argument('--IBD2', action="store_true", dest="IBD2", required=False, help="If specified, ancIBD will enable the detection of IBD2 segments. Default is false.")
+    parser.add_argument('--post2', action='store', dest='post2', type=float, required=False, default=0.975, help='posterior probability cutoff for IBD2 segments. Default is 0.975.')
+    parser.add_argument('--min_cm2_init', action='store', dest='min_cm2_init', type=float, required=False, default=1.0, help='minimum length of IBD2 segment in cM before merging. Default is 1.0.')
+    parser.add_argument('--min_cm2_after_merge', action='store', dest='min_cm2_after_merge', type=float, required=False, default=2.0, help='minimum length of IBD2 segment in cM after merging. Default is 2.0.')
+    parser.add_argument('--mask', action='store', dest='mask', type=str, required=False, default="", help='Mask file to mask out regions for IBD calling.')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', required=False, help='turn on verbose mode')
     args = parser.parse_args()
 
@@ -99,8 +105,10 @@ def main():
                              ch=ch, folder_out="",
                              output=args.verbose, prefix_out='', logfile=False,
                              l_model='h5', e_model='haploid_gl2', h_model='FiveStateScaled', t_model='standard', p_col=p_col,
-                             ibd_in=1, ibd_out=10, ibd_jump=400,
-                             min_cm=args.min, cutoff_post=0.99, max_gap=0.0075, IBD2=args.IBD2)
+                             ibd_in=args.ibd_in, ibd_out=args.ibd_out, ibd_jump=400,
+                             min_cm=args.min, cutoff_post=0.99, max_gap=0.0075, 
+                             IBD2=args.IBD2, cutoff_post2=args.post2, min_cm2_init=args.min_cm2_init, min_cm2_after_merge=args.min_cm2_after_merge,
+                             mask=args.mask)
     
     df_ibd.to_csv(os.path.join(f"{oDir}", f"{prefix}.tsv"), sep='\t', index=False)
     
