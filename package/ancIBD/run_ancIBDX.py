@@ -37,7 +37,7 @@ def main():
     parser.add_argument('--pair', action="store", dest="pair", type=str, required=False, help="A list of sample pairs to run ancIBD on (each line contains two sample IIDs separated by a whitespace). The sample list must match the sample name in the provided vcf file, and, if --iid is specified, all samples must also appear in the iid file. If unspecified, ancIBD will run on all pairs of samples in the vcf file")
     parser.add_argument('--mask', action='store', dest='mask', type=str, required=False, default="", help='Mask file to mask out regions for IBD calling.')
     parser.add_argument('--bin', action="store", dest="bin", type=str, required=False, default='8,12,16,20', help='length bin over which IBD sharing summary statistics for pairs of samples will be calculated. Default is 8,12,16,20.')
-    parser.add_argument('--snpcm', action="store", dest="snpcm", type=int, required=False, default=220, help='minimum number of SNPs per cM. Default is 220.')
+    parser.add_argument('--snpcm', action="store", dest="snpcm", type=int, required=False, default=180, help='minimum number of SNPs per cM. Default is 180.')
     parser.add_argument('-v', '--verbose', action='store_true', dest='verbose', required=False, help='turn on verbose mode')
     args = parser.parse_args()
 
