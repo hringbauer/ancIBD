@@ -42,7 +42,8 @@ setup(
     entry_points ={
             'console_scripts': [
                 'ancIBD-summary = ancIBD.ancIBD_summary:main',
-                'ancIBD-run = ancIBD.run_ancIBD:main'
+                'ancIBD-run = ancIBD.run_ancIBD:main',
+                'ancIBDX = ancIBD.run_ancIBDX:main',
             ]
         },
 )

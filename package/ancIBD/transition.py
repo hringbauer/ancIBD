@@ -272,6 +272,115 @@ class SevenStateTransitions(FiveStateTransitions):
         # Normalize to transition rate into non-collapsed state
         return t_mat
 
+class TwoStateTransitions(FiveStateTransitions):
+    ibd_in = 1    # The rate of jumping into IBD copying state
+    ibd_out = 20     # The rate of jumping out of IBD state
+    def calc_transition_rate(self):
+        """Return Transition Rate Matrix [k,k] to exponate.
+        n: Number of symetric IBD states. Usually four (2x2 copying possibilities)
+        submat33: Whether to only fill in the first 3 states """
+        t_mat = -np.ones((2, 2))
+        t_mat[0, 1] = self.ibd_in
+        t_mat[1, 0] = self.ibd_out
+
+        # Do the Diagonal (do the usual model - for inf. substract 1)
+        di = np.diag_indices(np.shape(t_mat)[0])
+        t_mat[di] = -np.sum(t_mat, axis=1) + np.diag(t_mat)
+
+        # Sanity Check if everything was filled correctly
+        assert(np.allclose(np.sum(t_mat, axis=1), 0))
+        self.trans_mat = t_mat
+        return t_mat
+    
+    def full_transition_matrix(self, r_vec, t=[], n=4, submat33=True):
+        """
+        The last two arguments n and submat33 are not used. They are retained just for compatibility with the one Harald wrote.
+        """
+        if len(t) == 0:
+            t = self.calc_transition_rate()
+            
+        ### Full matrix
+        r_vec = self.rmap_to_gaps(r_map=r_vec)
+        t_mat = self.exponentiate_r(t, r_vec)
+        return t_mat
+    
+class ThreeStateTransitions(FiveStateTransitions):
+    ibd_in = 1    # The rate of jumping into IBD copying state
+    ibd_out = 20     # The rate of jumping out of IBD state
+    ibd_jump = 400     # The rate of jumping within IBD to other haplotype pair
+    def calc_transition_rate(self):
+        """Return Transition Rate Matrix [k,k] to exponate.
+        n: Number of symetric IBD states. Usually four (2x2 copying possibilities)
+        submat33: Whether to only fill in the first 3 states """
+        t_mat = -np.ones((3, 3))
+        t_mat[0, 1:] = self.ibd_in/2
+        t_mat[1:, 0] = self.ibd_out
+        t_mat[1:, 1:] = self.ibd_jump/2
+
+        # Do the Diagonal (do the usual model - for inf. substract 1)
+        di = np.diag_indices(np.shape(t_mat)[0])
+        t_mat[di] = -np.sum(t_mat, axis=1) + np.diag(t_mat)
+
+        # Sanity Check if everything was filled correctly
+        assert(np.allclose(np.sum(t_mat, axis=1), 0))
+        self.trans_mat = t_mat
+        return t_mat
+    
+    def full_transition_matrix(self, r_vec, t=[], n=4, submat33=True):
+        """
+        The last two arguments n and submat33 are not used. They are retained just for compatibility with the one Harald wrote.
+        """
+        if len(t) == 0:
+            t = self.calc_transition_rate()
+            
+        ### Full matrix
+        r_vec = self.rmap_to_gaps(r_map=r_vec)
+        t_mat = self.exponentiate_r(t, r_vec)
+        return t_mat
+    
+class FiveStatGeneric(FiveStateTransitions):
+    """A transition model for detecting IBD. Same as FiveStateTransitions, except that the 3x3 speed-up is not implemented here."""
+    ibd_in = 1
+    ibd_out = 20
+    ibd_jump = 400 # IBD jump rate for ancient haplotypes
+
+    def calc_transition_rate(self):
+        """Return Transition Rate Matrix [k,k] to exponate. """
+        t_mat = -np.ones((5, 5))
+
+        t_mat[1:5, 0] = self.ibd_out  # The rate of jumping out IBD1 to nonIBD
+        t_mat[0, 1:5] = self.ibd_in / 4  # Jumping into any IBD1 State from IBD0
+        t_mat[1:5, 1:5] = self.ibd_jump / 4  # Jumping between IBD1 State
+
+        # Do the Diagonal (do the usual model - for inf. substract 1)
+        di = np.diag_indices(np.shape(t_mat)[0])
+        t_mat[di] = -np.sum(t_mat, axis=1) + np.diag(t_mat)
+
+        # Sanity Check if everything was filled correctly
+        assert(np.allclose(np.sum(t_mat, axis=1), 0))
+        self.trans_mat = t_mat
+        return t_mat
+    
+    def full_transition_matrix(self, r_vec, t=[], n=4, submat33=True):
+        """Compute and return the full transition Matrix.
+        Calculates the first 3 states (not more needed by symmetry)
+        t full Transition Matrix [k,k]. NO LOG STATE. If not given caluclate
+        r_vec Map Length of Jumps [l] in Morgan
+        n: Number of symmetric, non-background states, not used by this method, keeping it here to just keep function signature the same as that of the 5state HMM.
+        submat33: also not used by this function, keeping it here just to keep consistency with the 5 state hmm
+        Note: this is the only function called by outside code
+        """
+        ### infinitesimal rate
+        if len(t) == 0:
+            t = self.calc_transition_rate()
+            
+        ### Full matrix
+        r_vec = self.rmap_to_gaps(r_map=r_vec)
+        t_mat = self.exponentiate_r(t, r_vec)
+
+        # Normalize to transition rate into non-collapsed state
+        return t_mat
+
 
 ############################################
 # Factory method to return Transition Object
@@ -284,6 +393,12 @@ def load_transition_model(t_model="standard"):
         t_obj = FiveStateAsymmetric()
     elif t_model == 'IBD2':
         t_obj = SevenStateTransitions()
+    elif t_model == 'twoHaploid':
+        t_obj = TwoStateTransitions()
+    elif t_model == "hapVSdiploid":
+        t_obj = ThreeStateTransitions()
+    elif t_model == "fiveStateGeneric":
+        t_obj = FiveStatGeneric()
     else:
         raise NotImplementedError("Transition Model not found!")
     return t_obj

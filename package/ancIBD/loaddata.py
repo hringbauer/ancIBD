@@ -162,6 +162,7 @@ class LoadHDF5Multi(LoadHDF5):
     p_col = "" # The hdf5 column with der. all freqs. If given, use the field
     # If "default" use p=0.5 everywhere
     # default value for p_col in my hdf5s: variants/AF_ALL
+    ploidy = 2 # ploidy of the individuals
     
     def get_haplo_prob(self, f, idcs):
         """Get haploid ancestral probability for n individuals 
@@ -205,7 +206,7 @@ class LoadHDF5Multi(LoadHDF5):
             idcs = np.array([self.get_individual_idx(f, iid) for iid in self.iids])
             sort = np.argsort(idcs)   # Get the sorting Indices [has to go low to high]
             samples = self.iids[sort] # Get them in sorted order
-            hts = self.get_haplo_prob(f, idcs[sort])
+            hts = self.get_haplo_prob(f, idcs[sort], self.ploidy)
             bp = f['variants/POS'][:]
             if len(self.p_col)>0:
                 p = self.get_p_hdf5(f, self.p_col)
@@ -254,43 +255,59 @@ class LoadH5Multi2(LoadHDF5Multi):
     # If "default" use p=0.5 everywhere
     # default value for p_col in my hdf5s: variants/AF_ALL
     
-    def get_haplo_prob(self, f, idcs):
+    def get_haplo_prob(self, f, idcs, ploidy=2):
         """Get haploid ancestral probability for n individuals 
         Return [n,l,2] array. Calculated from GP and GT
-        in the proper way."""
-        
+        in the proper way.
+        ploidy: it can be either an integer or an array of integers
+        when it's an integer, it must be either 1 or 2 and then we assume that all individuals have the same ploidy
+        when it's an array, it must have the same length as idcs and then it specifies the ploidy of each individual
+        """
+            
         gt = f["calldata/GT"][:,idcs,:] ### Get l, n, 2 array of gt
         l,n,_ = np.shape(gt) # Get the nr loci
         gp = f["calldata/GP"][:,idcs,:] ### Get l, n, 3 array of gp
         
-        ### The homozygotes
-        g00 = gp[:,:,0]  # homo 00 prob.
-        ### Heterozygote prob
-        gp1 = gp[:,:,1]
-        ## g11 not needed
+        if isinstance(ploidy, int) and ploidy == 1:
+            # for haploid samples, the entry in h1[:,:,1] will never be used, so it's fine to leave it as all zeros
+            h1 = np.zeros((l,n,2), dtype=np.float64)
+            h1[:,:,0] = gp[:,:,0]
+        else:
+            # ploidy is either an integer or an array of integers
+            if isinstance(ploidy, int):
+                assert ploidy == 2
+                ploidy = 2*np.ones(n, dtype=np.int)
+            ### The homozygotes
+            g00 = gp[:,:,0]  # homo 00 prob.
+            ### Heterozygote prob
+            gp1 = gp[:,:,1]
+            # set the het prob for haploid samples to be 0
+            # for haploid samples the gp[:,:,1] actually encodes g11
+            gp1[:, ploidy == 1] = 0.0 
+            ## g11 not needed
         
-        ### The max GT probabilities
-        g01 = gp1[:,:] * (gt[:,:,0]==0) * (gt[:,:,1]==1) # het 01 prob.
-        g10 = gp1[:,:] * (gt[:,:,0]==1) * (gt[:,:,1]==0) # het 10 prob.
+            ### The max GT probabilities
+            g01 = gp1[:,:] * (gt[:,:,0]==0) * (gt[:,:,1]==1) # het 01 prob.
+            g10 = gp1[:,:] * (gt[:,:,0]==1) * (gt[:,:,1]==0) # het 10 prob.
         
-        ### The default probability from the non-max GT ones
-        # Assume it is split up 50/50 between 01 10 states
-        idx = (gt[:,:,0]==0) * (gt[:,:,1]==0)
-        g01[idx] = gp1[idx]/2
-        g10[idx] = gp1[idx]/2
+            ### The default probability from the non-max GT ones
+            # Assume it is split up 50/50 between 01 10 states
+            idx = (gt[:,:,0]==0) * (gt[:,:,1]==0)
+            g01[idx] = gp1[idx]/2
+            g10[idx] = gp1[idx]/2
         
-        idx = (gt[:,:,0]==1) * (gt[:,:,1]==1)
-        g01[idx] = gp1[idx]/2
-        g10[idx] = gp1[idx]/2
-        ### The added probability from the non-max GT ones
+            idx = (gt[:,:,0]==1) * (gt[:,:,1]==1)
+            g01[idx] = gp1[idx]/2
+            g10[idx] = gp1[idx]/2
+            ### The added probability from the non-max GT ones
         
-        # Add point phasing error  here (swap g01 and g10 with prob. x)
-        g01t = g01 * (1 - self.pph_error) + g10 * self.pph_error
-        g10t = g10 * (1 - self.pph_error) + g01 * self.pph_error
+            # Add point phasing error  here (swap g01 and g10 with prob. x)
+            g01t = g01 * (1 - self.pph_error) + g10 * self.pph_error
+            g10t = g10 * (1 - self.pph_error) + g01 * self.pph_error
         
-        h1 = np.zeros((l,n,2), dtype=np.float64)
-        h1[:,:,0] = g00 + g01t 
-        h1[:,:,1] = g00 + g10t
+            h1 = np.zeros((l,n,2), dtype=np.float64)
+            h1[:,:,0] = g00 + g01t 
+            h1[:,:,1] = g00 + g10t
         
         h1 = np.swapaxes(h1, 0, 1) #  l,n,2->n,l,2
         h1 = np.swapaxes(h1, 1, 2) # -> n,2,l

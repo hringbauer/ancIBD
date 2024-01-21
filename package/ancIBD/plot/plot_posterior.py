@@ -4,8 +4,8 @@ import numpy as np
 import h5py as h5py
 
 from matplotlib import rcParams
-rcParams['font.family'] = 'sans-serif'   # Set the default
-rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
+#rcParams['font.family'] = 'sans-serif'   # Set the default
+#rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
 
 def plot_posterior(ax=0, morgan=[], post=[], het=[], het_m=[], 
                    df_ibd=[], df_truth=[], state=0, figsize=(12,3), 
