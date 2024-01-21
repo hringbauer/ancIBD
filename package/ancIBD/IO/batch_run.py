@@ -199,9 +199,10 @@ def to_ibd_df_batches(batches=8, folder_out = "/n/groups/reich/hringbauer/git/ib
         folder_batch = os.path.join(folder_out, f"batch{b1}_{b2}/")
         df_ibds = join_chromosomes(folder_batch, file_out="", 
                                    chs=chs, output=output)
+        # Do Filtering here per batch to avoid giant file size
+        df_ibds = filter_ibd_df(df_ibds, min_cm=min_cm, snp_cm=snp_cm, output=output) 
         res.append(df_ibds)
     df_res = pd.concat(res)
-    df_res = filter_ibd_df(df_res, min_cm=min_cm, snp_cm=snp_cm, output=output) 
     return df_res 
 
 def print_runid_missing(b = 1, folder_out = "", output=False):
