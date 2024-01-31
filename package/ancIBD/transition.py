@@ -215,7 +215,6 @@ class SevenStateTransitions(FiveStateTransitions):
         """Calculates exponentiation of the rates matrix with rec_v
         rates: 2D Matrix of transitions
         rec_v: Array of length l"""
-        print('new matrix exponential for IBD2 model')
         eva, evec = np.linalg.eig(rates)  # Do the Eigenvalue Decomposition
         assert(np.max(eva) <= 1)   # Sanity Check whether rate Matrix
         evec_r = np.linalg.inv(evec)    # Do the Inversion

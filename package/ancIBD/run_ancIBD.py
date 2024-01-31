@@ -17,7 +17,7 @@ def main():
                         Only one of --vcf and --h5 should be specified.\
                         But please make sure that the hdf5 file has suffix ch{chromosome number}.h5 (e.g, test.ch20.h5).")
     parser.add_argument('--ch', action="store", dest="ch", type=int, required=True, help='chromosome number (1-22).')
-    parser.add_argument('--marker_path', action="store", dest="marker_path", type=str, required=False, help='path to the marker file')
+    parser.add_argument('--marker_path', action="store", dest="marker_path", type=str, required=False, default="", help='path to the marker file')
     parser.add_argument('--map_path', action="store", dest="map_path", type=str, required=False, help='path to the map file')
     parser.add_argument('--af_path', action="store", dest="af_path", type=str, required=False, default="", help='path to the allele frequency file (optional)')
     parser.add_argument('--af_column', action='store', dest='af_column', type=str, required=False, default='', help='column name of the allele frequency in the hdf5. For example, "variants/AF_ALL" or "variants/AF_SAMPLE".')
@@ -76,7 +76,8 @@ def main():
                  col_sample_af = col_sample_af,
                  buffer_size=20000, chunk_width=8, chunk_length=20000,
                  ch=ch)
-        os.remove(path_vcf_1240k) # remove intermediary vcf files
+        if len(args.marker_path) > 0:
+            os.remove(path_vcf_1240k) # remove intermediary vcf files
     else:
         path_h5 = args.h5
 

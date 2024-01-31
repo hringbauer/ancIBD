@@ -1,4 +1,4 @@
-# run ancIBD given an input vcf file
+# run ancIBDX given an input vcf file
 
 import argparse
 from ancIBD.run import hapBLOCK_chroms_mixedPloidy
@@ -106,6 +106,9 @@ def main():
         with open(args.pair, 'r') as f:
             for line in f:
                 id1, id2 = line.strip().split()
+                if (not id1 in iids2run) or (not id2 in iids2run):
+                    warnings.warn(f'{id1} or {id2} not in the ploidy file. It will be ignored......')
+                    continue
                 run_iids.append((id1, id2))
     
     # I set folder_out to an empty string because I save the output file separately in the code below
