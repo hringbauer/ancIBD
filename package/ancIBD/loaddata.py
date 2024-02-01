@@ -302,12 +302,12 @@ class LoadH5Multi2(LoadHDF5Multi):
             ### The added probability from the non-max GT ones
         
             # Add point phasing error  here (swap g01 and g10 with prob. x)
-            g01t = g01 * (1 - self.pph_error) + g10 * self.pph_error
-            g10t = g10 * (1 - self.pph_error) + g01 * self.pph_error
+            #g01t = g01 * (1 - self.pph_error) + g10 * self.pph_error
+            #g10t = g10 * (1 - self.pph_error) + g01 * self.pph_error
         
             h1 = np.zeros((l,n,2), dtype=np.float64)
-            h1[:,:,0] = g00 + g01t 
-            h1[:,:,1] = g00 + g10t
+            h1[:,:,0] = g00 + g01
+            h1[:,:,1] = g00 + g10
         
         h1 = np.swapaxes(h1, 0, 1) #  l,n,2->n,l,2
         h1 = np.swapaxes(h1, 1, 2) # -> n,2,l
@@ -318,8 +318,8 @@ class LoadH5Multi2(LoadHDF5Multi):
         h1 = np.minimum(h1, 1-self.min_error)
         
         if self.output:
-            print(f"Min. Error added: {self.min_error}")
-            print(f"Phase. Error added: {self.pph_error}")
+            print(f"Thresholding GP at {1 - self.min_error}")
+            #print(f"Phase. Error added: {self.pph_error}")
         
         return h1
     
