@@ -59,7 +59,7 @@ def main():
         # create the output folder if it does not already exist
         if os.path.isdir(oDir) is False:
             # create the output folder and its parental folders if they do not exist
-            Path(oDir).mkdir(parents=True)
+            Path(oDir).mkdir(parents=True, exist_ok=True)
 
     if args.vcf is not None:
         path_vcf_1240k = os.path.join(f"{oDir}", f"{prefix}.1240k.vcf")
