@@ -93,13 +93,18 @@ def main():
     with open(args.ploidy, 'r') as f:
         for line in f:
             iid, p = line.strip().split()
-            iids2run.append(iid)
-            ploidy.append(int(p))
+            if iid in iids:
+                iids2run.append(iid)
+                ploidy.append(int(p))
+            else:
+                warn = f'{iid} in the ploidy file is not in the hdf5 file. It will be ignored...'
+                warnings.warn(warn)
     assert(len(iids2run) == len(ploidy))
     # check if all samples in iids are in iids2run
     for iid in iids:
         if iid not in iids2run:
-            warnings.warn(f'{iid} in the hdf5 file is not in the ploidy file. It will be ignored......')
+            warn = f'{iid} in the hdf5 file is not in the ploidy file. It will be ignored...'
+            warnings.warn(warn)
     
     run_iids = []
     if not args.pair is None:
@@ -107,7 +112,8 @@ def main():
             for line in f:
                 id1, id2 = line.strip().split()
                 if (not id1 in iids2run) or (not id2 in iids2run):
-                    warnings.warn(f'{id1} or {id2} not in the ploidy file. It will be ignored......')
+                    warn = f'{id1} or {id2} not in the ploidy/hdf5 file. It will be ignored...'
+                    warnings.warn(warn)
                     continue
                 run_iids.append((id1, id2))
     

@@ -276,7 +276,7 @@ class LoadH5Multi2(LoadHDF5Multi):
             # ploidy is either an integer or an array of integers
             if isinstance(ploidy, int):
                 assert ploidy == 2
-                ploidy = 2*np.ones(n, dtype=np.int)
+                ploidy = 2*np.ones(n, dtype=np.int64)
             ### The homozygotes
             g00 = gp[:,:,0]  # homo 00 prob.
             ### Heterozygote prob
