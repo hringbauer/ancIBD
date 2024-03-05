@@ -65,20 +65,20 @@ class HMM_Full(object):
     
     def run_fwd_bwd(self, full=True):
         """Run Forward Backward algorithm."""
-        htsl, p, r_vec, _ =  self.l_obj.load_all_data()
+        htsl, p, r_vec, bp, samples =  self.l_obj.load_all_data()
         e_mat = self.e_obj.give_emission_matrix(htsl, p)
         t_mat = self.t_obj.full_transition_matrix(r_vec, n=4, submat33=self.submat33)
         
         if full:
             post, fwd, bwd, tot_ll = self.fwd_bwd(e_mat, t_mat, in_val = self.in_val, 
                                                   full=full, output=self.output)
-            self.p_obj.call_roh(r_vec, post)
-            return post, r_vec, fwd, bwd, tot_ll
+            #self.p_obj.call_roh(r_vec, post)
+            return post, r_vec, bp, fwd, bwd, tot_ll
         else:
             post = self.fwd_bwd(e_mat, t_mat, in_val = self.in_val, 
                                 full=full, output=self.output)
-            self.p_obj.call_roh(r_vec, post)
-            return post, r_vec  
+            #self.p_obj.call_roh(r_vec, post)
+            return post, r_vec, bp  
     
     ##################################################
     ### Run FWD-BWD timed [LEGACY code]

@@ -1,25 +1,17 @@
-Quick Start for ancIBD (Under Developemnt; will be available in the next release)
+Running ancIBD via bash
 ======================
 
-This notebook is a quick start guide for running ancIBD. It uses wrapper
-scripts for various functions introduced in section `preparing
-input <create_hdf5_from_vcf.ipynb>`__ and `calling IBD with
-ancIBD <run_ancIBD.ipynb>`__. Writing your own wrapper script for these
-functions provides more flexibility, while using the command line
-interface to be introduced in this quick starting guide is easier. We
-have created two command-line interfaces (``ancIBD-run`` and
-``ancIBD-summary``)for running ancIBD quickly on your imputed data. The
-test data used to run these tutorials can be downloaded from
-https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0.
-It contains imputed vcf of a subset of samples from early Neolithic
-Britain that belong to an extended pedigree (`Fowler et
-al. <https://www.nature.com/articles/s41586-021-04241-4>`__).
+Here we describe how to run ``ancIBD`` using the two main command-line interfaces (``ancIBD-run`` and ``ancIBD-summary``). These are available since version 0.5, and are added automatically when installing the software package via ``pip``.
 
-calling IBD
+
+Calling IBD
 ~~~~~~~~~~~
+We showcase chromosome 20 as an example. 
 
-In addition to the imputed vcf files, you need additionally three files,
-all of which are provided in the same dropbox link as indicated above.
+The test data used to run this tutorial can be downloaded `here <https://www.dropbox.com/sh/q18yyrffbdj1yv1/AAC1apifYB_oKB8SNrmQQ-26a?dl=0>`_.
+
+In addition to the imputed .vcf files, you need additionally three files,
+all of which are provided in the same Dropbox link as indicated above.
 
 -  marker_path: Path of the 1240k SNPs to use (you can find those in
    ``./filters/snps_bcftools_ch*.csv`` from the download link)
@@ -30,33 +22,39 @@ all of which are provided in the same dropbox link as indicated above.
    download link. If not provided, allele frequencies calculated from
    samples themselves will be used)
 
-We now run ancIBD on ch20 as an example. To run the following command,
-change the path to the above three files according to your own
-environment if needed. The file path in the following tutorial has
-assumed that the folder downloaded from dropbox link is in the same
-directory as this jupyter notebook.
-
+The file path in the following tutorial assumes that the folder downloaded from the Dropbox link is in the same directory as this jupyter notebook. You will have to change the path to the above three files if needed.
 
 .. code:: bash
 
     # Modify file paths according to your own environment if needed
-    ancIBD-run --vcf ./data/vcf.raw/example_hazelton_chr20.vcf.gz --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv --map_path ./data/afs/v51.1_1240k.snp --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv --prefix example_hazelton
+    ancIBD-run --vcf ./data/vcf.raw/example_hazelton_chr20.vcf.gz \
+    --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv \
+    --map_path ./data/map/v51.1_1240k.snp \
+    --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv \
+    --prefix example_hazelton
 
 .. literalinclude:: qs_output1.txt
    :language: console
 
-
-If you already have the appropriate hdf5 file for your samples, you can
-also supply the command line with the hdf5 file directly. But please
-make sure that the hdf5 file has suffix “ch{chromosome number}.h5” (e.g,
-“test.ch20.h5”).
+If you use ancIBD on your own GLIMPSE-imputed dataset, we note that GLIMPSE output phased and imputed bcfs separately (in folder GLIMPSE/phased and GLIMIPSE/ligated, respectively). For ancIBD, however, the two bcfs need to be combined (and converted to vcf). You can use the following bash command to merge the phased and imputed bcfs.
 
 .. code:: bash
 
-    ancIBD-run --h5 ./test/example_hazelton.ch20.h5 --ch 20 --out test --marker_path ./data/filters/snps_bcftools_ch20.csv --map_path ./data/afs/v51.1_1240k.snp --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv --prefix example_hazelton
+    bcftools annotate -a ./GLIMPSE_ligated/YOUR_BCF_FILE -c FORMAT/GP ./GLIMPSE_phased/YOUR_BCF_FILE -Oz -o OUTPUT_COMBINED_VCF_FILE
 
-now we can do the same for the all the 22 autosomes. This takes about
-6min.
+
+
+If you already have the appropriate hdf5 file for your samples, you can also supply the command line with the hdf5 file directly. Make sure that the hdf5 file has the suffix “ch{chromosome number}.h5” (e.g. “test.ch20.h5”).
+
+.. code:: bash
+
+    ancIBD-run --h5 ./test/example_hazelton.ch20.h5 --ch 20 \
+    --out test --marker_path ./data/filters/snps_bcftools_ch20.csv \
+    --map_path ./data/map/v51.1_1240k.snp \
+    --af_path ./data/afs/v51.1_1240k_AF_ch20.tsv \
+    --prefix example_hazelton
+
+Now we can run a loop for all 22 autosomes. This takes about 6min.
 
 .. code:: bash
     
@@ -76,17 +74,13 @@ now we can do the same for the all the 22 autosomes. This takes about
 .. note::
 
 
-   For large sample sizes, we recommend that one parallizes over
-   autosomes for speed-up (e.g, by submitting array jobs on a cluster).
-   The above for-loop is efficient only for small sample sizes.
+   For large sample sizes, we recommend that one runs multiple
+   autosomes in parallel for speed-up (e.g., by submitting array jobs on a cluster, with each chromosome as one job).
 
 Combine IBD over 22 autosomes and generate summary statistics
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Now that we have individual IBD files for each of the autosome, we can
-combine the information across chromosomes and obtain genome-wide
-summary statistics for all pairs of samples (Only pairs of samples that
-share at least one IBD passing the length cutoff are recorded).
+Now that we have individual IBD files for each of the autosomes, we can combine the information across chromosomes and obtain genome-wide summary statistics for all pairs of samples. Note that only pairs of samples that share at least one IBD passing the length cutoff are recorded).
 
 .. code:: bash
 
@@ -96,12 +90,7 @@ share at least one IBD passing the length cutoff are recorded).
    :language: console
 
 
-To view the complete options provided by the two command-line interface,
-use -h. For power users or people interested in applying the method
-beyond 1240k SNP set, keep in mind that one can obtain maximum
-flexibility by writing one’s own wrappers (see section `prepare
-input <create_hdf5_from_vcf.ipynb>`__, `run
-ancIBD <run_ancIBD.ipynb>`__, and `visualization <plot_IBD.ipynb>`__)
+To view the complete options provided by the two command-line interfaces, you can use -h. 
 
 .. code:: bash
 

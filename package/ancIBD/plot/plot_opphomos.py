@@ -20,7 +20,7 @@ def opp_homos(g1, g2):
 
 def plot_hets(map_het=[], het=[], ax=None, het_c="slateblue", c_roh="seagreen", 
               figsize=(14,2), cm_lim=[], ylim=[-0.1, 1.1], fs = 12,
-              alpha=0.3, ms=1, lw = 12, title="", min_cm=0, xtickl=True,
+              alpha=0.3, ms=1, lw = 12, title="", min_cm=0, xtickl=True, df_ibd=None,
               xlabel="centimorgan", ylabel = f"Opp. Homozygote (y/n)", 
               plot=True, savepath=""):
     """Plot Heterozygotes against genenetic map,
@@ -33,7 +33,7 @@ def plot_hets(map_het=[], het=[], ax=None, het_c="slateblue", c_roh="seagreen",
     ax.set_xlabel(xlabel, fontsize=fs)
     if not xtickl:
         ax.set_xticklabels([])
-    ax.set_ylim(ylim)
+    #ax.set_ylim(ylim)
     
     ax2 = ax.twinx()
     ax2.set_ylim(ax.get_ylim())
@@ -47,6 +47,17 @@ def plot_hets(map_het=[], het=[], ax=None, het_c="slateblue", c_roh="seagreen",
         
     if len(title)>0:
         ax.set_title(title, fontsize=fs)
+    
+    if df_ibd is not None:
+        print(f'df_ibd is not , found {len(df_ibd)} IBD segments')
+        y_ibd = 1.2
+        c_ibd = 'slateblue'
+        lw_ibd = 10
+        ax.hlines(y=[y_ibd]*len(df_ibd), xmin=100 * df_ibd["StartM"], xmax= 100 * df_ibd["EndM"], 
+                        colors=c_ibd, linewidth=lw_ibd)
+        ax.set_ylim([-0.1, 1.27])
+    else:
+        ax.set_ylim(ylim)
         
     if len(savepath)>0:
         plt.savefig(savepath, bbox_inches = 'tight', pad_inches = 0, dpi=300)
@@ -69,13 +80,13 @@ def plot_opp_homos(path_h5 = f"/n/groups/reich/hringbauer/hapsburg_runs/data/dat
               cm_lim=cm_lim, savepath=savepath) # ./figs/principle_proof/siblings.png
     
 def plot_identical_gts(path_h5 = f"/n/groups/reich/hringbauer/hapsburg_runs/data/data_eirini/h5/all_ch", ch = 16,
-                  iids = ["MYG001.A0101", "MYG006.A0101"], cutoff=0.99, output=True, exact=True,
+                  iids = ["MYG001.A0101", "MYG006.A0101"], df_ibd=None, cutoff=0.99, output=True, exact=True,
                   cm_lim=[], ms=4, savepath=""):
     """Plot pairwise opp. homoyzgotes. Loads f5 data, and calls and plots opp. homos"""
     path_h5 = f"{path_h5}{ch}.h5"
     f = h5py.File(path_h5, "r") # Load for Sanity Check. See below!
     g1, g2, m = get_genos_pairs(f, sample1=iids[0], sample2=iids[1], 
                                 cutoff=cutoff, output=output, exact=exact)
-    diff = (g1!=g2)
+    diff = (g1 != g2)
     plot_hets(m, diff, title=f"{iids[0]} - {iids[1]}, Chromosome {ch}, Different Diploid Genotyeps", ms=ms,
-              cm_lim=cm_lim, ylabel = f"Diff. Genotypes (y/n)", savepath=savepath) # ./figs/principle_proof/siblings.png
+              cm_lim=cm_lim, ylabel = f"Diff. Genotypes (y/n)", df_ibd=df_ibd, savepath=savepath) # ./figs/principle_proof/siblings.png

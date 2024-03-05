@@ -4,8 +4,8 @@ import numpy as np
 import h5py as h5py
 
 from matplotlib import rcParams
-rcParams['font.family'] = 'sans-serif'   # Set the default
-rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
+#rcParams['font.family'] = 'sans-serif'   # Set the default
+#rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
 
 def plot_posterior(ax=0, morgan=[], post=[], het=[], het_m=[], 
                    df_ibd=[], df_truth=[], state=0, figsize=(12,3), 
@@ -48,6 +48,7 @@ def plot_posterior(ax=0, morgan=[], post=[], het=[], het_m=[],
                    xmax=100 * df_truth["IBD_End"], colors=c_truth, linewidth=lw_ibd)
         
     if len(savepath)>0:
+        plt.gcf().set_facecolor('white')
         plt.savefig(savepath, bbox_inches ='tight', pad_inches = 0, dpi=dpi)
         print(f"Saved to {savepath}")
     if show:
@@ -55,11 +56,11 @@ def plot_posterior(ax=0, morgan=[], post=[], het=[], het_m=[],
     else: 
         return ax
     
-def plot_hets(ax, het_m, het, alpha=0.3, ms=1, het_c="slateblue",
+def plot_hets(ax, het_m, het, ypos=1.1, alpha=0.3, ms=1, het_c="slateblue",
               ylabel = "Opp. Homozygotes (no/yes)", fs_l=12, ylim=[]):
     """Plot Heterozygote Markers onto Axis"""
     ax2 = ax.twinx()
-    ax2.plot(het_m*100, (het * 1.1 - 0.05), "o", ms=ms, alpha=alpha, zorder=0, color=het_c)
+    ax2.plot(het_m*100, (het * ypos - 0.05), "o", ms=ms, alpha=alpha, zorder=0, color=het_c)
     ax2.set_yticks([-0.05, 1.05])
     ax2.set_yticklabels([])
     ax2.set_ylabel(ylabel, fontsize=fs_l, color=het_c)
@@ -110,3 +111,62 @@ def get_map(path_h5= "./data/hdf5/1240k_v43/ch", ch=3,
     f = h5py.File(path_load, "r") # Load for Sanity Check. See below!
     m = f[col_map][:]
     return m
+
+
+def plot_posterior_IBD2(ax=0, morgan=[], post=[], het=[], het_m=[], idengt=[], idengt_m=[],
+                   df_ibd=[], df_truth=[], state=0, figsize=(12,3), 
+                   xlim=[], ylim=[-0.08,1.37], ylabel="Posterior", xlabel="Position",
+                   c="maroon", het_c="gray", c_truth="green", ms=1,
+                   lw=0.5, lw_ibd=10, c_ibd="slateblue", y_ibd=1.3, dpi=400, 
+                   fs_l=12, show=True, min_cm1=4, min_cm2=2, title="", savepath=""):
+    """Plot Posterior [k,l] array. If morgan given, plot in centimorgan.
+    Can then also plot hapROH formatted IBD blocks (df_ibd).
+    And plot ground truth hapROH formatted IBD blocks (df_truth).
+    If het is given [array boolean], plot het using het_m coordinates"""
+    if ax==0:
+        plt.figure(figsize=figsize)
+        ax=plt.gca()
+    if len(morgan)==0:
+        morgan = np.arange(np.shape(post)[1])
+    #ax.plot(morgan*100, post[state,:], color=c, lw=lw)
+    ax.plot(morgan*100, 1 - np.sum(post[-2:,:], axis=0), color='orangered', lw=lw)
+    ax.set_yticks([0., 0.2, 0.4, 0.6, 0.8, 1.0])
+    ### Do optional plotting
+    # Hets
+    if len(xlabel)>0:
+        ax.set_xlabel(xlabel, fontsize=fs_l)
+    if len(ylabel)>0:
+        ax.set_ylabel(ylabel, fontsize=fs_l)
+    if len(xlim)>0:
+        ax.set_xlim(xlim)
+    if len(ylim)>0:
+        ax.set_ylim(ylim)
+    if len(het)>0:
+        plot_hets(ax, het_m, het, ms=ms, het_c=het_c, fs_l=fs_l, ylim=ylim)
+    if len(idengt)>0:
+        plot_hets(ax, idengt_m, idengt, ms=ms, het_c=het_c, fs_l=fs_l, ylim=ylim, ypos=1.2, ylabel="identical GT")
+    if len(title)>0:
+        ax.set_title(title, fontsize=fs_l)
+    if len(df_ibd)>0:
+        df_ibd1 = df_ibd[df_ibd['segment_type']=='IBD1']
+        df_ibd1 = df_ibd1[df_ibd1["lengthM"] > min_cm1/100]  # Filter out long enough calls
+        ax.hlines(y=[y_ibd]*len(df_ibd1), xmin=100 * df_ibd1["StartM"], xmax= 100 * df_ibd1["EndM"], 
+                        colors='slateblue', linewidth=lw_ibd)
+        
+        df_ibd2 = df_ibd[df_ibd['segment_type']=='IBD2']
+        df_ibd2 = df_ibd2[df_ibd2["lengthM"] > min_cm2/100]
+        ax.hlines(y=[y_ibd]*len(df_ibd2), xmin=100 * df_ibd2["StartM"], xmax= 100 * df_ibd2["EndM"], 
+                        colors='maroon', linewidth=lw_ibd)
+    if len(df_truth)>0:  # Plot Ground truth dataframe
+        ### Plot them
+        plt.hlines(y=[1.12]*len(df_truth), xmin=100 * df_truth["IBD_Begin"], 
+                   xmax=100 * df_truth["IBD_End"], colors=c_truth, linewidth=lw_ibd)
+        
+    if len(savepath)>0:
+        plt.savefig(savepath, bbox_inches ='tight', pad_inches = 0, dpi=dpi)
+        print(f"Saved to {savepath}")
+    if show:
+        plt.show()
+    else: 
+        return ax
+    

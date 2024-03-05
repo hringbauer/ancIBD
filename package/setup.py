@@ -22,7 +22,7 @@ with open("README.md", "r") as fh:
     
 setup(
     name="ancIBD",
-    version="0.5",  # a means alpha
+    version="0.5b",  # a means alpha
     author="Harald Ringbauer",
     author_email="harald_ringbauer@eva.mpg.de",
     description="Identify IBD segments between pairs of individuals in ancient human DNA data",
@@ -42,7 +42,8 @@ setup(
     entry_points ={
             'console_scripts': [
                 'ancIBD-summary = ancIBD.ancIBD_summary:main',
-                'ancIBD-run = ancIBD.run_ancIBD:main'
+                'ancIBD-run = ancIBD.run_ancIBD:main',
+                'ancIBDX = ancIBD.run_ancIBDX:main',
             ]
         },
 )

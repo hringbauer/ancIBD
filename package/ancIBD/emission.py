@@ -143,13 +143,17 @@ class HaplotypeSharingEmissions3(HaplotypeSharingEmissions2):
     """
 
 
-    def give_emission_matrix(self, hts_p, p, dtype='float'):
+    def give_emission_matrix(self, hts_p, p, p_min=1e-3, dtype='float'):
         """
         Give emission matrix for 7-state HMM.
         0th state: non-IBD state
         1st-4th state: IBD1 state
         5-7th state: IBD2 state
         """
+        # to avoid division by zero error, set p to be at least p_min and at most 1 - p_min
+        p = np.maximum(p, p_min)
+        p = np.minimum(p, 1-p_min)
+        
         l = np.shape(hts_p)[1]
         e_mat = np.zeros((7,l), dtype=dtype)
         e_mat[:5,:] = super().give_emission_matrix(hts_p, p, dtype)
@@ -172,7 +176,46 @@ class HaplotypeSharingEmissions3(HaplotypeSharingEmissions2):
 
         return e_mat
 
+############################################ Experimental with X chromosomes ############################################
+class HaplotypeSharing_twoHaploid(HaplotypeSharingEmissions2):
+    """Class for emission probabilities of two haploid genomes (e.g, two male X chromosome) 
+    who possibly share one haplotype"""
+    
+    def give_emission_matrix(self, hts_p, p, dtype="float"):
+        """Give emission Matrix for 2-state HMM.
+        0th state: HW 1st State: Haplotype Copying
+        Input: p: [l] Array of (derived) allele frequencies
+        hts_p: [4,l] Array of two ancestral haplotype probabilities. 
+            Note that for haploid samples, hts_p[1,:] and hts_p[4,:] are not used and the values there are meaningless.
+            I keep these two rows only for consistency with the diploid case.
+        Return: emission matrix [2,l]."""
+        l = np.shape(hts_p)[1]
+        e_mat = np.zeros((2,l), dtype=dtype)
+        e_mat[0,:] = 1 # Because simply proportional to P(D)
+        e_mat[1,:] = self.hw_probs_shared(hts_p, p=p, shared=[0,2])
+        return e_mat
+    
+class HaplotypeSharing_hapVSdiploid(HaplotypeSharingEmissions2):
+    """Class for emission probabilities of one haploid and one diploid genomes (e.g, between a male and a female chromosome)
+    who possibly share one haplotype"""
 
+    def give_emission_matrix(self, hts_p, p, dtype="float"):
+        """Give emission Matrix for 3-state HMM. 
+        Note that the code assumes that the first sample is haploid and the second sample is diploid.
+        0th state: HW 
+        1st-2nd State: Haplotype Copying
+        Input: p: [l] Array of (derived) allele frequencies
+        hts_p: [4,l] Array of two ancestral haplotype probabilities. 
+            Note that for hts_p[1,:] is not used and the values there are meaningless.
+            I keep these it only for consistency with the diploid case.
+        Return: emission matrix [3,l]."""
+
+        l = np.shape(hts_p)[1]
+        e_mat = np.zeros((3,l), dtype=dtype)
+        e_mat[0,:] = 1 # Because simply proportional to P(D)
+        e_mat[1,:] = self.hw_probs_shared(hts_p, p=p, shared=[0,2])
+        e_mat[2,:] = self.hw_probs_shared(hts_p, p=p, shared=[0,3])
+        return e_mat
 
 
 def load_emission_model(e_model="haploid_gl"):
@@ -183,6 +226,10 @@ def load_emission_model(e_model="haploid_gl"):
         e_obj = HaplotypeSharingEmissions2()
     elif e_model == 'IBD2':
         e_obj = HaplotypeSharingEmissions3()
+    elif e_model == "twoHaploid":
+        e_obj = HaplotypeSharing_twoHaploid()
+    elif e_model == "hapVSdiploid":
+        e_obj = HaplotypeSharing_hapVSdiploid()
     else:
         raise NotImplementedError("Emission Model not found!")
     return e_obj
