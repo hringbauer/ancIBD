@@ -146,3 +146,4 @@ dmypy.json
 /simulation
 /empirical
 /docs/data
+/docs/test
