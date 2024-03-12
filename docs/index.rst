@@ -10,6 +10,7 @@ Welcome to the Documentation of ancIBD
    Install   
    quick_start_bash
    ancIBDX
+   ancIBD2
    create_hdf5_from_vcf
    run_ancIBD
    plot_IBD

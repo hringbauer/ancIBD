@@ -283,9 +283,9 @@ def run_plot_pair(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/124
 def run_plot_pair_IBD2(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf5/1240k_v43/ch", 
                   iids = ["", ""], ch=2, xlim=[], folder_out="", 
                   plot=False, path_fig="", output=False, exact=True,
-                  ibd_in=1, ibd_out=10, ibd_jump=400, min_cm1=4, min_cm2=2,  
+                  ibd_in=1, ibd_out=10, ibd_jump=400, min_cm1=8, 
                   cutoff_post=0.99, max_gap=0.0075, p_col="variants/AF_ALL",
-                  cutoff_post2=0.975, min_cm2_init=1.0, min_cm2_after_merge=2.0, 
+                  cutoff_post2=0.8, min_cm2_init=0.25, min_cm2_after_merge=4.0, 
                   title="", state=0, return_post=False):
     """Run and plot IBD for pair of Individuals.
     folder_out: Where to save the hapBLOCK output to
@@ -295,6 +295,7 @@ def run_plot_pair_IBD2(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf
            If empty string use in sample AF.
     return_post: Whether to return posterior [Boolean]
     min_error: Caps min/max prob. haplotype being derived to min_error/1-min_error when loading data
+    min_cm1: minimum length of IBD1 to call and visualize
     kwargs: Optional Keyword Arguments for Plotting (e.g. c_ibd)
     """
     assert(len(iids)==2) # Sanity Check of Input IIDs - as here it should be pairs
@@ -318,7 +319,7 @@ def run_plot_pair_IBD2(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf
         
         plot_posterior_IBD2(post=post, morgan=r_vec, df_ibd=df_ibd, 
                        het=o_homos, het_m=m_homos, idengt=diff_gt, idengt_m=m_diffgt, state=state,
-                       min_cm1=min_cm1, min_cm2=min_cm2, title=title, xlim=xlim, show=True, 
+                       min_cm1=min_cm1, min_cm2=min_cm2_after_merge, title=title, xlim=xlim, show=True, 
                        savepath=path_fig, xlabel="Chromosome Position [cM]")
     if return_post:
         return post
