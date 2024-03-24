@@ -24,7 +24,7 @@ def hapBLOCK_chrom(folder_in="./data/hdf5/1240k_v43/ch", iids = ["", ""],
                    t_model="standard", p_model='hapROH', p_col="variants/AF_ALL", 
                    ibd_in=1, ibd_out=10, ibd_jump=400, ibd_jump2=0.5, min_cm=2, min_error=1e-3,
                    cutoff_post=0.99, max_gap=0.0075,
-                   IBD2=False, cutoff_post2=0.975, min_cm2_init=1.0, min_cm2_after_merge=2.0):
+                   IBD2=False, cutoff_post2=0.8, min_cm2_init=0.25, min_cm2_after_merge=4.0):
     """Run IBD for ONE pair of Individuals.
     folder_in: hdf5 path up to chromosome.
     iids: List of IIDs to compare [length 2]
@@ -315,7 +315,7 @@ def run_plot_pair_IBD2(path_h5="/n/groups/reich/hringbauer/git/hapBLOCK/data/hdf
         ### Load the data from the HDF5
         o_homos, m_homos = get_opp_homos_f(iid1=iids[0], iid2=iids[1], 
                                      f_path=path_h5, ch=ch, exact=exact)
-        diff_gt, m_diffgt = get_diff_gt_f(path_h5, iids[0], iids[1], ch)
+        diff_gt, m_diffgt = get_diff_gt_f(path_h5, iids[0], iids[1], ch, output=False)
         
         plot_posterior_IBD2(post=post, morgan=r_vec, df_ibd=df_ibd, 
                        het=o_homos, het_m=m_homos, idengt=diff_gt, idengt_m=m_diffgt, state=state,

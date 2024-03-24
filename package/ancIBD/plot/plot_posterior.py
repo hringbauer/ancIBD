@@ -142,9 +142,9 @@ def plot_posterior_IBD2(ax=0, morgan=[], post=[], het=[], het_m=[], idengt=[], i
     if len(ylim)>0:
         ax.set_ylim(ylim)
     if len(het)>0:
-        plot_hets(ax, het_m, het, ms=ms, het_c=het_c, fs_l=fs_l, ylim=ylim)
+        plot_hets(ax, het_m, het, ms=ms, het_c=het_c, fs_l=fs_l, ylim=ylim, ylabel="")
     if len(idengt)>0:
-        plot_hets(ax, idengt_m, idengt, ms=ms, het_c=het_c, fs_l=fs_l, ylim=ylim, ypos=1.2, ylabel="identical GT")
+        plot_hets(ax, idengt_m, idengt, ms=ms, het_c=het_c, fs_l=fs_l, ylim=ylim, ypos=1.2, ylabel="Opp. Hom. / Diff. GT (n/y)")
     if len(title)>0:
         ax.set_title(title, fontsize=fs_l)
     if len(df_ibd)>0:

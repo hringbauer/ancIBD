@@ -206,7 +206,7 @@ class LoadHDF5Multi(LoadHDF5):
             idcs = np.array([self.get_individual_idx(f, iid) for iid in self.iids])
             sort = np.argsort(idcs)   # Get the sorting Indices [has to go low to high]
             samples = self.iids[sort] # Get them in sorted order
-            hts = self.get_haplo_prob(f, idcs[sort], self.ploidy)
+            hts = self.get_haplo_prob(f, idcs[sort]) # Still does old loading
             bp = f['variants/POS'][:]
             if len(self.p_col)>0:
                 p = self.get_p_hdf5(f, self.p_col)
@@ -333,7 +333,7 @@ def load_loaddata(l_model="simulated", path="", **kwargs):
         l_obj = LoadSimulated(path=path, **kwargs)
     elif l_model == "hdf5double":  # use overall allele frequency
         l_obj = LoadHDF5(path=path, **kwargs)
-    elif l_model == "hdf5":
+    elif l_model == "hdf5": # Original model, for legacy reasons
         l_obj = LoadHDF5Multi(path=path, **kwargs)
     elif l_model == "h5":  # Latest model, as described in paper.
         l_obj = LoadH5Multi2(path=path, **kwargs)
