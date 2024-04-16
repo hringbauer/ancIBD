@@ -1,7 +1,7 @@
 ## VERSION NUMBER, DATE, AUTHOR
 List of updates to ancIBD.
 
-## 0.6, April 16th, Harald Ringbauer, Yilei Huang
+## 0.6, April 16th 2024, Harald Ringbauer, Yilei Huang
 - Added ibd2 Detection Function (double IBD)
 - Added ibdX Detection Function (IBD between imputed X chromosomes)
 
