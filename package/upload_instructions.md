@@ -10,6 +10,7 @@ cd /mnt/archgen/users/hringbauer/git/hapBLOCK/package
 
 On Harvard O2 cluster:
 cd /home/hr97/hringbauer/git/hapBLOCK/package
+cd /n/groups/reich/hringbauer/git/hapBLOCK/package/
 envpython37
 
 ### Create the Source Package 
@@ -56,3 +57,6 @@ https://packaging.python.org/tutorials/packaging-projects/
 
 - For Versioning:
 https://www.python.org/dev/peps/pep-0440/
+
+- To set up Token for Twine Upload to PyPi
+https://pypi.org/manage/account/token/

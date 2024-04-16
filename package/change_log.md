@@ -1,6 +1,10 @@
 ## VERSION NUMBER, DATE, AUTHOR
 List of updates to ancIBD.
 
+## 0.6, April 16th, Harald Ringbauer, Yilei Huang
+- Added ibd2 Detection Function (double IBD)
+- Added ibdX Detection Function (IBD between imputed X chromosomes)
+
 ## 0.5, July 21st, Harald Ringbauer, Yilei Huang
 - Added command line support for ancIBD (as described on readthedocs)
 - Fixed bug on some setups of function vcf_to_1240K_hdf when intermediate .vcf was compressed but not flagged in path_vcf as .gz. We now choose whether to compress based on the path automatically. 
