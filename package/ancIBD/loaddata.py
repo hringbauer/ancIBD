@@ -322,7 +322,58 @@ class LoadH5Multi2(LoadHDF5Multi):
             #print(f"Phase. Error added: {self.pph_error}")
         
         return h1
+
+
+class LoadDict(LoadHDF5Multi):
+    """Update to more accurate genotype probabilities
+    from diploid to haploid."""
+    iids = []
+    min_error = 1e-3  # Minimum Probability of genotyping error  
+    pph_error = 1e-2 #1e-3 # Point Phase Error
+    p_col = "" # The hdf5 column with der. all freqs. If given, use the field
+    # If "default" use p=0.5 everywhere
+    # default value for p_col in my hdf5s: variants/AF_ALL
     
+    def load_all_data(self, **kwargs):
+        """ Return haplotype likelihoods [n*2,l] for anc. allele.
+        along first axis: 2*i, 2*(i+1) haplotype of ind i
+        derived allele frequencies [l]
+        map in Morgan [l]
+        bp positions [l]
+        """
+        f = self.path # dont provide a path, provide a dict 
+        
+        m = self.return_map(f)            
+        idcs = np.array([self.get_individual_idx(f, iid) for iid in self.iids])
+        sort = np.argsort(idcs)   # Get the sorting Indices [has to go low to high]
+        samples = self.iids[sort] # Get them in sorted order
+        hts = self.get_haplo_prob(f, idcs[sort]) # Still does old loading
+        bp = f['variants/POS'][:]
+        if len(self.p_col)>0:
+            p = self.get_p_hdf5(f, self.p_col)
+        else:
+            p = self.get_p(hts)  # Calculate Mean allele frequency from sample subset                
+        
+        ### Filter to Valid data
+        hts, p, m, bp = self.filter_valid_data(hts, p, m, bp)
+        
+        self.check_valid_data(hts, p, m)
+        return hts, p, m, bp, samples
+
+
+    def get_individual_idx(self, f, iid="", f_col="samples"):
+        """Return index of individual iid"""
+        samples = f[f_col][:]
+        idx = (samples == iid)
+        
+        if np.sum(idx)==0:  # Sanity Check wheter IID found at all (raise stop)
+            raise RuntimeWarning(f"No entry in H5 found for iid: {iid}") 
+        if np.sum(idx)>1:   # Sanity Check wether multiple IIDs found (warning only)
+            warnings.warn(f"{np.sum(idx)} entries found for iid: {iid}", RuntimeWarning)    
+        idx=np.where(idx)[0][0] # Get the first IID match index
+        return idx  
+
+
 ###############################    
 ###############################
 ### Factory Method
@@ -337,6 +388,8 @@ def load_loaddata(l_model="simulated", path="", **kwargs):
         l_obj = LoadHDF5Multi(path=path, **kwargs)
     elif l_model == "h5":  # Latest model, as described in paper.
         l_obj = LoadH5Multi2(path=path, **kwargs)
+    elif l_model == "dict": # in memory python dict
+        l_obj = LoadDict(path=path, **kwargs)
     else:
         raise NotImplementedError("Loading Model not found!")
     return l_obj
