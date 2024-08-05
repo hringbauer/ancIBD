@@ -3,12 +3,6 @@ import numpy as np
 import h5py as h5py
 import pandas as pd
 
-from matplotlib import rcParams
-rcParams['font.family'] = 'sans-serif'   # Set the default
-rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
-
-
-
 def plot_scatter_ibd(df_ibds, bins=[], min_cm=12, 
                      xlim=[-5,3600], ylim=[0,50], 
                      title="", savepath=""):

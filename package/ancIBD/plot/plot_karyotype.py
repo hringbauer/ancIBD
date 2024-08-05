@@ -12,9 +12,6 @@ import matplotlib.patches as mpatches
 from scipy.special import gammaincinv
 from matplotlib import gridspec
 import matplotlib.patheffects as pe
-from matplotlib import rcParams
-rcParams['font.family'] = 'sans-serif'   # Set the default
-rcParams['font.sans-serif'] = ['Arial']  # Make sure to have the font installed (it is on cluster for Harald)
 
 #sys.path.insert(0,"/n/groups/reich/hringbauer/git/hapBLOCK/python3/")  # hack to get development package first in path
 from ancIBD.ibd_stats.funcs import give_sub_df
