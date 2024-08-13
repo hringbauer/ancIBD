@@ -14,7 +14,8 @@ Simply cd into the python folder, and then cythonize:
 cd package/ancIBD/
 cythonize -a -i cfunc.pyx
 
-### On o2 cluster: Do this from my Python Environment (loaded with `envpython37`). 
+### On o2 cluster with Python3.7
+### Do this from my Python Environment (loaded with `envpython37`). 
 Then switch to th correct folder and build the extensions via using the following commands:
 
 envpython37  #load the python environment
@@ -24,6 +25,15 @@ module load python/3.7.4
 cythonize -a -i cfunc.pyx
 
 Warning: cythonizing can be killed on head node (prob. ressources). In that case delete intermediate files and try again. Mid-term todo: Need to build batchable script.
+
+### On O2 with Python 3.8:
+cd package/ancIBD
+module load gcc/9.2.0
+module load python/3.8.12
+cythonize -a -i cfunc.pyx
+
+
+
 
 
 
