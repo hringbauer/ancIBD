@@ -11,7 +11,7 @@ import h5py
 
 def get_idx_iid(f,sample, unique=True):
     """Return Index of sample samples in hdf5 f"""
-    samples = pd.Series(f["samples"].asstr()[:])
+    samples = pd.Series(f["samples"][:].astype("str"))
     idx = samples.str.contains(sample)
     idx = np.where(idx)[0]
     if unique:
@@ -22,7 +22,7 @@ def get_idx_iid(f,sample, unique=True):
     
 def get_idx_iid_exact(f,sample, unique=True):
     """Return Index of sample samples in hdf5 f"""
-    samples = pd.Series(f["samples"].asstr()[:])
+    samples = pd.Series(f["samples"][:].astype("str"))
     idx = samples==sample
     idx = np.where(idx)[0]
     if unique:
@@ -148,11 +148,21 @@ def get_opp_homos_f(f_path="/n/groups/reich/hringbauer/git/hapBLOCK/data//hdf5/1
                     cutoff=0.99, output=True, exact=False):
     """Return opposing homozygotes boolean array and map array at intersection with
     GP>cutoff."""
-    load_path = f_path + str(ch) + ".h5"
-    with h5py.File(load_path, "r") as f:
-        g1, g2, m = get_genos_pairs(f, sample1=iid1, sample2=iid2, 
-                                cutoff=cutoff, output=output, exact=exact)
-        o_homos = opp_homos(g1, g2)
+
+    # Dictionary Input
+    if isinstance(f_path, dict):  
+        g1, g2, m = get_genos_pairs(f_path, sample1=iid1, sample2=iid2, 
+                                    cutoff=cutoff, output=output, exact=exact)
+    
+    # hdf5 path Input
+    else:   
+        load_path = f_path + str(ch) + ".h5"
+        
+        with h5py.File(load_path, "r") as f:
+            g1, g2, m = get_genos_pairs(f, sample1=iid1, sample2=iid2, 
+                                    cutoff=cutoff, output=output, exact=exact)
+    
+    o_homos = opp_homos(g1, g2)
     return o_homos, m
 
 def get_opp_homos_X(f_path, iid1, iid2, ploidy=(2,2), cutoff=0.99, output=True, exact=False):
