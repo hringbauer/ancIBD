@@ -249,8 +249,9 @@ def find_output_missing(metapath="", folder_out="",
 
 def get_batch_nr(n_iids, batchsize=400, n_chr=22):
     """Get the number of jobs to submit to cluster.
-    Return n [int]"""
+    Return batch number [int], total number of submission to ru [int]"""
     n_batch = np.ceil(n_iids/batchsize)
     print(f"{n_iids} in batches of {batchsize}: {n_batch} Batches")
     n = int((n_batch * (n_batch+1) * n_chr)/2)
     print(f"Need {n} Submissions in total (0-{n-1})")
+    return n_batch, n 
