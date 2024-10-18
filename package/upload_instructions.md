@@ -9,9 +9,14 @@ On Leipzig cluster:
 cd /mnt/archgen/users/hringbauer/git/hapBLOCK/package
 
 On Harvard O2 cluster:
-cd /home/hr97/hringbauer/git/hapBLOCK/package
 cd /n/groups/reich/hringbauer/git/hapBLOCK/package/
+
+## [with Python 3.7 on O2]
 envpython37
+
+## [with Python 3.8 on O2]
+module load gcc/9.2.0
+module load python/3.8.12
 
 ### Create the Source Package 
 Update version in setup.py to next version number

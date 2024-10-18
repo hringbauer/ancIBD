@@ -1,6 +1,10 @@
 ## VERSION NUMBER, DATE, AUTHOR
 List of updates to ancIBD.
 
+## 0.7, August 14th 2024, Harald Ringbauer, Sanjay Nagi
+- Added Dictionary Loading mode (`l_model="dict"`). Work by passing on path to dictionary instead of hdf5
+- Fixed code to also `run_plot_pair()` with `l_model="dict"` 
+
 ## 0.6, April 16th 2024, Harald Ringbauer, Yilei Huang
 - Added ibd2 Detection Function (double IBD)
 - Added ibdX Detection Function (IBD between imputed X chromosomes)
