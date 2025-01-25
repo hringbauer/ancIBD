@@ -33,7 +33,7 @@ class HMM_Full(object):
     
     l_obj, t_obj, e_obj = 0, 0, 0 # Placeholder for the objects
     fwd_bwd = 0 # Placeholder Forward Backward Function
-    submat33 = True
+    submat33 = True # Whether to use contracted 3x3 transition matrix
     in_val = 1e-4 # The prior forward prob. in first IBD state
     output = True
     

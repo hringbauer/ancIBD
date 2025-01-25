@@ -50,9 +50,18 @@ class LoadData(object):
     
     def check_valid_data(self, htsl, p, m):
         """Check whether data in valid format"""
+        # Check whether lengths correct
         assert(np.shape(htsl)[1]==len(p))
-        assert(np.sum(np.isnan(htsl))==0) # Check that no NAN exists
         assert(len(p)==len(m))
+        
+        # Check Data Missingness
+        idx = ~(np.isnan(htsl).any(axis=0)) # Flag all markers that are not null
+        if np.mean(idx)<1:  # Missing Data detected
+            print(f"Attention: Some data in GP field is missing. Ideally, all GP entries are set.")   
+        if np.mean(idx)<0.8:  # Less than 80 percent of data there
+            print(f"Too much data missing: {np.sum(idx)}/{len(idx)} SNPs have GP ({np.mean(idx)*100}% there)") #raise RuntimeWarning
+        #assert(np.sum(np.isnan(htsl))==0) # Check that no NAN exists
+        
         pass 
         
     def set_params(self, **kwargs):
@@ -74,12 +83,10 @@ class LoadSimulated(LoadData):
         haplo_path = os.path.join(self.path, "haplo_ll.tsv")
         p_path = os.path.join(self.path, "p.tsv")
         
-        ### Load the Data
-        #htsl = pickle.load(open(haplo_path, "rb")) 
+        ### Load the Data 
         htsl = np.loadtxt(haplo_path, delimiter="\t", dtype="float")
         p = np.loadtxt(p_path, delimiter="\t", dtype="float")
         if len(self.r_path)==0:
-            #m = np.ones(len(p), dtype="float") * self.r_gap
             m = np.arange(len(p), dtype="float") * self.r_gap # Load absolute Positions
         
         self.check_valid_data(htsl, p, m)
@@ -163,6 +170,7 @@ class LoadHDF5Multi(LoadHDF5):
     # If "default" use p=0.5 everywhere
     # default value for p_col in my hdf5s: variants/AF_ALL
     ploidy = 2 # ploidy of the individuals
+    filtering=True
     
     def get_haplo_prob(self, f, idcs):
         """Get haploid ancestral probability for n individuals 
@@ -180,16 +188,17 @@ class LoadHDF5Multi(LoadHDF5):
     
     def filter_valid_data(self, hts, p, m, bp):
         """Filter to SNPs with fully valid data. 
-        Return filtered data."""
+        Return filtered data.
+        outp: Whether to print filter stats [Boolean]"""
         idx = ~(np.isnan(hts).any(axis=0)) # Flag all markers that are not null
         
         ### Output and Raise warning if too much data missing:
         if self.output:
-            print(f"Filtering to {np.sum(idx)}/{len(idx)} SNPs with GP data (on target iids)")   
+            print(f"Filtering to {np.sum(idx)}/{len(idx)} SNPs with GP data (on target iids)") 
         if np.mean(idx)<1:  # Missing Data detected
             print(f"Attention: Some data in GP field is missing. Ideally, all GP entries are set.")   
         if np.mean(idx)<0.8:  # Less than 80 percent of data there
-            print(f"Too much data missing: {np.sum(idx)}/{len(idx)} SNPs have GP ({np.mean(idx)*100}% there)")
+            raise RuntimeWarning(f"Too much data missing: {np.sum(idx)}/{len(idx)} SNPs have GP ({np.mean(idx)*100}% there)")
             
         return hts[:,idx], p[idx], m[idx], bp[idx]
     
@@ -214,7 +223,8 @@ class LoadHDF5Multi(LoadHDF5):
                 p = self.get_p(hts)  # Calculate Mean allele frequency from sample subset
                 
         ### Filter to Valid data
-        hts, p, m, bp = self.filter_valid_data(hts, p, m, bp)
+        if self.filtering:
+            hts, p, m, bp = self.filter_valid_data(hts, p, m, bp)
         
         self.check_valid_data(hts, p, m)
         return hts, p, m, bp, samples
@@ -331,6 +341,7 @@ class LoadDict(LoadHDF5Multi):
     min_error = 1e-3  # Minimum Probability of genotyping error  
     pph_error = 1e-2 #1e-3 # Point Phase Error
     p_col = "" # The hdf5 column with der. all freqs. If given, use the field
+    filtering=True # Whether to filter to existing data only
     # If "default" use p=0.5 everywhere
     # default value for p_col in my hdf5s: variants/AF_ALL
     
@@ -355,7 +366,8 @@ class LoadDict(LoadHDF5Multi):
             p = self.get_p(hts)  # Calculate Mean allele frequency from sample subset                
         
         ### Filter to Valid data
-        hts, p, m, bp = self.filter_valid_data(hts, p, m, bp)
+        if filtering:
+            hts, p, m, bp = self.filter_valid_data(hts, p, m, bp)
         
         self.check_valid_data(hts, p, m)
         return hts, p, m, bp, samples

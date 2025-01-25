@@ -9,6 +9,7 @@ import numpy as np
 import pandas as pd
 import os as os
 import itertools as it
+import math
 
 from ancIBD.IO.ind_ibd import create_ind_ibd_df, filter_ibd_df # Post-process IBD list to individual
 
@@ -205,14 +206,14 @@ def to_ibd_df_batches(batches=8, folder_out = "/n/groups/reich/hringbauer/git/ib
     df_res = pd.concat(res)
     return df_res 
 
-def print_runid_missing(b = 1, folder_out = "", output=False):
+def print_runid_missing(b = 1, folder_out = "", output=False, chs=range(1,23)):
     """Finds and prints indices of missing output (chXX.tsv) for batchwise runs.
     Return list of missing indices. Ideal for rerunning batch scripts.
     Uses C Indexing as would be used in submission script."""
     batches = np.column_stack(np.tril_indices(n=b, k=0))
 
     ls = []
-    for ch in range(1,23):
+    for ch in chs:
         for b1,b2 in batches:
             folder_batch = os.path.join(folder_out, f"batch{b1}_{b2}/ch{ch}.tsv")
             exist = os.path.exists(folder_batch)
@@ -221,6 +222,12 @@ def print_runid_missing(b = 1, folder_out = "", output=False):
                     print(f"Missing! ch: {ch} batch: {b1}-{b2}")
                 l = b * (b+1)/2 * (ch-1) + (b1+1) * b1/2 + b2 + 1 # The +1 is c indexing
                 ls.append(str(int(l)))
+                
+    if len(ls)>0:
+        print(f"Nr of missing batches: {len(ls)}")
+        print(f"Copy into run.qsub: 1-{len(ls)}:1")
+    else:
+        print("Everything run successfully!")
     return ls
 
 def find_output_missing(metapath="", folder_out="",
@@ -255,3 +262,31 @@ def get_batch_nr(n_iids, batchsize=400, n_chr=22):
     n = int((n_batch * (n_batch+1) * n_chr)/2)
     print(f"Need {n} Submissions in total (0-{n-1})")
     return n_batch, n 
+
+def flag_duplicates_from_anno(dft, path_anno="", col_iid="Full_Individual_Id", col_master_id="Master_ID"):
+    """Flag duplicate IDs in dft based on loading anno file.
+    Uses Master ID column
+    Keep the one with the highest frac_gp"""
+    df_anno = pd.read_csv(path_anno, sep="\t") # Load anno
+    df_anno = df_anno.drop_duplicates(subset=col_iid) # Drop duplicates in anno (e.g. ss/ds)
+    dft3 = pd.merge(dft, df_anno[[col_iid, col_master_id]], 
+                    how="left", left_on="iid", right_on=col_iid)
+    dft3 = dft3.sort_values(by="frac_gp", ascending=False)
+    assert(len(dft3)==len(dft))
+
+    idx_dup = dft3.duplicated(col_master_id)
+    idx_nan = dft3[col_master_id].isnull() # Missing Master IDs
+    idx_exc = idx_dup & ~idx_nan # Exclude duplicated IIDs
+    dft4 = dft3[~idx_exc].copy()
+    print(f"Filtered to {len(dft4)}/{len(dft3)} unique Master IDs")
+    return dft4
+
+def det_batch_nr(path_meta_df="", batch_size=500):
+    """Return Number of batches to run.
+    path_meta_df: Path to meta dataframe for IBD run."""
+    dft = pd.read_csv(path_meta_df, sep="\t")
+    n = len(dft)
+    b = math.ceil(n / batch_size)
+    p = (b+1) * b /2 * 22
+    print(f"For {n} iids in total: \n{b} batches of {batch_size} iids: Run 1-{int(p)}:1 processes in qsub script")
+    return b

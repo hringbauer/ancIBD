@@ -104,18 +104,17 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
     savepath: Where to save the IBD plot to.
     Return df_ibd, posterior, map, tot_ll"""
     ### Run all pairs if empty
-    iids = np.array(iids) # For better props when indexing
+    iids = np.array(iids) # Numpy Array for better indexing properties
     u_iids = set(iids) # Get unique IIDs to run
     if not len(u_iids)==len(iids): # Check whether duplicates
         warnings.warn("Duplicate IIDs detected!", RuntimeWarning)
-        #raise RuntimeWarning("Duplicate IIDs detected!")
         print(f"Reducing to {len(u_iids)}/{len(iids)} unique IID")
         iids = np.array(list(u_iids)) # Keep only the unique Values
         
-    if len(run_iids)==0:
+    if len(run_iids)==0:  # By default run all combinations
         run_iids = it.combinations(iids, 2)
         
-    ### Load all the objects
+    ### Load all objects
     if IBD2:
         t_model = 'IBD2'
         e_model = 'IBD2'
@@ -136,7 +135,9 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
         h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, 
                            max_gap=max_gap, mask=mask)
     
+    
     ### Load all data
+    h.l_obj.set_params(filtering=False) # To not batch filter data
     htsl, p, r_vec, bp, samples =  h.l_obj.load_all_data()
     
     ### Load transition matrix
@@ -148,10 +149,13 @@ def hapBLOCK_chroms(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[]
         i1 = get_sample_index(samples, iid1)
         i2 = get_sample_index(samples, iid2) 
         idcs = [i1*2, i1*2+1, i2*2, i2*2+1] # Get the right indices
-        e_mat =  h.e_obj.give_emission_matrix(htsl[idcs,:], p)
-        post =  h.fwd_bwd(e_mat, t_mat, in_val =  h.in_val, 
+        hts2 = htsl[idcs,:] # Subset to haplotyps of iids
+        idx = ~(np.isnan(hts2).any(axis=0)) # Indices of markers wiht data
+
+        e_mat =  h.e_obj.give_emission_matrix(hts2[:,idx], p[idx])
+        post =  h.fwd_bwd(e_mat, t_mat[idx,:,:], in_val =  h.in_val, 
                             full=False, output= h.output)
-        df_ibd, _, _ = h.p_obj.call_roh(r_vec, bp, post, iid1, iid2)
+        df_ibd, _, _ = h.p_obj.call_roh(r_vec[idx], bp[idx], post, iid1, iid2)
         df_ibds.append(df_ibd)
     
     df_ibds = pd.concat(df_ibds)
@@ -199,6 +203,7 @@ def hapBLOCK_times(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
     h.p_obj.set_params(ch=ch, min_cm=min_cm, cutoff_post=cutoff_post, max_gap=max_gap)
     
     ### Load all data
+    h.l_obj.set_params(filtering=False) # To not batch filter data
     htsl, p, r_vec, samples =  h.l_obj.load_all_data()
     
     t2 = time()
@@ -215,11 +220,14 @@ def hapBLOCK_times(folder_in="./data/hdf5/1240k_v43/ch", iids = [], run_iids=[],
         i1 = get_sample_index(samples, iid1)
         i2 = get_sample_index(samples, iid2) 
         idcs = [i1*2, i1*2+1, i2*2, i2*2+1] # Get the right indices
-        e_mat =  h.e_obj.give_emission_matrix(htsl[idcs,:], p)
-        post =  h.fwd_bwd(e_mat, t_mat, in_val =  h.in_val, 
+        hts2 = htsl[idcs,:] # Subset to haplotyps of iids
+        idx = ~(np.isnan(hts2).any(axis=0)) # Indices of markers wiht data
+        
+        e_mat =  h.e_obj.give_emission_matrix(hts2[:,idx], p[idx])
+        post =  h.fwd_bwd(e_mat, t_mat[idx,:,:], in_val =  h.in_val, 
                             full=False, output= h.output)
 
-        df_ibd, _, _ = h.p_obj.call_roh(r_vec, post, iid1, iid2)
+        df_ibd, _, _ = h.p_obj.call_roh(r_vec[idx], post, iid1, iid2)
         df_ibds.append(df_ibd)
     
     df_ibds = pd.concat(df_ibds)
