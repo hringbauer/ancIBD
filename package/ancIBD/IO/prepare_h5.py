@@ -144,6 +144,7 @@ def vcf_to_1240K_hdf(in_vcf_path = "/n/groups/reich/ali/WholeGenomeImputation/im
         merge_in_af(path_h5, af, col_af=col_sample_af)
         
     if len(af_path)>0:
+        print(f"Lifting over allele frequencies into field variants/AF_ALL from: {af_path}")
         lift_af_df(h5_target=path_h5, path_df=af_path,
                    field='variants/AF_ALL') # The field to use for Allele Frequencies
 
