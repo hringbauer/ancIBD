@@ -87,7 +87,7 @@ def plot_gp(ch = 1, iid = "Sz2",
 ##############
 ## Leipzig functions (moved here by Harald Jan 2025)
 
-def get_h5_gp_stats(path_h5="", ch=3, het=False):
+def get_h5_gp_stats(path_h5="", ch=3, het=False, gp_cutoff=0.99):
     """Return dataframe with coverage statistics of HDF5 file at 
     path_h5 and chromosome ch.
     het: Whether to calcualte het rate too."""

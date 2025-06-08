@@ -225,7 +225,7 @@ def print_runid_missing(b = 1, folder_out = "", output=False, chs=range(1,23)):
                 
     if len(ls)>0:
         print(f"Nr of missing batches: {len(ls)}")
-        print(f"Copy into run.qsub: 1-{len(ls)}:1")
+        print(f"Copy into re_run.qsub: 1-{len(ls)}:1")
     else:
         print("Everything run successfully!")
     return ls
