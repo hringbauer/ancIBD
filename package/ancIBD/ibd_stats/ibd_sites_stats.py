@@ -85,41 +85,54 @@ def get_iids_in_meta(iids=[], df_meta=[]):
     return iids_m, len(iids_m)
 
 def get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1="", site2="", 
-                            iids1=[], iids2=[], col_rel="sum_IBD>12", min_cm=100, output=True):
+                            iids1=[], iids2=[], col_rel="sum_IBD>12", min_cm=200, output=True):
     """Get IBD dataframe and number tested between site1 and site2
-    If needed, filter close relatives based on relative column
-    Return IBD dataframe and pair number.
-    If iids1 given, use list of Individual IIDs (and not site values)
-    df_meta: Meta file of every indivdiual ran for IBD
+    Return an IBD dataframe and pair number.
+    If df_ibd_ind given, filter close relatives based on 
+    its relative column using min_cm as cutoff.
+    If iids1 given, use the iids1 and iids2 lists of individuals,
+    otherwise the site1 and site2 values
+    If iids2 or sits2 is empty, run a within-sample IBD comparison
+    df_meta: Meta file of every individual ran for IBD
     df_ibd: File of all IBD segments
     df_ibd_ind: File of all IBD summary stats per pair"""
-
-    ### Case1: Get IBD from matching Pandora Entries (from Meta)
+    
+    ### Case 1 no iids given: Get IBD from matching Pandora Entries (from Meta)
     if len(iids1)==0:  
         dft, n1, n2 = get_ibd_sites(df_ibd, df_meta, site1=site1, site2=site2, output=output)
         dft_ind, _, _ = get_ibd_sites(df_ibd_ind, df_meta, site1=site1, site2=site2, output=False)
-        nrelatives, relatives = find_relatives(dft_ind)
+        nrelatives, relatives = find_relatives(dft_ind, min_cm=min_cm)
 
-    ### Case2: Get IBD for matching iids
-    else:
-        ### Get iids matching met file
+        ### Calculate the number of possible pairs
+        if (site1==site2) or (len(site2)==0):
+            n_pairs = int(n1 * (n1-1) / 2) # int just for printing below
+        else:
+            n_pairs = int(n1 * n2)
+
+    ### Case 2: Get IBD for matching iids
+    elif len(iids1)>0:
+        if len(iids2)==0:
+            iid2 = iids1
+        ### Get iids and ibd segments matching meta file
         iids1, n1 = get_iids_in_meta(iids1, df_meta)
         iids2, n2 = get_iids_in_meta(iids2, df_meta)
         dft, _, _ = get_ibd_iid_lists(df_ibd, iids1=iids1, iids2=iids2)
 
-        ### Filter relatives if IBD summary stats given
+        ### Find relatives if IBD summary stats given
         if len(df_ibd_ind)>0:
             dft_ind, _, _ = get_ibd_iid_lists(df_ibd_ind, iids1=iids1, iids2=iids2, output=False)
-            nrelatives, relatives = find_relatives(dft_ind)
+            nrelatives, relatives = find_relatives(dft_ind, min_cm=min_cm)
         else:
             nrelatives, relatives = 0, []
 
-    ### Calculate the number of possible pairs
-    if (site1==site2) or (len(site2)==0):
-        n_pairs = int(n1 * (n1-1) / 2) # int just for printing below
-    else:
-        n_pairs = int(n1 * n2)
+        ### Calculate the number of possible pairs
+        if (set(iids1)==set(iids2)):
+            n_pairs = int(n1 * (n1-1) / 2) # int just for printing below
+        else:
+            n_pairs = int(n1 * n2)
 
+    assert(n_pairs>0) # Sanity Check 
+    
     ### Remove Relatives
     dft=filter_ibd(dft, relatives) # Filter out the relative pairs
     n_pairs1 = n_pairs - nrelatives # Substract related indvidiuals
@@ -128,7 +141,7 @@ def get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1="", site2="",
     return dft, n_pairs1
 
 def plot_ibd_2sites(df_ibd, df_ibd_ind, df_meta,
-    site1="", site2="", iids1=[], iids2=[],
+    site1="", site2="", iids1=[], iids2=[], min_cm=200,
     figsize = (6,6),
     bins = np.arange(8, 30, 1),
     Ne_plot = [4000, 35000], dts_plot=[], dts_a=1, 
@@ -140,6 +153,7 @@ def plot_ibd_2sites(df_ibd, df_ibd_ind, df_meta,
     If a site label is given, use it to pull its IIDs.
     If iids1 and iids2 list is given, use the iids.
     site1 and site2: First three letters of site (Pandora=specific)
+    min_cm: Cutoff of summed IBD [in cm] of relative pairs to filter
     df_ibd: IBD dataframe, each row one IBD segment
     df_ibd_ind: IBD summary stats dataframe, each row one pair.
     If given, it is used to filter out relatives.
@@ -158,10 +172,12 @@ def plot_ibd_2sites(df_ibd, df_ibd_ind, df_meta,
         xlim_plot = [np.min(bins), np.max(bins)]
         
     ### Filter to the relevant pairs
-    df_ibd1, npairs_1 = get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1=site1, site2=site1, iids1=iids1, iids2=iids1)
-    df_ibd2, npairs_2 = get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1=site2, site2=site2, iids1=iids2, iids2=iids2)
+    df_ibd1, npairs_1 = get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1=site1, site2=site1, 
+                                                iids1=iids1, iids2=iids1, min_cm=min_cm)
+    df_ibd2, npairs_2 = get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1=site2, site2=site2, 
+                                                iids1=iids2, iids2=iids2, min_cm=min_cm)
     df_ibda, npairs_across = get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1=site1, site2=site2, 
-                                                     iids1=iids1, iids2=iids2, output=False)
+                                                     iids1=iids1, iids2=iids2, min_cm=min_cm, output=False)
     
     ### Plot the figure
     plt.figure(figsize=figsize)
@@ -201,7 +217,7 @@ def plot_ibd_2sites(df_ibd, df_ibd_ind, df_meta,
         P10 = P.reshape(P.shape[0],-1, 10).sum(axis=2)
 
         ### Plot the dt histograms
-        x_plot = b1[:-1:10] * 100 # Convert to Morgan
+        x_plot = b1[:-1:10] * 100 # Convert to centimorgan
         t_plot = np.arange(num_t)
 
         for i in t_plot:
@@ -223,7 +239,7 @@ def plot_ibd_2sites(df_ibd, df_ibd_ind, df_meta,
     plt.show()
     
 def plot_ibd_single_site(df_ibd, df_ibd_ind, df_meta,
-    site="", iids=[], title="", 
+    site="", iids=[], min_cm=200, title="",  
     figsize = (6,6), npairs_force=0,
     bins = np.arange(8, 30, 1), ax=0,
     Ne_plot = [4000, 35000], # Diploid Pop Size
@@ -236,8 +252,8 @@ def plot_ibd_single_site(df_ibd, df_ibd_ind, df_meta,
         plt.figure(figsize=figsize)
         ax=plt.gca()
         
-    df_ibd, npairs = get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, 
-                                             site1=site, site2=site, iids1=iids, iids2=iids)
+    df_ibd, npairs = get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1=site, site2=site, 
+                                             iids1=iids, iids2=iids, min_cm=min_cm)
     if npairs_force>0:
         npairs=npairs_force
     
@@ -331,7 +347,7 @@ def calc_IBD_decay_delta_t(x, p0, t0=0, te=50, num_t=6, a=1):
 
 def get_ibd_sharing_prob(df_ibd, bins, n_pairs=1, col_L="lengthM"):
     """Get the probability of pw. IBD sharing in length bins.
-    Return count matrix.
+    Return count array.
     df_ibd: Standard IBD dataframe (1 IBD segment per row) with lengthM column
     bins: Bins in Morgan
     n_pairs: Number of pairwise comparisons"""
