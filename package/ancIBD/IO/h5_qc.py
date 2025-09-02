@@ -168,7 +168,7 @@ def find_duplicates(path_h5, ch=3):
     with h5py.File(f"{path_h5}/ch{ch}.h5", "r") as f: # Load for Sanity Check. See below!
         samples = f["samples"][:].astype("str")
         
-    c = pd.value_counts(samples)
+    c = pd.Series(samples).value_counts() # 2025 fix from deprecated pd.value_counts(samples) 
     dups = c[c>1].index.values
     
     if np.max(c)==1:

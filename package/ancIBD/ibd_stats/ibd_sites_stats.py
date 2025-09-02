@@ -131,7 +131,7 @@ def get_ibd_stats_unrelated(df_ibd_ind, df_ibd, df_meta, site1="", site2="",
         else:
             n_pairs = int(n1 * n2)
 
-    assert(n_pairs>0) # Sanity Check 
+    #assert(n_pairs>0) # Sanity Check (for n=1 wrong)
     
     ### Remove Relatives
     dft=filter_ibd(dft, relatives) # Filter out the relative pairs
