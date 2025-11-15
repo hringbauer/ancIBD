@@ -148,15 +148,28 @@ def check_consistent_h5s(path_h5, chs=range(1,23)):
     """Check that h5 files are consistent"""
 
     sampless = []
+    all_equal=True
+    
     for ch in chs:
         with h5py.File(f"{path_h5}/ch{ch}.h5", "r") as f: # Load for Sanity Check. See below!
             samples = f["samples"][:].astype("str")
             sampless.append(samples)
             n = np.shape(f["calldata/GP"])[0]
             print(f"Chr. {ch}: {n} SNPs")
-    there = np.all([np.array_equal(sampless[0], arr) for arr in sampless])
-    
-    if there:
+
+    s1 = sampless[0]
+    for i,s in enumerate(sampless):
+        idx = s==s1
+        if np.all(idx):
+            continue
+        else:
+            all_equal=False
+            
+            print(f"Found mismatch on Chr.: {i+1}")
+            print(s1[~idx])
+            print(s[~idx])
+
+    if all_equal:
         print(f"Green light! Found {len(sampless[0])} identical IIDs in all chromosome HDF5. ")
     else:
         print("Warning, Indivdiuals are not identical across chromosomes HDF")

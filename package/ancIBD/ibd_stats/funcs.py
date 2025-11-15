@@ -12,20 +12,21 @@ import matplotlib.patches as mpatches
 import itertools as it
 from scipy.special import gammaincinv
 
-def new_columns(df, df_meta, col="New Clade", col_new="", match_col="iid"):
-    """Maps Entries from meta dataframe onto the IBD dataframe.
+def new_columns(df, df_meta, col=["", ], col_new="", match_col="iid"):
+    """Map Entries from df_meta dataframe onto the IBD dataframe df.
+    col_new: Name of the new column
     Return modified dataframe"""
     if isinstance(col, str):
         col = [col]
      
-    for c in col:
+    for c in col:  ## Iterate over list of Entries to add
         if len(col_new)==0:
             col_new1=c
     
         dct = pd.Series(df_meta[c].values, index=df_meta[match_col]).to_dict()
         for i in range(1,3):    
-            df[col_new1 + str(i)] =df["iid" + str(i)].map(dct)
-            df[col_new1 + str(i)] =df["iid" + str(i)].map(dct)
+            df[col_new1 + str(i)] =df[match_col + str(i)].map(dct)
+            df[col_new1 + str(i)] =df[match_col + str(i)].map(dct)
     return df
 
 #################################################################################
