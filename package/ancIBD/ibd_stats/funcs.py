@@ -86,7 +86,8 @@ def plot_age_diff(df,figsize=(8,8), title="", xlim=[-2000,2000], ylim=[10,5000],
 
 def give_sub_df(df, pop1="La Caleta", pop2="La Caleta", col="clst", 
                 output=True, exact=False):
-    """Return sub dataframe where pair across pop1 and pop2"""
+    """Return sub dataframe where pair across pop1 and pop2.
+    exact: If True, an exact string match is needed. If False substring match is enough"""
     if exact:
         idx1 = (df[col+"1"]==pop1) & (df[col + "2"]==pop2)
         idx2 = (df[col+"1"]==pop2) & (df[col + "2"]==pop1)
@@ -142,7 +143,8 @@ def get_IBD_stats(df, pop1="", pop2="", col="clade", exact=False,
     a: Signficance level
     binary: Only count existence of IBD, not total count [0/1 per pair]
     Return fractions, confidence intervalls as well as 
-    number of pairsise comparisons"""
+    number of pairsise comparisons.
+    exact: If True, an exact string match is needed. If False substring match is enough"""
     if len(pop1)>0 or len(pop2)>0:
         df1 = give_sub_df(df, pop1=pop1, pop2=pop2, col=col, 
                           output=output, exact=exact)

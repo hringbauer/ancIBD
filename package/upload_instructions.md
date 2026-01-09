@@ -1,11 +1,11 @@
-# Instructions how to upload package to PYPI
+# Instructions on how to upload the package to PYPI
 ### June 2022, Harald Ringbauer
 
 
-This instruction note gives a summary of update and upload instructions described in detail in https://packaging.python.org/tutorials/packaging-projects/. It also contains specific instructions for the Cluster environments of the developers of ancIBD.
+This instruction note summarizes the update and upload instructions described in detail at https://packaging.python.org/tutorials/packaging-projects/. It also contains specific instructions for the developers' Cluster environments in ancIBD.
 
 ### Go to base folder
-On Leipzig cluster:
+On the Leipzig cluster:
 cd /mnt/archgen/users/hringbauer/git/hapBLOCK/package
 
 On Harvard O2 cluster:
@@ -19,17 +19,17 @@ module load gcc/9.2.0
 module load python/3.8.12
 
 ### Create the Source Package 
-Update version in setup.py to next version number
+Update the version in setup.py to the next version number
 
 ### Update setuptools. 
-Delete previous ./dist/* (alternatively be specific below what to upload):  
+Delete previous ./dist/* (alternatively, be specific below what to upload):  
 
 rm ./dist/*
 
 ### Run the setup file:
 python3 setup.py sdist
 
-### [Optional] Run local install to finish tests (e.g. bash commands):
+### [Optional] Run local install to finish tests (e.g., bash commands):
 python3 -m pip install ./
 
 ### Run Tests of Expected Behavior

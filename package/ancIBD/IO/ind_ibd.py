@@ -282,3 +282,41 @@ def combine_all_chroms(chs=[], folder_base="PATH/ch",
     df_ibds.to_csv(path_save, sep="\t", index=False) # Save the Values
     print(f"Saved {len(df_ibds)} IBD to {path_save}.")
 
+
+##############################
+### Filter IBD across focal Points
+### Initially designed for Anomaly Ch20 (~15cm Inversion around ch 20)
+
+def extract_ibd_pairs(dft=[], focal_iid = "", focal_m = 0.6, focal_ch = 20):
+    """Extract subtable of IBD table with focal_iid, at focal_m on focal_ch.
+    dft: Input IBD table [standard format]"""
+    print(f"Extracted {len(dft)} IBD Segments on Chromosome 20")
+    
+    iid = focal_iid # CHC002 DOG044 Doggerland Sample
+    idx = dft["iid1"].str.contains(iid) | dft["iid2"].str.contains(iid)
+    dft2 = dft[idx]
+    dft3 = dft2[(dft2["StartM"]<focal_m) & (dft2["EndM"]>focal_m)]
+    iids = np.concatenate((dft3["iid1"],dft3["iid2"]))
+    iids = set(iids)
+    print(f"Extracted {len(dft3)} IBD pairs at Chr. {focal_ch}, M={focal_m} with {focal_iid}")
+    return dft3, iids
+
+def filter_iids_foc_p(df_ibd, iids=[], max_l = 0.25, ch = 20, idx_foc_M = 0.6):
+    """Filter IBD dataframe. Remove all IBD between given set of iids,
+    which span across a focal point.
+    ch: Chromosome of focal point
+    idx_foc_M: Focal point [in Morgan]
+    max_l: Only remove IBD shorter than that length [in Morgan]"""
+
+    ### Generate Filters
+    idx_ch = df_ibd["ch"] == ch
+    idx_l = df_ibd["lengthM"] < max_l
+    idx_iid = (df_ibd["iid1"].isin(iids)) & (df_ibd["iid2"].isin(iids))
+    idx_foc_M = (df_ibd["StartM"]<idx_foc_M) & (df_ibd["EndM"]>idx_foc_M)
+    # Combine Filters
+    idx = idx_ch & idx_l & idx_iid & idx_foc_M
+    
+    df_ibd2 = df_ibd[~idx].copy().reset_index(drop=True)
+    print(f"Filtering {np.sum(idx)} IBD segments.")
+    print(f"Filtered to {len(df_ibd2)}/{len(df_ibd)} IBD segments")
+    return df_ibd2
