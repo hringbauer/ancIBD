@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools", "cython", "numpy"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ancIBD"
+version = "0.8"
+requires-python = ">= 3.6"
+dependencies = ['numpy', 'pandas', 'scipy', 'h5py', 'psutil', 'pysam', 'scikit-allel']
+description = "Identify identity-by-descent (IBD) segments between pairs of individuals in human ancient DNA data."
+authors = [
+  {name = "Harald Ringbauer", email = "harald_ringbauer@eva.mpg.de"},
+  {name = "Yilei Huang", email = "yilei_huang@eva.mpg.de"},
+]
+maintainers = [
+  {name = "Harald Ringbauer", email = "harald_ringbauer@eva.mpg.de"}
+]
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE",]
+keywords = ["IBD", "ancient DNA", "relatedness", "identify by descent segments"]
+classifiers = ["Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Development Status :: 5 - Production/Stable",
+    "Topic :: Scientific/Engineering :: Bio-Informatics"]   
+
+[project.optional-dependencies]
+ne = ['statsmodels']
+fig = ['matplotlib']
+
+[tool.setuptools.packages.find]
+namespaces = false
+
+[project.urls]
+Documentation = "https://ancibd.readthedocs.io"
+Repository = "https://github.com/hringbauer/ancIBD"
+
+[project.scripts]
+ancIBD-summary = "ancIBD.ancIBD_summary:main"
+ancIBD-run = "ancIBD.run_ancIBD:main"
+ancIBDX = "ancIBD.run_ancIBDX:main"

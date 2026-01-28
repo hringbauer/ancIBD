@@ -1,8 +1,12 @@
 ## VERSION NUMBER, DATE, AUTHOR
 List of updates to ancIBD.
 
+## 0.8, January 9th 2026, Harald Ringbauer
+- Updated installation to pyproj.toml from pure setup.py
+- Fixed the unexpected behavior of some plotting functions (e.g., IBD histogram per pair of iids where a substring IID hit was enough.
+
 ## 0.7, August 14th 2024, Harald Ringbauer, Sanjay Nagi
-- Added Dictionary Loading mode (`l_model="dict"`). Work by passing on path to dictionary instead of hdf5
+- Added Dictionary Loading mode (`l_model="dict"`). Work by passing on the path to a dictionary instead of HDF5
 - Fixed code to also `run_plot_pair()` with `l_model="dict"` 
 
 ## 0.6, April 16th 2024, Harald Ringbauer, Yilei Huang

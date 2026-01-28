@@ -144,7 +144,7 @@ def plot_karyo_from_ibd_df(df_ibd, iids=[], min_cm=12,
     title: What title to add.
     kwargs: Pass on Keyword arguments to the plotting function"""
     iid1, iid2 = iids[0], iids[1]
-    df_target = give_sub_df(df_ibd, pop1=iid1, pop2=iid2, col="iid")
+    df_target = give_sub_df(df_ibd, pop1=iid1, pop2=iid2, col="iid", exact=True)
     df_target = df_target[df_target["lengthM"]>min_cm/100.0]
     df_ibds = [df_target[df_target["ch"]==i] for i in range(1,23)] # Split up per Chromosome
     
@@ -243,14 +243,14 @@ def plot_pde_individual_from_ibd_df(df_ibd, iids=[], min_cm=12, figsize=(8,6),
                                     comm_ancs =[4,4,2,2], ms=[4,6,5,4],
                                     labels=["First Cousins", "Second Cousins", "5 generations anc.", "4 generations anc."],
                                     cs = ["red", "green", "orange", "gray"], ls = [], title="",
-                                    bw_cm=4, plotlim=[4,100], lw_curve=3,
+                                    bw_cm=4, plotlim=[4,100], lw_curve=3, 
                                     leg_loc = "upper right", output=False, savepath=""):
     """df_ibd: List of IBD or ROH in standard hapROH, bapBLOCK format
        iids: [iid1, iid2]
        min_cm: Minimum Length of IBDs to plot [in M]
        savepath: Where to save individuals"""
     iid1, iid2 = iids[0], iids[1]    
-    df_target = give_sub_df(df_ibd, pop1=iid1, pop2=iid2, col="iid")
+    df_target = give_sub_df(df_ibd, pop1=iid1, pop2=iid2, col="iid", exact=True)
     df_target = df_target[df_target["lengthM"]>min_cm/100.0]
     
     ### Do the Plot

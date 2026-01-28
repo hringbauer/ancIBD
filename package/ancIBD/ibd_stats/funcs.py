@@ -12,20 +12,21 @@ import matplotlib.patches as mpatches
 import itertools as it
 from scipy.special import gammaincinv
 
-def new_columns(df, df_meta, col="New Clade", col_new="", match_col="iid"):
-    """Maps Entries from meta dataframe onto the IBD dataframe.
+def new_columns(df, df_meta, col=["", ], col_new="", match_col="iid"):
+    """Map Entries from df_meta dataframe onto the IBD dataframe df.
+    col_new: Name of the new column
     Return modified dataframe"""
     if isinstance(col, str):
         col = [col]
      
-    for c in col:
+    for c in col:  ## Iterate over list of Entries to add
         if len(col_new)==0:
             col_new1=c
     
         dct = pd.Series(df_meta[c].values, index=df_meta[match_col]).to_dict()
         for i in range(1,3):    
-            df[col_new1 + str(i)] =df["iid" + str(i)].map(dct)
-            df[col_new1 + str(i)] =df["iid" + str(i)].map(dct)
+            df[col_new1 + str(i)] =df[match_col + str(i)].map(dct)
+            df[col_new1 + str(i)] =df[match_col + str(i)].map(dct)
     return df
 
 #################################################################################
@@ -85,7 +86,8 @@ def plot_age_diff(df,figsize=(8,8), title="", xlim=[-2000,2000], ylim=[10,5000],
 
 def give_sub_df(df, pop1="La Caleta", pop2="La Caleta", col="clst", 
                 output=True, exact=False):
-    """Return sub dataframe where pair across pop1 and pop2"""
+    """Return sub dataframe where pair across pop1 and pop2.
+    exact: If True, an exact string match is needed. If False substring match is enough"""
     if exact:
         idx1 = (df[col+"1"]==pop1) & (df[col + "2"]==pop2)
         idx2 = (df[col+"1"]==pop2) & (df[col + "2"]==pop1)
@@ -141,7 +143,8 @@ def get_IBD_stats(df, pop1="", pop2="", col="clade", exact=False,
     a: Signficance level
     binary: Only count existence of IBD, not total count [0/1 per pair]
     Return fractions, confidence intervalls as well as 
-    number of pairsise comparisons"""
+    number of pairsise comparisons.
+    exact: If True, an exact string match is needed. If False substring match is enough"""
     if len(pop1)>0 or len(pop2)>0:
         df1 = give_sub_df(df, pop1=pop1, pop2=pop2, col=col, 
                           output=output, exact=exact)
