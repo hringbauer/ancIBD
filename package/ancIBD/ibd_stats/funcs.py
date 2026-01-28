@@ -197,7 +197,7 @@ def get_ci_counts(counts, n, a=0.05, minc=1e-4):
     cis = np.array(cis) # Transform to numpy
     return cis
 
-### Calulate pairwise IBD for all pops
+### Calculate pairwise IBD for all pops
 def ibd_stats_pop_pairs(df, pop_pairs, cms = [8, 12, 16, 20, 0],
                         col = "label_region", a=0.32, binary=True,
                         output=False, exact=True):
