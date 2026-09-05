@@ -7,6 +7,7 @@ import bioframe as bf
 import numpy as np
 import pandas as pd
 from ancIBD.IO.batch_run import to_ibd_df_batches
+from pathlib import Path
 
 
 def find_short_ibd_overlapping_long(
@@ -825,7 +826,7 @@ def process_one_batch_pair(
     chs=range(1, 23),
     short_min_cms=(2, 4, 6, 8),
     long_min_cms=(8, 12, 16, 20),
-    snp_cm=220,
+    snp_cm_short=220, snp_cm_long=160,
     short_min_cm=2,
     long_min_cm=8,
     normalize_pair_order=True,
@@ -946,7 +947,7 @@ def process_one_batch_pair(
             chs=chs,
             folder_out=folder_short,
             min_cms=list(short_min_cms),
-            snp_cm=snp_cm,
+            snp_cm=snp_cm_short,
             min_cm=short_min_cm,
             output=False,
             savepath="",
@@ -979,7 +980,7 @@ def process_one_batch_pair(
             chs=chs,
             folder_out=folder_long,
             min_cms=list(long_min_cms),
-            snp_cm=snp_cm,
+            snp_cm=snp_cm_long,
             min_cm=long_min_cm,
             output=False,
             savepath="",
@@ -1268,7 +1269,7 @@ def process_one_batch_pair(
         )
 
         # Original tables have already been written to disk,
-        # so they can now be safely removed from memory.
+        # so we can safely remove them from memory.
         del df_ibd_short
         del df_ibd_long
         del df_short_clean
@@ -1326,3 +1327,156 @@ def process_one_batch_pair(
             "runtime_seconds": runtime_seconds,
             "error": repr(error),
         }
+
+
+
+##################################
+### Post-Processing Functions
+
+
+def process_short_long_batches(n_batches=0, output_root="",
+                              folder_short="", folder_long="",
+                              snp_cm_short=220, snp_cm_long=160, 
+                              short_min_cm=2, long_min_cm=8,
+                              short_min_cms=(2, 4, 6, 8),
+                              long_min_cms= (8, 12, 16, 20), 
+                              chs=range(1,23), overwrite=False):
+    """Process Short and Long IBD segments for all Batches.
+    Uses long IBD to filter shorter fragments."""
+
+    all_batch_pairs = np.column_stack(np.tril_indices(n=n_batches, k=0,))
+
+    run_start = time.perf_counter()    
+    run_records = []
+    overall_summary_path =  os.path.join(output_root, "all_batch_run_summary.tsv")
+
+    #####################################
+    ### Core Loop
+    
+    for pair_index, (b1, b2) in enumerate(
+        all_batch_pairs,
+        start=1,
+    ):
+        print()
+        print("#" * 72)
+        print(
+            f"Overall progress: "
+            f"{pair_index:,}/"
+            f"{len(all_batch_pairs):,}"
+        )
+        print("#" * 72)
+    
+        record = process_one_batch_pair(
+            b1=b1, b2=b2,
+            folder_short=folder_short,
+            folder_long=folder_long,
+            output_root=output_root,
+            chs=chs,
+            short_min_cms=short_min_cms, long_min_cms=long_min_cms,
+            snp_cm_short=snp_cm_short, snp_cm_long=snp_cm_long,
+            short_min_cm=short_min_cm, long_min_cm=long_min_cm,
+            normalize_pair_order=True,
+    
+            # False means completed batches with _SUCCESS
+            # will automatically be skipped after restart.
+            overwrite=overwrite,
+            verbose=True,
+        )
+    
+        run_records.append(record)
+    
+        # Continuously update the overall summary after every batch.
+        pd.DataFrame(
+            run_records
+        ).to_csv(
+            overall_summary_path,
+            sep="\t",
+            index=False,
+        )
+    
+        gc.collect() # Trigger Garbage Collection
+
+    ############################
+    ### Save and print output stats
+    total_runtime = (
+        time.perf_counter()
+        - run_start
+    )
+    
+    df_run_summary = pd.DataFrame(
+        run_records
+    )
+    
+    n_completed = (
+        df_run_summary["status"]
+        .eq("completed")
+        .sum()
+    )
+    
+    n_skipped = (
+        df_run_summary["status"]
+        .eq("skipped")
+        .sum()
+    )
+    
+    n_failed = (
+        df_run_summary["status"]
+        .eq("failed")
+        .sum()
+    )
+    
+    print()
+    print("=" * 72)
+    print("All requested batch pairs have been processed.")
+    print(f"Completed: {n_completed:,}")
+    print(f"Skipped:   {n_skipped:,}")
+    print(f"Failed:    {n_failed:,}")
+    print(
+        f"Total runtime: "
+        f"{total_runtime / 3600:.2f} hours"
+    )
+    print(
+        f"Overall summary: "
+        f"{overall_summary_path}"
+    )
+    print("=" * 72)
+
+
+def collect_batches_tables(output_root:str | Path, 
+                           table_file:str | Path,
+                           b: int,
+                           savepath:str | Path = ""):
+    """Collect all .tsv tables in batchesX_Y structure.
+    Concatenates tables and returns a pandas DataFrame
+    b: Total number of batches [int]
+    table_file: tsv file to read and concatenate [Path]
+    output_root: base folder of output [Path]
+    savepath: where to save into"""
+
+    all_batch_pairs = np.column_stack(np.tril_indices(n=b, k=0,))
+
+    df_out = []
+    for pair_index, (b1, b2) in enumerate(
+            all_batch_pairs,
+            start=1):
+    
+        p = os.path.join(output_root, f"batch{b1}_{b2}", table_file)
+        dft = pd.read_csv(p, sep="\t")
+        if dft.empty:
+            continue
+        else:
+            df_out.append(dft)
+        
+    df_out = pd.concat(df_out, ignore_index=True) # Bring together
+
+    if len(savepath)>0:
+        savepath = os.path.join(output_root, savepath)
+        df_out.to_csv(savepath, sep="\t", index=False)
+        print(f"Saved {len(df_out)} output rows to: {savepath}")
+        
+    return df_out
+
+
+
+
+
